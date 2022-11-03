@@ -105,13 +105,13 @@ function useBluetooth(): IBluetoothApi {
     device.monitorCharacteristicForService(
       HEART_RATE_GATT_SERVICE,
       HEART_RATE_GATT_CHARACTERISTIC,
-      onHeartRateUpdate
+      onHeartRateUpdate,
     )
   }
 
   function onHeartRateUpdate(
     error: BleError | null,
-    characteristic: Characteristic | null
+    characteristic: Characteristic | null,
   ) {
     if (!characteristic?.value) {
       console.log('No value read.')
@@ -162,7 +162,7 @@ function useBluetooth(): IBluetoothApi {
 }
 
 export const BluetoothContext = createContext<IBluetoothApi>(
-  {} as IBluetoothApi
+  {} as IBluetoothApi,
 )
 
 export function BluetoothProvider({ children }: { children: ReactNode }) {

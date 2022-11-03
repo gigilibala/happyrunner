@@ -1,0 +1,21 @@
+node_modules/
+dist/
+web-build/
+.gitignore/
+assets/
+android/
+ios/
+vendor/
+.bundle/
+src/assets
+
+Gemfile
+Gemfile.lock
+yarn.lock
+.watchmanconfig
+.ruby-version
+
+
+# macOS
+.DS_Store
+
