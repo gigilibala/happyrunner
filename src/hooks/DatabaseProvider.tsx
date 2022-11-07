@@ -4,29 +4,52 @@ import {
   openDatabase,
   SQLiteDatabase,
 } from 'react-native-sqlite-storage'
+import { Activity } from './Activity'
 
 const databaseName = 'user-data.db'
 const activityInfoTableName = 'activity_info'
+const activityDataTableName = 'activity_data'
+
+const dropTableScript = `
+DROP TABLE IF EXISTS ${activityInfoTableName};
+DROP TABLE IF EXISTS ${activityDataTableName};
+`
 
 const createTableScript = `
 CREATE TABLE IF NOT EXISTS ${activityInfoTableName}(
     id INTEGER PRIMARY KEY NOT NULL,
     type STRING NOT NULL,
-    average_hr INTEGER,
-    average_pace REAL 
+    status STRING NOT NULL,
+    start_time INTEGER,
+    end_time INTEGER,
+    avg_heartrate INTEGER,
+    max_heartrate INTEGER,
+    avg_pace REAL,
+    total_steps INTEGER,
+    cadence INTEGER,
+    total_active_time_seconds INTEGER,
+    total_distance INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS ${activityDataTableName}(
+  timestamp INTEGER PRIMARY KEY NOT NULL,
+  activity_id INTEGER NOT NULL,
+  heartrate INTEGER,
+  latitude REAL,
+  longitude REAL,
+  FOREIGN KEY(activity_id) REFERENCES ${activityInfoTableName}(id)
 );
 `
 
 enablePromise(true)
 
 interface IDatabaseApi {
-  startActivity(): void
+  addActivity(activity: Activity): void
+  modifyActivity(activity: Activity): void
 }
 
 function useDatabase(): IDatabaseApi {
   const [db, setDb] = useState<SQLiteDatabase>()
-  const [activityId, setActivityId] = useState<number>()
-  //   const [assets] = useAssets([])
 
   useEffect(() => {
     openDatabase({ name: databaseName, location: 'default' }).then((db) => {
@@ -52,24 +75,31 @@ function useDatabase(): IDatabaseApi {
       })
   }
 
-  function startActivity() {
-    const time = new Date().getTime()
-    setActivityId(time)
+  function addActivity(activity: Activity): void {
     const query = `INSERT INTO ${activityInfoTableName}
-    (id, type) VALUES (?, ?)
-    `
+      (id, status, type, start_time) VALUES (?, ?, ?, ?)
+      `
     db?.transaction((tx) => {
-      tx.executeSql(query, [time, 'running'])
+      tx.executeSql(query, [
+        activity.id,
+        activity.status,
+        activity.type,
+        activity.start_time?.getTime(),
+      ])
     })
       .then(() => {
-        console.log('item added to database')
+        console.log('Activity added to the database.')
       })
       .catch((error) => {
-        console.log('Failed to add item to database: ', error)
+        console.log('Failed to add activity to database: ', error)
       })
   }
 
-  return { startActivity }
+  function modifyActivity(activity: Activity): void {
+    console.log('Modifying the activity.')
+  }
+
+  return { addActivity, modifyActivity }
 }
 
 export const DatabaseContext = createContext<IDatabaseApi>({} as IDatabaseApi)
