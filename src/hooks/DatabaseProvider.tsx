@@ -15,20 +15,39 @@ DROP TABLE IF EXISTS ${activityInfoTableName};
 DROP TABLE IF EXISTS ${activityDataTableName};
 `
 
+type DatabaseColumns<Type> = {
+  [Property in keyof Type]-?: string
+}
+
+const activityInfoTableColumns: DatabaseColumns<Activity> = {
+  id: 'id',
+  type: 'type',
+  status: 'status',
+  start_time: 'start_time',
+  end_time: 'end_time',
+  avg_heart_rate: 'avg_heart_rate',
+  max_heart_rate: 'max_heart_rate',
+  avg_pace: 'avg_pace',
+  total_steps: 'total_steps',
+  cadence: 'cadence',
+  total_active_time_seconds: 'total_active_time_seconds',
+  total_distance: 'total_distance',
+}
+
 const createTableScript = `
 CREATE TABLE IF NOT EXISTS ${activityInfoTableName}(
-    id INTEGER PRIMARY KEY NOT NULL,
-    type STRING NOT NULL,
-    status STRING NOT NULL,
-    start_time INTEGER,
-    end_time INTEGER,
-    avg_heartrate INTEGER,
-    max_heartrate INTEGER,
-    avg_pace REAL,
-    total_steps INTEGER,
-    cadence INTEGER,
-    total_active_time_seconds INTEGER,
-    total_distance INTEGER
+  ${activityInfoTableColumns.id} INTEGER PRIMARY KEY NOT NULL,
+  ${activityInfoTableColumns.type} TEXT NOT NULL,
+  ${activityInfoTableColumns.status} TEXT,
+  ${activityInfoTableColumns.start_time} INTEGER,
+  ${activityInfoTableColumns.end_time} INTEGER,
+  ${activityInfoTableColumns.avg_heart_rate} INTEGER,
+  ${activityInfoTableColumns.max_heart_rate} INTEGER,
+  ${activityInfoTableColumns.avg_pace} REAL,
+  ${activityInfoTableColumns.total_steps} INTEGER,
+  ${activityInfoTableColumns.cadence} INTEGER,
+  ${activityInfoTableColumns.total_active_time_seconds} INTEGER,
+  ${activityInfoTableColumns.total_distance} INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS ${activityDataTableName}(
@@ -37,6 +56,7 @@ CREATE TABLE IF NOT EXISTS ${activityDataTableName}(
   heartrate INTEGER,
   latitude REAL,
   longitude REAL,
+  is_active INTEGER,
   FOREIGN KEY(activity_id) REFERENCES ${activityInfoTableName}(id)
 );
 `
@@ -77,18 +97,14 @@ function useDatabase(): IDatabaseApi {
 
   function addActivity(activity: Activity): void {
     const query = `INSERT INTO ${activityInfoTableName}
-      (id, status, type, start_time) VALUES (?, ?, ?, ?)
-      `
+      (${activityInfoTableColumns.id}, ${activityInfoTableColumns.type}) 
+      VALUES (${activity.id}, '${activity.type}')
+    `
     db?.transaction((tx) => {
-      tx.executeSql(query, [
-        activity.id,
-        activity.status,
-        activity.type,
-        activity.start_time?.getTime(),
-      ])
+      tx.executeSql(query)
     })
       .then(() => {
-        console.log('Activity added to the database.')
+        console.log('Activity added to the database.', activity)
       })
       .catch((error) => {
         console.log('Failed to add activity to database: ', error)
@@ -96,6 +112,30 @@ function useDatabase(): IDatabaseApi {
   }
 
   function modifyActivity(activity: Activity): void {
+    let columns: Array<string> = []
+    type ObjectKey = keyof typeof activity
+    for (const key in activity) {
+      if (key === activityInfoTableColumns.id) continue
+      const value = activity[key as ObjectKey]
+      if (typeof value === 'number') {
+        columns.push(`${key} = ${value}`)
+      } else {
+        columns.push(`${key} = '${value}'`)
+      }
+    }
+    const query = `UPDATE ${activityInfoTableName}
+      SET ${columns.join(', ')}
+      WHERE ${activityInfoTableColumns.id} = ${activity.id}
+    `
+    db?.transaction((tx) => {
+      tx.executeSql(query)
+    })
+      .then(() => {
+        console.log('Activity modified in the database.', activity)
+      })
+      .catch((error) => {
+        console.log('Failed to modify activity in database: ', error)
+      })
     console.log('Modifying the activity.')
   }
 

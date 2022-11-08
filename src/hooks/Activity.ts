@@ -6,7 +6,7 @@ export enum ActivityType {
 }
 
 export enum Status {
-  STARTED = 'Started',
+  IN_PROGRESS = 'InProgress',
   PAUSED = 'Paused',
   STOPPED = 'Stopped',
 }
@@ -16,44 +16,73 @@ export type Activity = {
   id: number
   status?: Status
   type?: ActivityType
-  start_time?: Date
-  end_time?: Date
+  start_time?: number
+  end_time?: number
+  avg_heart_rate?: number
+  max_heart_rate?: number
+  avg_pace?: number
+  total_steps?: number
+  cadence?: number
+  total_active_time_seconds?: number
+  total_distance?: number
 }
 
 export interface IActivity {
+  status?: Status
   start(): void
   pause(): void
-  end(): void
+  stop(): void
 }
 
 export default function useActivity(): IActivity {
   const [id, setId] = useState<number>()
+  const [status, setStatus] = useState<Status>()
   const { addActivity, modifyActivity } = useContext(DatabaseContext)
 
   useEffect(() => {
     if (id === undefined) return
+    if (status === undefined) return
     const time = new Date()
-    addActivity({
-      id: id,
-      status: Status.STARTED,
-      start_time: time,
-      type: ActivityType.RUNNING,
-    })
-    return () => {
-      modifyActivity({ id: id, status: Status.STOPPED })
+    switch (status) {
+      case Status.IN_PROGRESS:
+        addActivity({
+          id: id,
+          status: Status.IN_PROGRESS,
+          start_time: time.getTime(),
+          type: ActivityType.RUNNING,
+        })
+        break
+      case Status.PAUSED:
+        modifyActivity({
+          id: id,
+          status: Status.PAUSED,
+          end_time: time.getTime(),
+        })
+        break
+      case Status.STOPPED:
+        modifyActivity({
+          id: id,
+          status: Status.STOPPED,
+          end_time: time.getTime(),
+        })
+        break
+      default:
+        break
     }
-  }, [id])
+  }, [status])
 
   function start(): void {
+    // TODO(gigilibala): Maybe change ID to something else.
     setId(new Date().getTime())
+    setStatus(Status.IN_PROGRESS)
   }
 
   function pause(): void {
-    throw new Error('Not implemented')
+    setStatus(Status.PAUSED)
   }
-  function end(): void {
-    throw new Error('Not implemented')
+  function stop(): void {
+    setStatus(Status.STOPPED)
   }
 
-  return { start, pause, end }
+  return { start, pause, stop, status }
 }
