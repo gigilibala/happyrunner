@@ -1,9 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import { DatabaseContext } from '../hooks/DatabaseProvider'
 
-export enum ActivityType {
-  RUNNING = 'Running',
-}
+type ActivityType = 'Running'
 
 type Status = 'in-progress' | 'paused' | 'stopped'
 
@@ -34,6 +32,7 @@ export interface IActivity {
 export default function useActivity(): IActivity {
   const [id, setId] = useState<number>()
   const [status, setStatus] = useState<Status>()
+  const [activityType, setActivityType] = useState<ActivityType>('Running')
   const { addActivity, modifyActivity } = useContext(DatabaseContext)
 
   useEffect(() => {
@@ -43,7 +42,7 @@ export default function useActivity(): IActivity {
     addActivity({
       id: id,
       start_time: new Date().getTime(),
-      type: ActivityType.RUNNING,
+      type: activityType,
     })
 
     return () => {}
