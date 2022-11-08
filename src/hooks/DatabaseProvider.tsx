@@ -107,7 +107,7 @@ function useDatabase(): IDatabaseApi {
         console.log('Activity added to the database.', activity)
       })
       .catch((error) => {
-        console.log('Failed to add activity to database: ', error)
+        console.log('Failed to add activity to database: ', error, activity)
       })
   }
 
@@ -134,7 +134,7 @@ function useDatabase(): IDatabaseApi {
         console.log('Activity modified in the database.', activity)
       })
       .catch((error) => {
-        console.log('Failed to modify activity in database: ', error)
+        console.log('Failed to modify activity in database: ', error, activity)
       })
     console.log('Modifying the activity.')
   }

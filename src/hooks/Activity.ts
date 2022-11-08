@@ -5,11 +5,7 @@ export enum ActivityType {
   RUNNING = 'Running',
 }
 
-export enum Status {
-  IN_PROGRESS = 'InProgress',
-  PAUSED = 'Paused',
-  STOPPED = 'Stopped',
-}
+type Status = 'in-progress' | 'paused' | 'stopped'
 
 // Keep in sync with database table.
 export type Activity = {
@@ -31,6 +27,7 @@ export interface IActivity {
   status?: Status
   start(): void
   pause(): void
+  resume(): void
   stop(): void
 }
 
@@ -40,29 +37,42 @@ export default function useActivity(): IActivity {
   const { addActivity, modifyActivity } = useContext(DatabaseContext)
 
   useEffect(() => {
-    if (id === undefined) return
+    if (id === undefined) {
+      return
+    }
+    addActivity({
+      id: id,
+      start_time: new Date().getTime(),
+      type: ActivityType.RUNNING,
+    })
+
+    return () => {}
+  }, [id])
+
+  useEffect(() => {
+    if (id === undefined) {
+      console.error('Activity ID has not been set')
+      return
+    }
     if (status === undefined) return
     const time = new Date()
     switch (status) {
-      case Status.IN_PROGRESS:
-        addActivity({
-          id: id,
-          status: Status.IN_PROGRESS,
-          start_time: time.getTime(),
-          type: ActivityType.RUNNING,
-        })
-        break
-      case Status.PAUSED:
+      case 'in-progress':
         modifyActivity({
           id: id,
-          status: Status.PAUSED,
-          end_time: time.getTime(),
+          status: 'in-progress',
         })
         break
-      case Status.STOPPED:
+      case 'paused':
         modifyActivity({
           id: id,
-          status: Status.STOPPED,
+          status: 'paused',
+        })
+        break
+      case 'stopped':
+        modifyActivity({
+          id: id,
+          status: 'stopped',
           end_time: time.getTime(),
         })
         break
@@ -72,17 +82,21 @@ export default function useActivity(): IActivity {
   }, [status])
 
   function start(): void {
-    // TODO(gigilibala): Maybe change ID to something else.
-    setId(new Date().getTime())
-    setStatus(Status.IN_PROGRESS)
+    // TODO(gigilibala): Maybe change ID to something else other than current time.
+    const time = new Date()
+    setId(time.getTime())
+    setStatus('in-progress')
   }
 
   function pause(): void {
-    setStatus(Status.PAUSED)
+    setStatus('paused')
   }
   function stop(): void {
-    setStatus(Status.STOPPED)
+    setStatus('stopped')
+  }
+  function resume(): void {
+    setStatus('in-progress')
   }
 
-  return { start, pause, stop, status }
+  return { start, pause, stop, resume, status }
 }
