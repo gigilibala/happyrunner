@@ -126,22 +126,14 @@ function useDatabase(): IDatabaseApi {
   }
 
   function modifyActivity(activity: Activity): void {
-    let columns: Array<string> = []
-    type ObjectKey = keyof typeof activity
-    for (const key in activity) {
-      if (key === activityInfoTableColumns.id) continue
-      const value = activity[key as ObjectKey]
-      if (typeof value === 'number') {
-        columns.push(`${key} = ${value}`)
-      } else {
-        columns.push(`${key} = '${value}'`)
-      }
-    }
+    const partialActivity: Partial<typeof activity> = { ...activity }
+    delete partialActivity.id
+    const columns = Object.keys(partialActivity).map((key) => `${key} = ?`)
     const query = `UPDATE ${activityInfoTableName}
       SET ${columns.join(', ')}
       WHERE ${activityInfoTableColumns.id} = ${activity.id}
     `
-    db?.executeSql(query)
+    db?.executeSql(query, Object.values(partialActivity))
       .then(() => console.log('Activity modified in the database.', activity))
       .catch((error) =>
         console.log('Failed to modify activity in database: ', error, activity),
