@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from 'react'
 import { DatabaseContext } from '../hooks/DatabaseProvider'
 import { BluetoothContext } from './BluetoothProvider'
+import useLocation from './Location'
 
 type ActivityType = 'Running'
 
 type Status = 'in-progress' | 'paused' | 'stopped'
 
-const INTERVAL_MS = 1000
+const INTERVAL_MS = 3000
 
 // Keep in sync with database table.
 export type Activity = {
@@ -49,7 +50,9 @@ export default function useActivity(): IActivity {
   const { addActivity, modifyActivity, addActivityData } =
     useContext(DatabaseContext)
   const { heartRate } = useContext(BluetoothContext)
-  let interval: number
+  const { position, setStatus: setLocationServiceStatus } = useLocation()
+  const [dataCollectionInterval, setDataCollectionInterval] = useState<number>()
+  const [timestamp, setTimestamp] = useState<number>()
 
   useEffect(() => {
     if (id === undefined) return
@@ -59,6 +62,13 @@ export default function useActivity(): IActivity {
       type: activityType,
     })
   }, [id])
+
+  useEffect(() => {
+    if (dataCollectionInterval === undefined) return
+    return () => {
+      stopCollectingData()
+    }
+  }, [dataCollectionInterval])
 
   useEffect(() => {
     if (status === undefined) return
@@ -73,13 +83,14 @@ export default function useActivity(): IActivity {
           id: id,
           status: 'in-progress',
         })
-        interval = setInterval(addData, INTERVAL_MS)
+        startCollectingData()
         break
       case 'paused':
         modifyActivity({
           id: id,
           status: 'paused',
         })
+        setDataCollectionInterval(undefined)
         break
       case 'stopped':
         modifyActivity({
@@ -87,46 +98,62 @@ export default function useActivity(): IActivity {
           status: 'stopped',
           end_time: time.getTime(),
         })
+        setDataCollectionInterval(undefined)
         break
       default:
         break
     }
   }, [status])
 
+  useEffect(() => {
+    if (timestamp === undefined || id == undefined) return
+
+    addActivityData({
+      activity_id: id,
+      timestamp: timestamp,
+      heart_rate: heartRate,
+      latitude: position?.coords.latitude,
+      longitude: position?.coords.longitude,
+      status: status,
+    })
+  }, [timestamp])
+
   function start(): void {
     // TODO(gigilibala): Maybe change ID to something else other than current time.
-    const time = new Date()
-    setId(time.getTime())
+    setId(new Date().getTime())
     setStatus('in-progress')
   }
 
   function pause(): void {
-    clearInterval(interval)
     setStatus('paused')
   }
+
   function stop(): void {
-    clearInterval(interval)
     setStatus('stopped')
   }
+
   function resume(): void {
-    setInterval(addData, INTERVAL_MS)
     setStatus('in-progress')
+  }
+
+  function startCollectingData(): void {
+    console.log('Starting to collect data.')
+    setLocationServiceStatus('running')
+    setDataCollectionInterval(
+      setInterval(() => setTimestamp(new Date().getTime()), INTERVAL_MS),
+    )
+  }
+
+  function stopCollectingData(): void {
+    if (dataCollectionInterval === undefined) return
+    console.log('Stopping data collection.')
+    clearInterval(dataCollectionInterval)
+    setLocationServiceStatus('stopped')
   }
 
   // TODO(gigilibala): For testing, remove.
   function addData(): void {
-    if (id === undefined) {
-      console.error('Activity ID has not been set.')
-      return
-    }
-    addActivityData({
-      activity_id: id,
-      timestamp: new Date().getTime(),
-      heart_rate: heartRate,
-      latitude: 1.1,
-      longitude: 2.2,
-      status: status,
-    })
+    setTimestamp(new Date().getTime())
   }
 
   return { start, pause, stop, resume, status, addData }
