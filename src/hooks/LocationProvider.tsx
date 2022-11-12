@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react'
+import { createContext, ReactNode, useEffect, useState } from 'react'
 import { PermissionsAndroid, Platform } from 'react-native'
 import Geolocation from 'react-native-geolocation-service'
 
-interface ILocation {
+interface ILocationApi {
   setStatus(status: LocationServiceStatus): void
   position: Geolocation.GeoPosition | undefined
 }
 
 type LocationServiceStatus = 'running' | 'stopped'
 
-export default function useLocation(): ILocation {
+function useLocation(): ILocationApi {
   const [position, setPosition] = useState<Geolocation.GeoPosition>()
   const [status, setStatus] = useState<LocationServiceStatus>('stopped')
   const [watchId, setWatchId] = useState<number>()
@@ -103,4 +103,16 @@ export default function useLocation(): ILocation {
   }
 
   return { setStatus, position }
+}
+
+export const LocationContext = createContext<ILocationApi>({} as ILocationApi)
+
+export function LocationProvider({ children }: { children: ReactNode }) {
+  const state = useLocation()
+
+  return (
+    <LocationContext.Provider value={state}>
+      {children}
+    </LocationContext.Provider>
+  )
 }
