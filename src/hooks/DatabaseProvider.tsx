@@ -7,7 +7,7 @@ import {
   ResultSet,
   DatabaseParams,
 } from 'react-native-sqlite-storage'
-import { Activity, ActivityPoint } from './Activity'
+import { Activity, ActivityData } from './Activity'
 
 const databaseName = 'user-data.db'
 const activityInfoTableName = 'activity_info'
@@ -32,7 +32,7 @@ const activityInfoTableColumns: DatabaseColumns<Activity> = {
   total_distance: 'total_distance',
 }
 
-const activityDataTableColumns: DatabaseColumns<ActivityPoint> = {
+const activityDataTableColumns: DatabaseColumns<ActivityData> = {
   timestamp: 'timestamp',
   activity_id: 'activity_id',
   heart_rate: 'heart_rate',
@@ -74,7 +74,7 @@ enablePromise(true)
 interface IDatabaseApi {
   addActivity(activity: Activity): void
   modifyActivity(activity: Activity): void
-  addActivityPoint(data: ActivityPoint): void
+  addActivityData(data: ActivityData): void
 
   // Mostly for advanced users.
   clearDatabase(): void
@@ -140,7 +140,7 @@ function useDatabase(): IDatabaseApi {
       )
   }
 
-  function addActivityPoint(data: ActivityPoint): void {
+  function addActivityData(data: ActivityData): void {
     const keys = Object.keys(data)
     const query = `INSERT INTO ${activityDataTableName}
       (${keys.join(', ')})
@@ -153,7 +153,7 @@ function useDatabase(): IDatabaseApi {
       )
   }
 
-  return { addActivity, modifyActivity, addActivityPoint, clearDatabase }
+  return { addActivity, modifyActivity, addActivityData, clearDatabase }
 }
 
 export const DatabaseContext = createContext<IDatabaseApi>({} as IDatabaseApi)

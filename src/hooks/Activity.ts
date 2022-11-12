@@ -21,7 +21,7 @@ export type Activity = {
   total_distance?: number
 }
 
-export type ActivityPoint = {
+export type ActivityData = {
   timestamp: number
   activity_id: number
   heart_rate?: number
@@ -43,7 +43,7 @@ export default function useActivity(): IActivity {
   const [id, setId] = useState<number>()
   const [status, setStatus] = useState<Status>()
   const [activityType, setActivityType] = useState<ActivityType>('Running')
-  const { addActivity, modifyActivity, addActivityPoint } =
+  const { addActivity, modifyActivity, addActivityData } =
     useContext(DatabaseContext)
 
   useEffect(() => {
@@ -68,6 +68,7 @@ export default function useActivity(): IActivity {
           id: id,
           status: 'in-progress',
         })
+        setInterval(addData, 1000)
         break
       case 'paused':
         modifyActivity({
@@ -110,7 +111,7 @@ export default function useActivity(): IActivity {
       console.error('Activity ID has not been set.')
       return
     }
-    addActivityPoint({
+    addActivityData({
       activity_id: id,
       timestamp: new Date().getTime(),
       heart_rate: 100,
