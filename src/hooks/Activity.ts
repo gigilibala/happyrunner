@@ -40,7 +40,6 @@ export interface IActivity {
   pause(): void
   resume(): void
   stop(): void
-  addData(): void
 }
 
 export default function useActivity(): IActivity {
@@ -152,10 +151,5 @@ export default function useActivity(): IActivity {
     setLocationServiceStatus('stopped')
   }
 
-  // TODO(gigilibala): For testing, remove.
-  function addData(): void {
-    setTimestamp(new Date().getTime())
-  }
-
-  return { start, pause, stop, resume, status, addData }
+  return { start, pause, stop, resume, status }
 }
