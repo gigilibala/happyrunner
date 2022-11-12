@@ -1,9 +1,12 @@
 import { useContext, useEffect, useState } from 'react'
 import { DatabaseContext } from '../hooks/DatabaseProvider'
+import { BluetoothContext } from './BluetoothProvider'
 
 type ActivityType = 'Running'
 
 type Status = 'in-progress' | 'paused' | 'stopped'
+
+const INTERVAL_MS = 1000
 
 // Keep in sync with database table.
 export type Activity = {
@@ -45,6 +48,8 @@ export default function useActivity(): IActivity {
   const [activityType, setActivityType] = useState<ActivityType>('Running')
   const { addActivity, modifyActivity, addActivityData } =
     useContext(DatabaseContext)
+  const { heartRate } = useContext(BluetoothContext)
+  let interval: number
 
   useEffect(() => {
     if (id === undefined) return
@@ -68,7 +73,7 @@ export default function useActivity(): IActivity {
           id: id,
           status: 'in-progress',
         })
-        setInterval(addData, 1000)
+        interval = setInterval(addData, INTERVAL_MS)
         break
       case 'paused':
         modifyActivity({
@@ -96,12 +101,15 @@ export default function useActivity(): IActivity {
   }
 
   function pause(): void {
+    clearInterval(interval)
     setStatus('paused')
   }
   function stop(): void {
+    clearInterval(interval)
     setStatus('stopped')
   }
   function resume(): void {
+    setInterval(addData, INTERVAL_MS)
     setStatus('in-progress')
   }
 
@@ -114,10 +122,10 @@ export default function useActivity(): IActivity {
     addActivityData({
       activity_id: id,
       timestamp: new Date().getTime(),
-      heart_rate: 100,
+      heart_rate: heartRate,
       latitude: 1.1,
       longitude: 2.2,
-      status: 'in-progress',
+      status: status,
     })
   }
 

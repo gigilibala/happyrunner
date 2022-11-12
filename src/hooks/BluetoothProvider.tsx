@@ -16,13 +16,13 @@ interface IBluetoothApi {
   scanForDevices(): void
   connectToDevice(deviceId?: string): Promise<void>
   connectedDevice: Device | null
-  heartRate: string
+  heartRate: number
 }
 
 function useBluetooth(): IBluetoothApi {
   const [allDevices, setAllDevices] = useState<Device[]>([])
   const [connectedDevice, setConnectedDevice] = useState<Device | null>(null)
-  const [heartRate, setHeartRate] = useState<string>('')
+  const [heartRate, setHeartRate] = useState<number>(0)
   const { setItem, getItem } = useAsyncStorage(bluetoothDefaultDeviceKey)
 
   useEffect(() => {
@@ -38,7 +38,7 @@ function useBluetooth(): IBluetoothApi {
   // TODO(gigilibala): Remove this timeout. It is for testing UI, only.
   useEffect(() => {
     const timer = setTimeout(() => {
-      setHeartRate('100')
+      setHeartRate(100)
     }, 1000)
 
     return () => {
@@ -149,7 +149,7 @@ function useBluetooth(): IBluetoothApi {
 
     // const moreDetails = { ...details, rrIntervals }
     // setHeartRate(JSON.stringify(moreDetails, null, 2))
-    setHeartRate(details.heartRate.toString())
+    setHeartRate(details.heartRate)
   }
 
   return {
