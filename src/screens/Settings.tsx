@@ -25,8 +25,12 @@ export function Settings({ navigation }: Props) {
   const settingsItems: SettingType[] = [
     {
       title: 'Heart Rate Monitor',
+      navigate: () => navigation.navigate('Heart Rate Monitor'),
+    },
+    {
+      title: 'Audio Cues',
       navigate: () => {
-        navigation.navigate('Heart Rate Monitor')
+        navigation.navigate('Audio Cues')
       },
     },
     { title: 'Clear Database', navigate: () => clearDatabase() },

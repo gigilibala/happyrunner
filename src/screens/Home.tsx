@@ -10,6 +10,7 @@ type Props = NativeStackScreenProps<HomeStackParams, 'Home Screen'>
 
 export default function Home({ route, navigation }: Props) {
   const { start, pause, resume, stop, status } = useActivity()
+
   const bigButtonSize = 80
   const smallButtonSize = 60
 
