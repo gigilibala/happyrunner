@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 type Props = NativeStackScreenProps<HomeStackParams, 'Home Screen'>
 
 export default function Home({ route, navigation }: Props) {
-  const { start, pause, resume, stop, status } = useActivity()
+  const { start, pause, resume, stop, status, addData } = useActivity()
   const bigButtonSize = 80
   const smallButtonSize = 60
 
@@ -92,7 +92,14 @@ export default function Home({ route, navigation }: Props) {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ flex: 3 }}></View>
+      <View style={{ flex: 3 }}>
+        <Button
+          title="Add Data"
+          onPress={() => {
+            addData()
+          }}
+        />
+      </View>
       <View
         style={{
           flex: 1,

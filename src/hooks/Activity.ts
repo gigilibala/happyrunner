@@ -21,19 +21,30 @@ export type Activity = {
   total_distance?: number
 }
 
+export type ActivityPoint = {
+  timestamp: number
+  activity_id: number
+  heart_rate?: number
+  latitude?: number
+  longitude?: number
+  status?: Status
+}
+
 export interface IActivity {
   status?: Status
   start(): void
   pause(): void
   resume(): void
   stop(): void
+  addData(): void
 }
 
 export default function useActivity(): IActivity {
   const [id, setId] = useState<number>()
   const [status, setStatus] = useState<Status>()
   const [activityType, setActivityType] = useState<ActivityType>('Running')
-  const { addActivity, modifyActivity } = useContext(DatabaseContext)
+  const { addActivity, modifyActivity, addActivityPoint } =
+    useContext(DatabaseContext)
 
   useEffect(() => {
     if (id === undefined) {
@@ -50,7 +61,7 @@ export default function useActivity(): IActivity {
 
   useEffect(() => {
     if (id === undefined) {
-      console.error('Activity ID has not been set')
+      console.info('Activity ID has not been set')
       return
     }
     if (status === undefined) return
@@ -97,5 +108,21 @@ export default function useActivity(): IActivity {
     setStatus('in-progress')
   }
 
-  return { start, pause, stop, resume, status }
+  // TODO(gigilibala): For testing, remove.
+  function addData(): void {
+    if (id === undefined) {
+      console.error('Activity ID has not been set.')
+      return
+    }
+    addActivityPoint({
+      activity_id: id,
+      timestamp: new Date().getTime(),
+      heart_rate: 100,
+      latitude: 1.1,
+      longitude: 2.2,
+      status: 'in-progress',
+    })
+  }
+
+  return { start, pause, stop, resume, status, addData }
 }

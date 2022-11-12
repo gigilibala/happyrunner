@@ -1,4 +1,5 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { useContext } from 'react'
 import {
   SafeAreaView,
   StyleSheet,
@@ -9,6 +10,7 @@ import {
 import { ScrollView } from 'react-native-gesture-handler'
 import { commonStyles } from '../common/constants'
 import { SettingsStackParams } from '../components/navigators/SettingsStack'
+import { DatabaseContext } from '../hooks/DatabaseProvider'
 
 type Props = NativeStackScreenProps<SettingsStackParams, 'Settings'>
 
@@ -19,6 +21,7 @@ type SettingType = {
 }
 
 export function Settings({ navigation }: Props) {
+  const { clearDatabase } = useContext(DatabaseContext)
   const settingsItems: SettingType[] = [
     {
       title: 'Heart Rate Monitor',
@@ -26,7 +29,7 @@ export function Settings({ navigation }: Props) {
         navigation.navigate('Heart Rate Monitor')
       },
     },
-    { title: 'Dummy one', subTitle: 'hello' },
+    { title: 'Clear Database', navigate: () => clearDatabase() },
   ]
 
   return (
