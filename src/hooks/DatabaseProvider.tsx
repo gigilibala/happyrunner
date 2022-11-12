@@ -138,7 +138,6 @@ function useDatabase(): IDatabaseApi {
       .catch((error) =>
         console.log('Failed to modify activity in database: ', error, activity),
       )
-    console.log('Modifying the activity.')
   }
 
   function addActivityPoint(data: ActivityPoint): void {

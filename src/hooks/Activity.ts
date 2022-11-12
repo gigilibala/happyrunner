@@ -47,24 +47,20 @@ export default function useActivity(): IActivity {
     useContext(DatabaseContext)
 
   useEffect(() => {
-    if (id === undefined) {
-      return
-    }
+    if (id === undefined) return
     addActivity({
       id: id,
       start_time: new Date().getTime(),
       type: activityType,
     })
-
-    return () => {}
   }, [id])
 
   useEffect(() => {
+    if (status === undefined) return
     if (id === undefined) {
       console.info('Activity ID has not been set')
       return
     }
-    if (status === undefined) return
     const time = new Date()
     switch (status) {
       case 'in-progress':

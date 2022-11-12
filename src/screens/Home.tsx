@@ -21,7 +21,6 @@ export default function Home({ route, navigation }: Props) {
       backgroundColor={'transparent'}
       style={styles.button}
       onPress={() => {
-        console.log('starting')
         start()
       }}
     />
@@ -34,7 +33,6 @@ export default function Home({ route, navigation }: Props) {
       backgroundColor={'transparent'}
       style={styles.button}
       onPress={() => {
-        console.log('resume')
         resume()
       }}
     />
@@ -48,7 +46,6 @@ export default function Home({ route, navigation }: Props) {
       backgroundColor={'transparent'}
       style={styles.button}
       onPress={() => {
-        console.log('resume')
         pause()
       }}
     />
@@ -62,7 +59,6 @@ export default function Home({ route, navigation }: Props) {
       backgroundColor={'transparent'}
       style={styles.button}
       onPress={() => {
-        console.log('stop')
         stop()
       }}
     />
