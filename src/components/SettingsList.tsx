@@ -50,22 +50,23 @@ export function SettingsList(data: Settings) {
     }
 
     return (
-      <TouchableOpacity key={props.title} onPress={() => props.onPress()}>
-        <View style={styles.touchable}>
-          <View style={styles.iconView}>{props.icon}</View>
-          <View style={styles.textView}>
-            {renderText(props.title, props.subTitle)}
-            {props.kind === 'navigation' ? (
-              <Icon name="chevron-right" color="grey" style={styles.navIcon} />
-            ) : (
-              props.kind === 'switch' && (
-                <Switch
-                  value={props.switchValue}
-                  onValueChange={props.onPress}
-                />
-              )
-            )}
-          </View>
+      <TouchableOpacity
+        key={props.title}
+        onPress={() => props.onPress()}
+        style={styles.touchable}
+      >
+        <View style={styles.iconView}>{props.icon}</View>
+        <View style={styles.textView}>
+          {renderText(props.title, props.subTitle)}
+        </View>
+        <View>
+          {props.kind === 'navigation' ? (
+            <Icon name="chevron-right" color="grey" style={styles.navIcon} />
+          ) : (
+            props.kind === 'switch' && (
+              <Switch value={props.switchValue} onValueChange={props.onPress} />
+            )
+          )}
         </View>
       </TouchableOpacity>
     )
@@ -91,18 +92,20 @@ export function SettingsList(data: Settings) {
 const styles = StyleSheet.create({
   header: {
     fontSize: 17,
+    fontWeight: 'bold',
   },
   headerView: {
     alignItems: 'center',
   },
   titleView: {
-    padding: 10,
+    padding: 5,
   },
   title: {
     fontSize: 17,
+    color: 'black',
   },
   subTitleView: {
-    padding: 10,
+    padding: 5,
   },
   subTitle: {
     fontSize: 15,
@@ -110,13 +113,12 @@ const styles = StyleSheet.create({
   touchable: {
     flex: 1,
     flexDirection: 'row',
-  },
-  iconView: { justifyContent: 'center' },
-  textView: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    padding: 10,
+  },
+  iconView: {},
+  textView: {
+    flexGrow: 1,
   },
   spacing: {
     height: 1,
