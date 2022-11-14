@@ -1,14 +1,11 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import { SettingsStackParams } from '../components/navigators/SettingsStack'
+import { Props } from '../components/navigators/SettingsStack'
 import { SettingsList } from '../components/SettingsList'
 import useAudioCues, {
   AudioCuesPreferences,
   defaultPref,
 } from '../hooks/AudioCues'
 
-type Props = NativeStackScreenProps<SettingsStackParams, 'Audio Cues'>
-
-export function AudioCues({ route, navigation }: Props) {
+export function AudioCues({ route, navigation }: Props<'Audio Cues'>) {
   const { speak, pref, setPref } = useAudioCues()
 
   return SettingsList([

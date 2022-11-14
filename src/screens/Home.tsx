@@ -1,14 +1,11 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { ReactNode } from 'react'
-import { Button, StyleSheet, Text, View } from 'react-native'
+import { Button, StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { HomeStackParams } from '../components/navigators/HomeStack'
+import { Props } from '../components/navigators/HomeStack'
 import useActivity from '../hooks/Activity'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
-type Props = NativeStackScreenProps<HomeStackParams, 'Home Screen'>
-
-export default function Home({ route, navigation }: Props) {
+export default function Home({ route, navigation }: Props<'Home Screen'>) {
   const { start, pause, resume, stop, status } = useActivity()
 
   const bigButtonSize = 80

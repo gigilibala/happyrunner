@@ -1,13 +1,10 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { useContext } from 'react'
 import { Button, SafeAreaView, StyleSheet, View } from 'react-native'
 import HeartRate from '../components/HeartRate'
-import { SettingsStackParams } from '../components/navigators/SettingsStack'
+import { Props } from '../components/navigators/SettingsStack'
 import { BluetoothContext } from '../hooks/BluetoothProvider'
 
-type Props = NativeStackScreenProps<SettingsStackParams, 'Heart Rate Monitor'>
-
-export function HeartRateMonitor({ navigation }: Props) {
+export function HeartRateMonitor({ navigation }: Props<'Heart Rate Monitor'>) {
   const { scanForDevices, connectToDevice } = useContext(BluetoothContext)
 
   return (

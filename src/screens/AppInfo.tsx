@@ -1,13 +1,10 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { SafeAreaView, Text } from 'react-native'
-import { AboutStackParams } from '../components/navigators/AboutStack'
+import { Props } from '../components/navigators/AboutStack'
 
-type Props = NativeStackScreenProps<AboutStackParams, 'AppInfo'>
-
-export function AppInfo({ route, navigation }: Props) {
+export function AppInfo({ route, navigation }: Props<'AppInfo'>) {
   return (
     <SafeAreaView>
-      <Text>Hello world! I wrote this app</Text>
+      <Text>Hello world! I wrote this App</Text>
     </SafeAreaView>
   )
 }

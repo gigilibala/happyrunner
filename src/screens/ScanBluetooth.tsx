@@ -1,4 +1,3 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { useContext } from 'react'
 import {
   ActivityIndicator,
@@ -9,12 +8,10 @@ import {
   View,
 } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import { SettingsStackParams } from '../components/navigators/SettingsStack'
+import { Props } from '../components/navigators/SettingsStack'
 import { BluetoothContext } from '../hooks/BluetoothProvider'
 
-type Props = NativeStackScreenProps<SettingsStackParams, 'Scan Bluetooth'>
-
-export function ScanBluetooth({ navigation }: Props) {
+export function ScanBluetooth({ navigation }: Props<'Scan Bluetooth'>) {
   const { allDevices, connectToDevice, connectedDevice } =
     useContext(BluetoothContext)
 

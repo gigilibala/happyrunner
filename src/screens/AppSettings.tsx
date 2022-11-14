@@ -1,13 +1,10 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { useContext, useState } from 'react'
-import { SettingsStackParams } from '../components/navigators/SettingsStack'
+import { Props } from '../components/navigators/SettingsStack'
 import { SettingsList } from '../components/SettingsList'
 import { DatabaseContext } from '../hooks/DatabaseProvider'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
-type Props = NativeStackScreenProps<SettingsStackParams, 'App Settings'>
-
-export function AppSettings({ navigation }: Props) {
+export function AppSettings({ navigation }: Props<'App Settings'>) {
   const { clearDatabase } = useContext(DatabaseContext)
   // TODO(gigilibala): Remove the experimental switch.
   const [isSwitchEnabled, setIsSwitchEnabled] = useState<boolean>(false)
