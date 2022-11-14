@@ -13,8 +13,8 @@ const manager = new BleManager()
 
 interface IBluetoothApi {
   allDevices: Device[]
-  scanForDevices(): void
-  connectToDevice(deviceId?: string): Promise<void>
+  scanForDevices: () => void
+  connectToDevice: (deviceId?: string) => Promise<void>
   connectedDevice: Device | null
   heartRate: number
 }

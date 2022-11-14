@@ -3,8 +3,8 @@ import { PermissionsAndroid, Platform } from 'react-native'
 import Geolocation from 'react-native-geolocation-service'
 
 interface ILocationApi {
-  setStatus(status: LocationServiceStatus): void
-  position: Geolocation.GeoPosition | undefined
+  setStatus: (status: LocationServiceStatus) => void
+  position?: Geolocation.GeoPosition
 }
 
 type LocationServiceStatus = 'running' | 'stopped'

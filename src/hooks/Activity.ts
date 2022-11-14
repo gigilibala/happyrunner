@@ -36,10 +36,10 @@ export type ActivityData = {
 
 export interface IActivity {
   status?: Status
-  start(): void
-  pause(): void
-  resume(): void
-  stop(): void
+  start: () => void
+  pause: () => void
+  resume: () => void
+  stop: () => void
 }
 
 export default function useActivity(): IActivity {

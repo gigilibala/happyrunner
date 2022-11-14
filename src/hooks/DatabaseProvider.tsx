@@ -72,12 +72,12 @@ CREATE TABLE IF NOT EXISTS ${activityDataTableName}(
 enablePromise(true)
 
 interface IDatabaseApi {
-  addActivity(activity: Activity): void
-  modifyActivity(activity: Activity): void
-  addActivityData(data: ActivityData): void
+  addActivity: (activity: Activity) => void
+  modifyActivity: (activity: Activity) => void
+  addActivityData: (data: ActivityData) => void
 
   // Mostly for advanced users.
-  clearDatabase(): void
+  clearDatabase: () => void
 }
 
 function useDatabase(): IDatabaseApi {
