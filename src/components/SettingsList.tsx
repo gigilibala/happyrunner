@@ -20,17 +20,17 @@ type Item = {
 }
 
 type Settings = {
-  title: string
+  title?: string
   data: Item[]
 }[]
 
 export function SettingsList(data: Settings) {
-  function renderHeader(title: string) {
-    return (
+  function renderHeader(title?: string) {
+    return title ? (
       <View style={styles.headerView}>
         <Text style={styles.header}>{title.toUpperCase()}</Text>
       </View>
-    )
+    ) : null
   }
 
   function renderItem(props: Item) {
