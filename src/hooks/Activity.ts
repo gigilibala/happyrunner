@@ -71,11 +71,7 @@ export default function useActivity(): IActivity {
   }, [dataCollectionInterval])
 
   useEffect(() => {
-    if (status === undefined) return
-    if (id === undefined) {
-      console.info('Activity ID has not been set')
-      return
-    }
+    if (status === undefined || id === undefined) return
     const time = new Date()
     switch (status) {
       case 'in-progress':
@@ -98,6 +94,7 @@ export default function useActivity(): IActivity {
           status: 'stopped',
           end_time: time.getTime(),
         })
+        setId(undefined)
         setDataCollectionInterval(undefined)
         break
       default:
