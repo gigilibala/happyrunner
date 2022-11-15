@@ -15,13 +15,13 @@ interface IBluetoothApi {
   allDevices: Device[]
   scanForDevices: () => void
   connectToDevice: (deviceId?: string) => Promise<void>
-  connectedDevice: Device | null
+  connectedDevice?: Device
   heartRate: number
 }
 
 function useBluetooth(): IBluetoothApi {
   const [allDevices, setAllDevices] = useState<Device[]>([])
-  const [connectedDevice, setConnectedDevice] = useState<Device | null>(null)
+  const [connectedDevice, setConnectedDevice] = useState<Device>()
   const [heartRate, setHeartRate] = useState<number>(0)
   const { setItem, getItem } = useAsyncStorage(bluetoothDefaultDeviceKey)
 
