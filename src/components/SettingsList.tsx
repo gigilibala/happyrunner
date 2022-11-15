@@ -1,4 +1,5 @@
-import { ReactNode } from 'react'
+import { useTheme, Theme } from '@react-navigation/native'
+import { ReactNode, useMemo } from 'react'
 import {
   SafeAreaView,
   StyleSheet,
@@ -26,6 +27,9 @@ type Settings = {
 }[]
 
 export function SettingsList(data: Settings) {
+  const theme = useTheme()
+  const styles = useMemo(() => makeStyles(theme), [theme])
+
   function renderHeader(title?: string) {
     return title ? (
       <View style={styles.headerView}>
@@ -90,42 +94,45 @@ export function SettingsList(data: Settings) {
   )
 }
 
-const styles = StyleSheet.create({
-  header: {
-    fontSize: 17,
-    fontWeight: 'bold',
-  },
-  headerView: {
-    alignItems: 'center',
-    padding: 10,
-  },
-  titleView: {
-    padding: 5,
-  },
-  title: {
-    fontSize: 17,
-    color: 'black',
-  },
-  subTitleView: {
-    padding: 5,
-  },
-  subTitle: {
-    fontSize: 15,
-  },
-  touchable: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#ecfefe',
-    borderRadius: 20,
-    margin: 5,
-  },
-  iconView: {},
-  textView: {
-    flexGrow: 1,
-  },
-  navIcon: {
-    padding: 5,
-  },
-})
+const makeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    header: {
+      fontSize: 17,
+      fontWeight: 'bold',
+      color: theme.colors.primary,
+    },
+    headerView: {
+      alignItems: 'center',
+      padding: 10,
+    },
+    titleView: {
+      padding: 5,
+    },
+    title: {
+      fontSize: 17,
+      color: theme.colors.text,
+    },
+    subTitleView: {
+      padding: 5,
+    },
+    subTitle: {
+      fontSize: 15,
+      color: theme.colors.text,
+    },
+    touchable: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 10,
+      backgroundColor: theme.colors.card,
+      borderRadius: 20,
+      margin: 5,
+    },
+    iconView: {},
+    textView: {
+      flexGrow: 1,
+    },
+    navIcon: {
+      padding: 5,
+    },
+  })
