@@ -37,12 +37,12 @@ function useBluetooth(): IBluetoothApi {
 
   // TODO(gigilibala): Remove this timeout. It is for testing UI, only.
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setHeartRate(100)
+    const interval = setInterval(() => {
+      setHeartRate(Math.floor(Math.random() * 100 + 50))
     }, 1000)
 
     return () => {
-      clearTimeout(timer)
+      clearInterval(interval)
     }
   }, [])
 
