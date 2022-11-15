@@ -14,7 +14,7 @@ const Drawer = createDrawerNavigator<RootDrawerParams>()
 
 export function AppDrawer() {
   return (
-    <Drawer.Navigator>
+    <Drawer.Navigator initialRouteName="SettingsStack">
       <Drawer.Screen
         name="HomeStack"
         component={HomeStack}
