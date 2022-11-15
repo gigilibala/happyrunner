@@ -23,12 +23,26 @@ export function AppSettings({ navigation }: Props<'App Settings'>) {
           title: 'Heart Rate Monitor',
           subTitle: connectedDevice?.name || undefined,
           onPress: () => navigation.navigate('Heart Rate Monitor'),
+          icon: (
+            <Icon.Button
+              name={'bluetooth-b'}
+              color={'blue'}
+              backgroundColor={'transparent'}
+            />
+          ),
         },
         {
           kind: 'navigation',
           title: 'Audio Cues',
           subTitle: pref?.enabled ? 'on' : 'off',
           onPress: () => navigation.navigate('Audio Cues'),
+          icon: (
+            <Icon.Button
+              name={'headphones-alt'}
+              color={'grey'}
+              backgroundColor={'transparent'}
+            />
+          ),
         },
       ],
     },
@@ -49,17 +63,10 @@ export function AppSettings({ navigation }: Props<'App Settings'>) {
               { cancelable: true },
             )
           },
-        },
-        {
-          kind: 'switch',
-          title: 'title',
-          subTitle: 'subtitle',
-          onPress: () => setIsSwitchEnabled((prevValue) => !prevValue),
-          switchValue: isSwitchEnabled,
           icon: (
             <Icon.Button
-              name="play-circle"
-              color="red"
+              name={'database'}
+              color={'grey'}
               backgroundColor={'transparent'}
             />
           ),

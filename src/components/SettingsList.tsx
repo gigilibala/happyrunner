@@ -61,7 +61,11 @@ export function SettingsList(data: Settings) {
         </View>
         <View>
           {props.kind === 'navigation' ? (
-            <Icon name="chevron-right" color="grey" style={styles.navIcon} />
+            <Icon
+              name={'chevron-right'}
+              color={'grey'}
+              style={styles.navIcon}
+            />
           ) : (
             props.kind === 'switch' && (
               <Switch value={props.switchValue} onValueChange={props.onPress} />
