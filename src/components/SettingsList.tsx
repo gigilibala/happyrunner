@@ -17,6 +17,7 @@ type Item = {
   icon?: ReactNode
   onPress: () => void
   switchValue?: boolean
+  disabled?: boolean
 }
 
 type Settings = {
@@ -54,6 +55,7 @@ export function SettingsList(data: Settings) {
         key={props.title}
         onPress={() => props.onPress()}
         style={styles.touchable}
+        disabled={props.disabled}
       >
         <View style={styles.iconView}>{props.icon}</View>
         <View style={styles.textView}>
