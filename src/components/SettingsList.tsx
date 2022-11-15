@@ -72,10 +72,6 @@ export function SettingsList(data: Settings) {
     )
   }
 
-  function renderSeparator() {
-    return <View style={styles.spacing} />
-  }
-
   return (
     <SafeAreaView>
       <SectionList
@@ -83,7 +79,6 @@ export function SettingsList(data: Settings) {
         keyExtractor={(item, index) => item.title + index}
         renderItem={({ item }) => renderItem(item)}
         renderSectionHeader={({ section: { title } }) => renderHeader(title)}
-        ItemSeparatorComponent={() => renderSeparator()}
       />
     </SafeAreaView>
   )
@@ -96,6 +91,7 @@ const styles = StyleSheet.create({
   },
   headerView: {
     alignItems: 'center',
+    padding: 10,
   },
   titleView: {
     padding: 5,
@@ -115,14 +111,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
+    backgroundColor: '#ecfefe',
+    borderRadius: 20,
+    margin: 5,
   },
   iconView: {},
   textView: {
     flexGrow: 1,
-  },
-  spacing: {
-    height: 1,
-    backgroundColor: 'grey',
   },
   navIcon: {
     padding: 5,

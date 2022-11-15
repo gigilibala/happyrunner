@@ -11,7 +11,7 @@ export function AppSettings({ navigation }: Props<'App Settings'>) {
 
   return SettingsList([
     {
-      title: 'section 1',
+      title: 'General',
       data: [
         {
           kind: 'navigation',
@@ -24,6 +24,11 @@ export function AppSettings({ navigation }: Props<'App Settings'>) {
           title: 'Audio Cues',
           onPress: () => navigation.navigate('Audio Cues'),
         },
+      ],
+    },
+    {
+      title: 'Advanced',
+      data: [
         {
           kind: 'button',
           title: 'Clear Database',
