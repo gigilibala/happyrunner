@@ -5,6 +5,7 @@ import { BluetoothProvider } from './hooks/BluetoothProvider'
 import { DatabaseProvider } from './hooks/DatabaseProvider'
 import { LogBox } from 'react-native'
 import { LocationProvider } from './hooks/LocationProvider'
+import { AudioCuesProvider } from './hooks/AudioCuesProvider'
 LogBox.ignoreLogs(['new NativeEventEmitter'])
 
 export default function App() {
@@ -12,9 +13,11 @@ export default function App() {
     <BluetoothProvider>
       <DatabaseProvider>
         <LocationProvider>
-          <NavigationContainer>
-            <AppDrawer />
-          </NavigationContainer>
+          <AudioCuesProvider>
+            <NavigationContainer>
+              <AppDrawer />
+            </NavigationContainer>
+          </AudioCuesProvider>
         </LocationProvider>
       </DatabaseProvider>
     </BluetoothProvider>

@@ -1,12 +1,14 @@
+import { useContext } from 'react'
 import { Props } from '../components/navigators/SettingsStack'
 import { SettingsList } from '../components/SettingsList'
-import useAudioCues, {
+import {
+  AudioCuesContext,
   AudioCuesPreferences,
   defaultPref,
-} from '../hooks/AudioCues'
+} from '../hooks/AudioCuesProvider'
 
 export function AudioCues({ route, navigation }: Props<'Audio Cues'>) {
-  const { speak, pref, setPref } = useAudioCues()
+  const { speak, pref, setPref } = useContext(AudioCuesContext)
 
   return SettingsList([
     {

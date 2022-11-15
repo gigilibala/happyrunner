@@ -1,5 +1,5 @@
 import { useAsyncStorage } from '@react-native-async-storage/async-storage'
-import { useEffect, useState } from 'react'
+import { createContext, ReactNode, useEffect, useState } from 'react'
 import Tts from 'react-native-tts'
 
 interface IAudioCuesApi {
@@ -16,7 +16,7 @@ export const defaultPref: AudioCuesPreferences = {
   enabled: true,
 }
 
-export default function useAudioCues(): IAudioCuesApi {
+function useAudioCues(): IAudioCuesApi {
   const [pref, setPref] = useState<AudioCuesPreferences>()
   const { setItem, getItem } = useAsyncStorage('@audio_cues_preferences')
 
@@ -50,4 +50,18 @@ export default function useAudioCues(): IAudioCuesApi {
   }
 
   return { speak, pref, setPref }
+}
+
+export const AudioCuesContext = createContext<IAudioCuesApi>(
+  {} as IAudioCuesApi,
+)
+
+export function AudioCuesProvider({ children }: { children: ReactNode }) {
+  const state = useAudioCues()
+
+  return (
+    <AudioCuesContext.Provider value={state}>
+      {children}
+    </AudioCuesContext.Provider>
+  )
 }
