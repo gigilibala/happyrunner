@@ -28,7 +28,7 @@ type Settings = {
 
 export function SettingsList(data: Settings) {
   const theme = useTheme()
-  const styles = useMemo(() => makeStyles(theme), [theme])
+  const styles = useMemo(() => createStyles(theme), [theme])
 
   function renderHeader(title?: string) {
     return title ? (
@@ -94,7 +94,7 @@ export function SettingsList(data: Settings) {
   )
 }
 
-const makeStyles = (theme: Theme) =>
+const createStyles = (theme: Theme) =>
   StyleSheet.create({
     header: {
       fontSize: 17,
