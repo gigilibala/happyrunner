@@ -1,7 +1,12 @@
 import { useAsyncStorage } from '@react-native-async-storage/async-storage'
 import { Buffer } from 'buffer'
 import React, { createContext, ReactNode, useEffect, useState } from 'react'
-import { Permission, PermissionsAndroid, Platform } from 'react-native'
+import {
+  Permission,
+  PermissionsAndroid,
+  PermissionStatus,
+  Platform,
+} from 'react-native'
 import {
   BleError,
   BleManager,
@@ -91,10 +96,10 @@ function useBluetooth(): IBluetoothApi {
         ]
         PermissionsAndroid.requestMultiple(bluetoothPermissions).then(
           (result) => {
-            const permission =
-              result['android.permission.BLUETOOTH_CONNECT'] &&
-              result['android.permission.BLUETOOTH_SCAN'] &&
-              result['android.permission.ACCESS_FINE_LOCATION']
+            const permission = bluetoothPermissions.reduce<PermissionStatus>(
+              (prev, cur) => prev && result[cur],
+              'granted',
+            )
             switch (permission) {
               case 'granted':
                 resolve()
