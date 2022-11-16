@@ -63,11 +63,9 @@ function useLocation(): ILocationApi {
   function requestPermission() {
     return new Promise<void>((resolve, reject) => {
       if (Platform.OS === 'android') {
-        PermissionsAndroid.request('android.permission.ACCESS_FINE_LOCATION', {
-          title: 'title',
-          message: 'message',
-          buttonPositive: 'Ok',
-        }).then((permission) => {
+        PermissionsAndroid.request(
+          'android.permission.ACCESS_FINE_LOCATION',
+        ).then((permission) => {
           switch (permission) {
             case 'granted':
               setServiceEnabled(true)
