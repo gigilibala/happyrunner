@@ -1,4 +1,5 @@
-import { useContext } from 'react'
+import { useFocusEffect } from '@react-navigation/native'
+import { useContext, useEffect } from 'react'
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -12,8 +13,21 @@ import { Props } from '../components/navigators/SettingsStack'
 import { BluetoothContext } from '../hooks/BluetoothProvider'
 
 export function ScanBluetooth({ navigation }: Props<'Scan Bluetooth'>) {
-  const { allDevices, connectToDevice, connectedDevice } =
+  const { allDevices, connectedDevice, setStatus, setDeviceId } =
     useContext(BluetoothContext)
+
+  useEffect(() => {
+    setStatus('scanning')
+  }, [])
+
+  // TODO(gigilibala): Add an effect to go back when a device is connected.
+  // connectToDevice(device.id)
+  //   .then(() => {
+  //     navigation.goBack()
+  //   })
+  //   .catch((reason) => {
+  //     console.log(`Filed to connect: ${reason}`)
+  //   })
 
   // const dummyDevices: Array<{
   //   name: string
@@ -29,13 +43,8 @@ export function ScanBluetooth({ navigation }: Props<'Scan Bluetooth'>) {
             return (
               <TouchableOpacity
                 onPress={() => {
-                  connectToDevice(device.id)
-                    .then(() => {
-                      navigation.goBack()
-                    })
-                    .catch((reason) => {
-                      console.log(`Filed to connect: ${reason}`)
-                    })
+                  setDeviceId(device.id)
+                  setStatus('connecting')
                 }}
                 key={device.name}
               >

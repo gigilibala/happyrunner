@@ -1,108 +1,154 @@
 import { useAsyncStorage } from '@react-native-async-storage/async-storage'
 import { Buffer } from 'buffer'
 import React, { createContext, ReactNode, useEffect, useState } from 'react'
+import { Permission, PermissionsAndroid, Platform } from 'react-native'
 import {
   BleError,
   BleManager,
   Characteristic,
   Device,
 } from 'react-native-ble-plx'
-import { bluetoothDefaultDeviceKey } from '../common/constants'
 
 const manager = new BleManager()
 
+type Status = 'connecting' | 'scanning'
+
 interface IBluetoothApi {
   allDevices: Device[]
-  scanForDevices: () => void
-  connectToDevice: (deviceId?: string) => Promise<void>
   connectedDevice?: Device
   heartRate: number
+  setStatus: (status: Status) => void
+  setDeviceId: (deviceId: string) => void
 }
 
 function useBluetooth(): IBluetoothApi {
   const [allDevices, setAllDevices] = useState<Device[]>([])
+  const [deviceId, setDeviceId] = useState<string>()
   const [connectedDevice, setConnectedDevice] = useState<Device>()
   const [heartRate, setHeartRate] = useState<number>(0)
-  const { setItem, getItem } = useAsyncStorage(bluetoothDefaultDeviceKey)
+  const { setItem, getItem } = useAsyncStorage('@bluetooth_default_device')
+  const [status, setStatus] = useState<Status>()
 
   useEffect(() => {
-    if (!connectedDevice) return
-    startReadingData(connectedDevice)
+    if (connectedDevice === undefined) return
+    startReadingData()
     console.log('device connected.')
-    // return () => {
-    //   console.log('Closing the connection')
-    //   connectedDevice.cancelConnection()
-    // }
+    return () => {
+      console.log('Closing the connection')
+      connectedDevice.cancelConnection()
+      setConnectedDevice(undefined)
+    }
   }, [connectedDevice])
 
-  // TODO(gigilibala): Remove this timeout. It is for testing UI, only.
   useEffect(() => {
-    const interval = setInterval(() => {
-      setHeartRate(Math.floor(Math.random() * 100 + 50))
-    }, 1000)
-
-    return () => {
-      clearInterval(interval)
+    if (deviceId === undefined) {
+      getItem()
+        .then((value) => {
+          if (value !== null) {
+            setDeviceId(value)
+          }
+        })
+        .catch((error) => {
+          console.error('Failed to read the storage.')
+        })
+    } else {
+      setItem(deviceId)
     }
-  }, [])
+  }, [deviceId])
+
+  useEffect(() => {
+    switch (status) {
+      case 'scanning':
+        setConnectedDevice(undefined)
+        scanForDevices()
+        return () => manager.stopDeviceScan()
+      case 'connecting':
+        connectToDevice()
+        break
+      default:
+        break
+    }
+  }, [status])
+
+  // TODO(gigilibala): Remove this timeout. It is for testing UI, only.
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setHeartRate(Math.floor(Math.random() * 100 + 50))
+  //   }, 1000)
+
+  //   return () => {
+  //     clearInterval(interval)
+  //   }
+  // }, [])
+
+  function requestPermission() {
+    return new Promise<void>((resolve, reject) => {
+      if (Platform.OS === 'android') {
+        const bluetoothPermissions: Permission[] = [
+          'android.permission.BLUETOOTH_CONNECT',
+          'android.permission.BLUETOOTH_SCAN',
+          'android.permission.ACCESS_FINE_LOCATION',
+        ]
+        PermissionsAndroid.requestMultiple(bluetoothPermissions).then(
+          (result) => {
+            const permission =
+              result['android.permission.BLUETOOTH_CONNECT'] &&
+              result['android.permission.BLUETOOTH_SCAN'] &&
+              result['android.permission.ACCESS_FINE_LOCATION']
+            switch (permission) {
+              case 'granted':
+                resolve()
+              case 'denied':
+              case 'never_ask_again':
+              default:
+                reject('Access denied')
+            }
+          },
+        )
+      } else {
+        // TODO(gigilibala): Request bluetooth for iOS (if needed).
+      }
+    })
+  }
 
   function scanForDevices() {
     console.log('Scanning for devices!')
-    manager.startDeviceScan(null, null, (error, scannedDevice): void => {
-      if (error) {
-        console.error(error)
-        return
-      }
-      if (!scannedDevice || !scannedDevice.name) return
-
-      setAllDevices((prevState: Device[]): Device[] => {
-        if (prevState.some((device) => device.id === scannedDevice.id)) {
-          return prevState
-        }
-        return [...prevState, scannedDevice]
-      })
-    })
-  }
-
-  async function connectToDevice(deviceId?: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      getItem().then((value) => {
-        if (!deviceId && value) deviceId = value
-
-        if (deviceId) {
-          manager
-            .connectToDevice(deviceId)
-            .then((newDevice) => {
-              return newDevice.discoverAllServicesAndCharacteristics()
-            })
-            .then((finalDevice) => {
-              setConnectedDevice(finalDevice)
-              manager.stopDeviceScan()
-              resolve()
-              // @ts-ignore
-              return setItem(deviceId)
-            })
-            .catch((reason) => {
-              reject(reason)
-            })
-        } else {
-          reject('No valid devices are present.')
+    requestPermission().then(() => {
+      manager.startDeviceScan(null, null, (error, scannedDevice): void => {
+        if (error) {
+          console.error(error)
           return
         }
+        if (!scannedDevice || !scannedDevice.name) return
+
+        setAllDevices((prevState: Device[]): Device[] => {
+          if (prevState.some((device) => device.id === scannedDevice.id)) {
+            return prevState
+          }
+          return [...prevState, scannedDevice]
+        })
       })
     })
   }
 
-  function startReadingData(device: Device) {
-    if (!device) {
-      console.error('No device is connected to read the data.')
-      return
-    }
+  function connectToDevice() {
+    if (deviceId === undefined) return
+    console.log('connecting to device ', deviceId)
+    manager
+      .connectToDevice(deviceId)
+      .then((device) => {
+        return device.discoverAllServicesAndCharacteristics()
+      })
+      .then((device) => {
+        setConnectedDevice(device)
+      })
+  }
 
+  function startReadingData() {
     const HEART_RATE_GATT_SERVICE = '0000180d-0000-1000-8000-00805f9b34fb'
     const HEART_RATE_GATT_CHARACTERISTIC =
       '00002a37-0000-1000-8000-00805f9b34fb'
-    device.monitorCharacteristicForService(
+    connectedDevice?.monitorCharacteristicForService(
       HEART_RATE_GATT_SERVICE,
       HEART_RATE_GATT_CHARACTERISTIC,
       onHeartRateUpdate,
@@ -154,10 +200,10 @@ function useBluetooth(): IBluetoothApi {
 
   return {
     allDevices,
-    scanForDevices,
-    connectToDevice,
     connectedDevice,
     heartRate,
+    setStatus,
+    setDeviceId,
   }
 }
 

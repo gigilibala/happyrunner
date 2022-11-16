@@ -6,5 +6,3 @@ export const commonStyles = StyleSheet.create({
     backgroundColor: 'grey',
   },
 })
-
-export const bluetoothDefaultDeviceKey = '@bluetooth_default_device'
