@@ -7,8 +7,8 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ScrollView,
 } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
 import { Props } from '../components/navigators/SettingsStack'
 import { BluetoothContext } from '../hooks/BluetoothProvider'
 
