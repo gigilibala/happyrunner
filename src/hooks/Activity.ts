@@ -36,10 +36,8 @@ export type ActivityData = {
 
 export interface IActivity {
   status?: Status
+  setStatus: (status: Status) => void
   start: () => void
-  pause: () => void
-  resume: () => void
-  stop: () => void
 }
 
 export default function useActivity(): IActivity {
@@ -61,6 +59,7 @@ export default function useActivity(): IActivity {
       start_time: new Date().getTime(),
       type: activityType,
     })
+    setStatus('in-progress')
   }, [id])
 
   useEffect(() => {
@@ -118,19 +117,6 @@ export default function useActivity(): IActivity {
   function start(): void {
     // TODO(gigilibala): Maybe change ID to something else other than current time.
     setId(new Date().getTime())
-    setStatus('in-progress')
-  }
-
-  function pause(): void {
-    setStatus('paused')
-  }
-
-  function stop(): void {
-    setStatus('stopped')
-  }
-
-  function resume(): void {
-    setStatus('in-progress')
   }
 
   function startCollectingData(): void {
@@ -148,5 +134,5 @@ export default function useActivity(): IActivity {
     setLocationServiceStatus('stopped')
   }
 
-  return { start, pause, stop, resume, status }
+  return { status, setStatus, start }
 }

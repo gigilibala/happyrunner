@@ -6,7 +6,7 @@ import useActivity from '../hooks/Activity'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 
 export default function Home({ route, navigation }: Props<'Home Screen'>) {
-  const { start, pause, resume, stop, status } = useActivity()
+  const { status, setStatus, start } = useActivity()
 
   const bigButtonSize = 80
   const smallButtonSize = 60
@@ -25,36 +25,36 @@ export default function Home({ route, navigation }: Props<'Home Screen'>) {
 
   const smallStartButton = (
     <Icon
-      name="play-circle"
+      name={'play-circle'}
       size={smallButtonSize}
-      color="red"
+      color={'red'}
       style={styles.button}
       onPress={() => {
-        resume()
+        setStatus('in-progress')
       }}
     />
   )
 
   const pauseButton = (
     <Icon
-      name="pause-circle"
+      name={'pause-circle'}
       size={smallButtonSize}
-      color="orange"
+      color={'orange'}
       style={styles.button}
       onPress={() => {
-        pause()
+        setStatus('paused')
       }}
     />
   )
 
   const stopButton = (
     <Icon
-      name="stop-circle"
+      name={'stop-circle'}
       size={smallButtonSize}
-      color="black"
+      color={'brown'}
       style={styles.button}
       onPress={() => {
-        stop()
+        setStatus('stopped')
       }}
     />
   )
