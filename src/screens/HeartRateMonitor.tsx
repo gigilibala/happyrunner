@@ -9,7 +9,7 @@ export function HeartRateMonitor({ navigation }: Props<'Heart Rate Monitor'>) {
   const theme = useTheme()
   const styles = useMemo(() => createStyles(theme), [theme])
 
-  const { setStatus } = useContext(BluetoothContext)
+  const { setStatus, connectedDevice } = useContext(BluetoothContext)
 
   return (
     <SafeAreaView style={styles.container}>
@@ -24,7 +24,14 @@ export function HeartRateMonitor({ navigation }: Props<'Heart Rate Monitor'>) {
           />
         </View>
         <View style={styles.button}>
-          <Button title="Connect" onPress={() => setStatus('connecting')} />
+          <Button
+            title={connectedDevice ? 'Disconnect' : 'Connect'}
+            onPress={() =>
+              connectedDevice
+                ? setStatus('disconnecting')
+                : setStatus('connecting')
+            }
+          />
         </View>
       </View>
     </SafeAreaView>

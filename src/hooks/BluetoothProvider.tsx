@@ -16,7 +16,7 @@ import {
 
 const manager = new BleManager()
 
-type Status = 'connecting' | 'scanning'
+type Status = 'connecting' | 'disconnecting' | 'scanning'
 
 interface IBluetoothApi {
   allDevices: Device[]
@@ -69,6 +69,9 @@ function useBluetooth(): IBluetoothApi {
         return () => manager.stopDeviceScan()
       case 'connecting':
         connectToDevice()
+        break
+      case 'disconnecting':
+        setConnectedDevice(undefined)
         break
       default:
         break
@@ -165,7 +168,7 @@ function useBluetooth(): IBluetoothApi {
     characteristic: Characteristic | null,
   ) {
     if (!characteristic?.value) {
-      console.log('No value read.')
+      console.log('No value read!')
       return
     }
     const data = Buffer.from(characteristic.value, 'base64').toString('binary')
