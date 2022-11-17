@@ -24,7 +24,7 @@ export function RootNavigator() {
           tabBarLabel: HomeTitle,
           headerTitle: HomeTitle,
           tabBarIcon: ({ color, size }) => (
-            <Icon name={'home'} color={color} size={size} />
+            <Icon name={'running'} color={color} size={size} />
           ),
         }}
       />
