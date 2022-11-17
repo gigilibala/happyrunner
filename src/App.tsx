@@ -4,12 +4,12 @@ import {
   NavigationContainer,
 } from '@react-navigation/native'
 import React from 'react'
-import { AppDrawer } from './screens/navigators/AppDrawer'
 import { BluetoothProvider } from './hooks/BluetoothProvider'
 import { DatabaseProvider } from './hooks/DatabaseProvider'
 import { LogBox, useColorScheme } from 'react-native'
 import { LocationProvider } from './hooks/LocationProvider'
 import { AudioCuesProvider } from './hooks/AudioCuesProvider'
+import { RootNavigator } from './screens/navigators/RootNavigator'
 LogBox.ignoreLogs(['new NativeEventEmitter'])
 
 export default function App() {
@@ -22,7 +22,7 @@ export default function App() {
             <NavigationContainer
               theme={scheme === 'dark' ? DarkTheme : DefaultTheme}
             >
-              <AppDrawer />
+              <RootNavigator />
             </NavigationContainer>
           </AudioCuesProvider>
         </LocationProvider>
