@@ -22,6 +22,7 @@ export function RootNavigator() {
         component={HomeStack}
         options={{
           tabBarLabel: HomeTitle,
+          headerTitle: HomeTitle,
           tabBarIcon: ({ color, size }) => (
             <Icon name={'home'} color={color} size={size} />
           ),
@@ -32,6 +33,7 @@ export function RootNavigator() {
         component={SettingsStack}
         options={{
           tabBarLabel: SettingsTitle,
+          headerTitle: SettingsTitle,
           tabBarIcon: ({ color, size }) => (
             <IonIcon name={'settings'} color={color} size={size} />
           ),
@@ -42,6 +44,7 @@ export function RootNavigator() {
         component={AboutStack}
         options={{
           tabBarLabel: AboutTitle,
+          headerTitle: AboutTitle,
           tabBarIcon: ({ color, size }) => (
             <Icon name={'info-circle'} color={color} size={size} />
           ),
