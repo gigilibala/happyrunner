@@ -1,6 +1,6 @@
 import { useAsyncStorage } from '@react-native-async-storage/async-storage'
 import { Buffer } from 'buffer'
-import React, { createContext, ReactNode, useEffect, useState } from 'react'
+import { createContext, ReactNode, useEffect, useState } from 'react'
 import {
   Permission,
   PermissionsAndroid,

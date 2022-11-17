@@ -3,7 +3,6 @@ import {
   DefaultTheme,
   NavigationContainer,
 } from '@react-navigation/native'
-import React from 'react'
 import { BluetoothProvider } from './hooks/BluetoothProvider'
 import { DatabaseProvider } from './hooks/DatabaseProvider'
 import { LogBox, useColorScheme } from 'react-native'

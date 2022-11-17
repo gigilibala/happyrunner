@@ -1,5 +1,5 @@
 import { Theme, useTheme } from '@react-navigation/native'
-import React, { useContext, useMemo } from 'react'
+import { useContext, useMemo } from 'react'
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import { BluetoothContext } from '../hooks/BluetoothProvider'
 

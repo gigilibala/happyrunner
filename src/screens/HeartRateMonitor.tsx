@@ -1,5 +1,5 @@
 import { Theme, useTheme } from '@react-navigation/native'
-import { useContext, useMemo } from 'react'
+import { useContext, useEffect, useMemo } from 'react'
 import { Button, SafeAreaView, StyleSheet, View } from 'react-native'
 import HeartRate from '../components/HeartRate'
 import { Props } from './navigators/SettingsStack'
