@@ -12,23 +12,22 @@ export default function Home({ route, navigation }: Props<'Home Screen'>) {
   const smallButtonSize = 60
 
   const bigStartButton = (
-    <Icon.Button
+    <Icon
       name="play-circle"
       size={bigButtonSize}
       color="red"
-      backgroundColor={'transparent'}
       style={styles.button}
       onPress={() => {
         start()
       }}
     />
   )
+
   const smallStartButton = (
-    <Icon.Button
+    <Icon
       name="play-circle"
       size={smallButtonSize}
       color="red"
-      backgroundColor={'transparent'}
       style={styles.button}
       onPress={() => {
         resume()
@@ -37,11 +36,10 @@ export default function Home({ route, navigation }: Props<'Home Screen'>) {
   )
 
   const pauseButton = (
-    <Icon.Button
+    <Icon
       name="pause-circle"
       size={smallButtonSize}
       color="orange"
-      backgroundColor={'transparent'}
       style={styles.button}
       onPress={() => {
         pause()
@@ -50,11 +48,10 @@ export default function Home({ route, navigation }: Props<'Home Screen'>) {
   )
 
   const stopButton = (
-    <Icon.Button
+    <Icon
       name="stop-circle"
       size={smallButtonSize}
       color="black"
-      backgroundColor={'transparent'}
       style={styles.button}
       onPress={() => {
         stop()
@@ -89,15 +86,7 @@ export default function Home({ route, navigation }: Props<'Home Screen'>) {
       <View style={{ flex: 3 }}>
         <Button title="Placeholder" onPress={() => {}} />
       </View>
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-        }}
-      >
-        {renderButtons()}
-      </View>
+      <View style={styles.buttonsView}>{renderButtons()}</View>
     </SafeAreaView>
   )
 }
@@ -106,6 +95,11 @@ const styles = StyleSheet.create({
   rowButton: {
     flexDirection: 'row',
     alignContent: 'space-between',
+  },
+  buttonsView: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   button: {
     padding: 30,
