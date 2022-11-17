@@ -44,6 +44,18 @@ export function AppSettings({ navigation }: Props<'App Settings'>) {
             />
           ),
         },
+        {
+          kind: 'navigation',
+          title: 'About',
+          onPress: () => navigation.navigate('About'),
+          icon: (
+            <Icon.Button
+              name={'info-circle'}
+              color={'grey'}
+              backgroundColor={'transparent'}
+            />
+          ),
+        },
       ],
     },
     {

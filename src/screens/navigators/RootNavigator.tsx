@@ -2,14 +2,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import IonIcon from 'react-native-vector-icons/Ionicons'
-import { AboutStack, AboutTitle } from './AboutStack'
+import { HistoryStack, HistoryTitle } from './HistoryStack'
 import { HomeStack, HomeTitle } from './HomeStack'
 import { SettingsStack, SettingsTitle } from './SettingsStack'
 
 export type RootParams = {
-  AboutStack: undefined
-  SettingsStack: undefined
   HomeStack: undefined
+  HistoryStack: undefined
+  SettingsStack: undefined
 }
 
 const Root = createBottomTabNavigator<RootParams>()
@@ -29,6 +29,17 @@ export function RootNavigator() {
         }}
       />
       <Root.Screen
+        name="HistoryStack"
+        component={HistoryStack}
+        options={{
+          tabBarLabel: HistoryTitle,
+          headerTitle: HistoryTitle,
+          tabBarIcon: ({ color, size }) => (
+            <Icon name={'history'} color={color} size={size} />
+          ),
+        }}
+      />
+      <Root.Screen
         name="SettingsStack"
         component={SettingsStack}
         options={{
@@ -36,17 +47,6 @@ export function RootNavigator() {
           headerTitle: SettingsTitle,
           tabBarIcon: ({ color, size }) => (
             <IonIcon name={'settings'} color={color} size={size} />
-          ),
-        }}
-      />
-      <Root.Screen
-        name="AboutStack"
-        component={AboutStack}
-        options={{
-          tabBarLabel: AboutTitle,
-          headerTitle: AboutTitle,
-          tabBarIcon: ({ color, size }) => (
-            <Icon name={'info-circle'} color={color} size={size} />
           ),
         }}
       />
