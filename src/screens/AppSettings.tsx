@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react'
-import { Props } from '../components/navigators/SettingsStack'
+import { Props } from './navigators/SettingsStack'
 import { SettingsList } from '../components/SettingsList'
 import { DatabaseContext } from '../hooks/DatabaseProvider'
 import Icon from 'react-native-vector-icons/FontAwesome5'

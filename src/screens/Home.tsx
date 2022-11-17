@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 import { Button, StyleSheet, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Props } from '../components/navigators/HomeStack'
+import { Props } from './navigators/HomeStack'
 import useActivity from '../hooks/Activity'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 

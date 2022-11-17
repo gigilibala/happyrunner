@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { Props } from '../components/navigators/SettingsStack'
+import { Props } from './navigators/SettingsStack'
 import { SettingsList } from '../components/SettingsList'
 import {
   AudioCuesContext,

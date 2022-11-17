@@ -2,10 +2,10 @@ import {
   createNativeStackNavigator,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack'
-import { AudioCues } from '../../screens/AudioCues'
-import { HeartRateMonitor } from '../../screens/HeartRateMonitor'
-import { ScanBluetooth } from '../../screens/ScanBluetooth'
-import { AppSettings } from '../../screens/AppSettings'
+import { AudioCues } from '../AudioCues'
+import { HeartRateMonitor } from '../HeartRateMonitor'
+import { ScanBluetooth } from '../ScanBluetooth'
+import { AppSettings } from '../AppSettings'
 
 type SettingsStackParams = {
   'App Settings': undefined

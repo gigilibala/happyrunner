@@ -9,7 +9,7 @@ import {
   View,
   ScrollView,
 } from 'react-native'
-import { Props } from '../components/navigators/SettingsStack'
+import { Props } from './navigators/SettingsStack'
 import { BluetoothContext } from '../hooks/BluetoothProvider'
 
 export function ScanBluetooth({ navigation }: Props<'Scan Bluetooth'>) {

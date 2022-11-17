@@ -2,7 +2,7 @@ import {
   createNativeStackNavigator,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack'
-import Home from '../../screens/Home'
+import Home from '../Home'
 
 type HomeStackParams = {
   'Home Screen': undefined

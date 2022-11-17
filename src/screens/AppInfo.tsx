@@ -1,7 +1,7 @@
 import { Theme, useTheme } from '@react-navigation/native'
 import { useMemo } from 'react'
 import { SafeAreaView, StyleSheet, Text } from 'react-native'
-import { Props } from '../components/navigators/AboutStack'
+import { Props } from './navigators/AboutStack'
 
 export function AppInfo({ route, navigation }: Props<'AppInfo'>) {
   const theme = useTheme()

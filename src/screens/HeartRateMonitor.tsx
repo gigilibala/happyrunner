@@ -2,7 +2,7 @@ import { Theme, useTheme } from '@react-navigation/native'
 import { useContext, useMemo } from 'react'
 import { Button, SafeAreaView, StyleSheet, View } from 'react-native'
 import HeartRate from '../components/HeartRate'
-import { Props } from '../components/navigators/SettingsStack'
+import { Props } from './navigators/SettingsStack'
 import { BluetoothContext } from '../hooks/BluetoothProvider'
 
 export function HeartRateMonitor({ navigation }: Props<'Heart Rate Monitor'>) {

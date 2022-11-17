@@ -2,7 +2,7 @@ import {
   createNativeStackNavigator,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack'
-import { AppInfo } from '../../screens/AppInfo'
+import { AppInfo } from '../AppInfo'
 
 export type AboutStackParams = {
   AppInfo: undefined
