@@ -9,7 +9,7 @@ interface ILocationApi {
 
 type LocationServiceStatus = 'running' | 'stopped'
 
-function useLocation(): ILocationApi {
+export function useLocation(): ILocationApi {
   const [position, setPosition] = useState<Geolocation.GeoPosition>()
   const [status, setStatus] = useState<LocationServiceStatus>('stopped')
   const [watchId, setWatchId] = useState<number>()
@@ -101,16 +101,4 @@ function useLocation(): ILocationApi {
   }
 
   return { setStatus, position }
-}
-
-export const LocationContext = createContext<ILocationApi>({} as ILocationApi)
-
-export function LocationProvider({ children }: { children: ReactNode }) {
-  const state = useLocation()
-
-  return (
-    <LocationContext.Provider value={state}>
-      {children}
-    </LocationContext.Provider>
-  )
 }
