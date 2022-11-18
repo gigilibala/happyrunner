@@ -10,8 +10,6 @@ import { Alert } from 'react-native'
 export function AppSettings({ navigation }: Props<'App Settings'>) {
   const { clearDatabase } = useContext(DatabaseContext)
   const { pref } = useContext(AudioCuesContext)
-  // TODO(gigilibala): Remove the experimental switch.
-  const [isSwitchEnabled, setIsSwitchEnabled] = useState<boolean>(false)
 
   return SettingsList([
     {
