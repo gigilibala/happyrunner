@@ -10,7 +10,6 @@ import { Alert } from 'react-native'
 export function AppSettings({ navigation }: Props<'App Settings'>) {
   const { clearDatabase } = useContext(DatabaseContext)
   const { pref } = useContext(AudioCuesContext)
-  const { connectedDevice } = useContext(BluetoothContext)
   // TODO(gigilibala): Remove the experimental switch.
   const [isSwitchEnabled, setIsSwitchEnabled] = useState<boolean>(false)
 
@@ -21,7 +20,6 @@ export function AppSettings({ navigation }: Props<'App Settings'>) {
         {
           kind: 'navigation',
           title: 'Heart Rate Monitor',
-          subTitle: connectedDevice?.name || undefined,
           onPress: () => navigation.navigate('Heart Rate Monitor'),
           icon: (
             <Icon.Button
