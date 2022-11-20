@@ -1,5 +1,5 @@
 import { Theme, useTheme } from '@react-navigation/native'
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo } from 'react'
 import {
   Button,
   Modal,
@@ -35,6 +35,7 @@ export function HeartRateMonitor({
   const {
     setDoWatchStateChange,
     bluetoothEnabled,
+    isScanning,
     setIsScanning,
     devices,
     device,
@@ -43,7 +44,6 @@ export function HeartRateMonitor({
     connectionStatus,
     heartRate,
   } = useContext(HeartRateMonitorContext)
-  const [scanVisible, setScanVisible] = useState<boolean>(false)
 
   useEffect(() => {
     setDoWatchStateChange(true)
@@ -58,7 +58,7 @@ export function HeartRateMonitor({
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity
-          onPress={() => setScanVisible(true)}
+          onPress={() => setIsScanning(true)}
           disabled={!bluetoothEnabled}
         >
           <Icon
@@ -70,10 +70,6 @@ export function HeartRateMonitor({
       ),
     })
   }, [bluetoothEnabled])
-
-  useEffect(() => {
-    setIsScanning(scanVisible)
-  }, [scanVisible])
 
   // TODO(gigilibala): Remove
   // const devices = [
@@ -115,10 +111,10 @@ export function HeartRateMonitor({
 
       <Modal
         animationType={'fade'}
-        visible={scanVisible}
+        visible={isScanning}
         transparent={true}
         statusBarTranslucent={true}
-        onRequestClose={() => setScanVisible(false)}
+        onRequestClose={() => setIsScanning(false)}
       >
         <View style={styles.centeredView}>
           <View style={[styles.modalView]}>
@@ -144,7 +140,7 @@ export function HeartRateMonitor({
                 <TouchableOpacity
                   key={device.id}
                   onPress={() => {
-                    setScanVisible(false)
+                    setIsScanning(false)
                     setDevice({ id: device.id, name: device.name })
                     setDoConnect(true)
                   }}
@@ -173,7 +169,7 @@ export function HeartRateMonitor({
             <Button
               title={'Cancel'}
               onPress={() => {
-                setScanVisible(false)
+                setIsScanning(false)
               }}
             ></Button>
           </View>

@@ -31,6 +31,7 @@ type Device = {
 interface IHeartRateMonitorApi {
   setDoWatchStateChange: (watch: boolean) => void
   bluetoothEnabled: boolean
+  isScanning: boolean
   setIsScanning: (scan: boolean) => void
   devices: Peripheral[]
   device?: Device
@@ -221,7 +222,7 @@ function useHeartRateMonitor() {
 
   function stopScan() {
     setScanningSubscription(undefined)
-    BleManager.stopScan()
+    BleManager?.stopScan()
       .then(() => {
         console.log('Stopped scanning for BLE devices.')
         setDevices([])
@@ -324,6 +325,7 @@ function useHeartRateMonitor() {
   return {
     setDoWatchStateChange,
     bluetoothEnabled,
+    isScanning,
     setIsScanning,
     devices,
     device,
