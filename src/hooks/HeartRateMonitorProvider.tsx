@@ -193,7 +193,7 @@ function useHeartRateMonitor() {
       .then(() => {
         console.log('Connected to device: ', id)
         setConnectionStatus('connected')
-        return BleManager.retrieveServices(id)
+        return BleManager.retrieveServices(id!)
       })
       .then((info) => {
         // console.log(JSON.stringify(info, undefined, 2))
