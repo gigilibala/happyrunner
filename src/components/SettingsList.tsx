@@ -125,8 +125,8 @@ const createStyles = (theme: Theme) =>
       alignItems: 'center',
       padding: 10,
       backgroundColor: theme.colors.card,
-      borderRadius: 20,
-      margin: 5,
+      borderRadius: 5,
+      margin: 2,
     },
     iconView: {},
     textView: {
