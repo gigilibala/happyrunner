@@ -1,11 +1,10 @@
 import { useContext } from 'react'
-import { Props } from './navigators/SettingsStack'
 import { SettingsList } from '../components/SettingsList'
 import {
   AudioCuesContext,
   AudioCuesPreferences,
-  defaultPref,
 } from '../hooks/AudioCuesProvider'
+import { Props } from './navigators/SettingsStack'
 
 export function AudioCues({ route, navigation }: Props<'Audio Cues'>) {
   const { speak, pref, setPref } = useContext(AudioCuesContext)
@@ -19,7 +18,6 @@ export function AudioCues({ route, navigation }: Props<'Audio Cues'>) {
           switchValue: pref?.enabled,
           onPress: () =>
             setPref((prevValue: AudioCuesPreferences) => {
-              if (prevValue === undefined) return defaultPref
               const newValue = { ...prevValue } as AudioCuesPreferences
               newValue.enabled = !prevValue.enabled
               return newValue

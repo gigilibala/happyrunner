@@ -1,4 +1,3 @@
-import { useAsyncStorage } from '@react-native-async-storage/async-storage'
 import { createContext, ReactNode, useEffect, useState } from 'react'
 import {
   EmitterSubscription,
@@ -13,6 +12,7 @@ import BleManager, {
   Peripheral,
   PeripheralInfo,
 } from 'react-native-ble-manager'
+import usePrefs from '../common/usePrefs'
 
 const HEART_RATE_GATT_SERVICE = '180d'
 const HEART_RATE_GATT_CHARACTERISTIC = '2a37'
@@ -57,8 +57,7 @@ function useHeartRateMonitor() {
   const [doConnect, setDoConnect] = useState<boolean>(false)
   const [connectionStatus, setConnectionStatus] =
     useState<ConnectionStatus>('not-connected')
-  const [device, setDevice] = useState<Device>()
-  const { setItem, getItem } = useAsyncStorage('@bluetooth_default_device')
+  const [device, setDevice] = usePrefs<Device>('@bluetooth_default_device')
   const [valueSubscription, setValueSubscription] =
     useState<EmitterSubscription>()
   const [heartRate, setHeartRate] = useState<number>()
@@ -104,22 +103,6 @@ function useHeartRateMonitor() {
   useEffect(() => {
     if (valueSubscription !== undefined) return () => valueSubscription.remove()
   }, [valueSubscription])
-
-  useEffect(() => {
-    if (device === undefined) {
-      getItem()
-        .then((value) => {
-          if (value !== null) {
-            setDevice(JSON.parse(value) as Device)
-          }
-        })
-        .catch((error) => console.error('Failed to read the storage.'))
-    } else {
-      setItem(JSON.stringify(device))
-        .then(() => console.log('Wrote device info into storage!: ', device))
-        .catch((error) => console.log('Failed to write to store.'))
-    }
-  }, [device])
 
   useEffect(() => {
     if (doConnect) {

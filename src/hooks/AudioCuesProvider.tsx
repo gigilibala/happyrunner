@@ -1,6 +1,6 @@
-import { useAsyncStorage } from '@react-native-async-storage/async-storage'
-import { createContext, ReactNode, useEffect, useState } from 'react'
+import { createContext, ReactNode } from 'react'
 import Tts from 'react-native-tts'
+import usePrefs from '../common/usePrefs'
 
 interface IAudioCuesApi {
   pref?: AudioCuesPreferences
@@ -17,33 +17,10 @@ export const defaultPref: AudioCuesPreferences = {
 }
 
 function useAudioCues(): IAudioCuesApi {
-  const [pref, setPref] = useState<AudioCuesPreferences>()
-  const { setItem, getItem } = useAsyncStorage('@audio_cues_preferences')
-
-  useEffect(() => {
-    if (pref === undefined) {
-      getItem()
-        .then((value) => {
-          if (value === null) {
-            setPref(defaultPref)
-          } else {
-            const parsedPref: AudioCuesPreferences = JSON.parse(value)
-            setPref(parsedPref)
-          }
-        })
-        .catch((error) => {
-          console.error('Unable to read audio cues pref from storage.')
-        })
-    } else {
-      setItem(JSON.stringify(pref))
-        .then(() => {
-          console.log('Setting pref', pref)
-        })
-        .catch((error) => {
-          console.error('Failed to write audio cue pref to storage.')
-        })
-    }
-  }, [pref])
+  const [pref, setPref] = usePrefs<AudioCuesPreferences>(
+    '@audio_cues_preferences',
+    defaultPref,
+  )
 
   function speak(text: string) {
     Tts.speak(text)

@@ -2,11 +2,10 @@ import {
   createNativeStackNavigator,
   NativeStackScreenProps,
 } from '@react-navigation/native-stack'
+import { About } from '../About'
+import { AppSettings } from '../AppSettings'
 import { AudioCues } from '../AudioCues'
 import { HeartRateMonitor } from '../HeartRateMonitor'
-import { ScanBluetooth } from '../ScanBluetooth'
-import { AppSettings } from '../AppSettings'
-import { About } from '../About'
 
 type SettingsStackParams = {
   'App Settings': undefined
@@ -33,7 +32,6 @@ export function SettingsStack() {
         options={{ headerShown: false }}
       />
       <Stack.Screen name="Heart Rate Monitor" component={HeartRateMonitor} />
-      <Stack.Screen name="Scan Bluetooth" component={ScanBluetooth} />
       <Stack.Screen name="Audio Cues" component={AudioCues} />
       <Stack.Screen name="About" component={About} />
     </Stack.Navigator>
