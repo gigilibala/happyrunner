@@ -220,6 +220,7 @@ function useHeartRateMonitor() {
   }
 
   function stopScan() {
+    setScanningSubscription(undefined)
     BleManager.stopScan()
       .then(() => {
         console.log('Stopped scanning for BLE devices.')
@@ -249,10 +250,7 @@ function useHeartRateMonitor() {
         setConnectionStatus('connected')
         return BleManager.retrieveServices(id!)
       })
-      .then((info) => {
-        // console.log(JSON.stringify(info, undefined, 2))
-        startReadingData(info)
-      })
+      .then((info) => startReadingData(info))
       .catch((error) => {
         console.log('Failed to connect to device: ', id, error)
         setConnectionStatus('not-connected')
@@ -260,38 +258,33 @@ function useHeartRateMonitor() {
   }
 
   function disconnect() {
+    setValueSubscription(undefined)
     if (device === undefined) return
     setConnectionStatus('disconnecting')
     BleManager.disconnect(device.id)
-      .then(() => {
-        console.log('Disconnected from device: ', device)
-        setConnectionStatus('not-connected')
-      })
-      .catch((error) => {
-        console.log('Failed to disconnect from device, forcing disconnection!')
+      .then(() => console.log('Disconnected from device: ', device))
+      .catch((error) =>
+        console.log('Failed to disconnect from device, forcing disconnection!'),
+      )
+      .finally(() => {
         setConnectionStatus('not-connected')
       })
   }
 
-  function startReadingData(info: PeripheralInfo) {
-    BleManager.startNotification(
+  function startReadingData(info: PeripheralInfo): Promise<void> {
+    return BleManager.startNotification(
       info.id,
       HEART_RATE_GATT_SERVICE,
       HEART_RATE_GATT_CHARACTERISTIC,
-    )
-      .then(() => {
-        console.log('Notification started.')
-        setValueSubscription(
-          bleManagerEmitter?.addListener(
-            'BleManagerDidUpdateValueForCharacteristic',
-            (event: any) => onHeartRateUpdate(event),
-          ),
-        )
-      })
-      .catch((error) => {
-        setConnectionStatus('not-connected')
-        console.log('Failed to start the notification: ', error)
-      })
+    ).then(() => {
+      console.log('Notification started.')
+      setValueSubscription(
+        bleManagerEmitter?.addListener(
+          'BleManagerDidUpdateValueForCharacteristic',
+          (event: any) => onHeartRateUpdate(event),
+        ),
+      )
+    })
   }
 
   function onHeartRateUpdate({ value: bytes }: any) {
