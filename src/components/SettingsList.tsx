@@ -1,13 +1,13 @@
-import { useTheme, Theme } from '@react-navigation/native'
+import { Theme, useTheme } from '@react-navigation/native'
 import { ReactNode, useMemo } from 'react'
 import {
   SafeAreaView,
+  SectionList,
   StyleSheet,
+  Switch,
   Text,
   TouchableOpacity,
   View,
-  Switch,
-  SectionList,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 

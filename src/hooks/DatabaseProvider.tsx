@@ -1,11 +1,10 @@
 import { createContext, ReactNode, useEffect, useState } from 'react'
 import {
+  DatabaseParams,
+  deleteDatabase,
   enablePromise,
   openDatabase,
   SQLiteDatabase,
-  deleteDatabase,
-  ResultSet,
-  DatabaseParams,
 } from 'react-native-sqlite-storage'
 import { Activity, ActivityData } from './Activity'
 
