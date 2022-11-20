@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
-import { Button, StyleSheet, View } from 'react-native'
+import { Button, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Props } from './navigators/HomeStack'
-import useActivity from '../hooks/Activity'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import useActivity from '../hooks/Activity'
+import { Props } from './navigators/HomeStack'
 
 export default function Home({ route, navigation }: Props<'Home Screen'>) {
   const { status, setStatus, start } = useActivity()
@@ -12,51 +12,63 @@ export default function Home({ route, navigation }: Props<'Home Screen'>) {
   const smallButtonSize = 60
 
   const bigStartButton = (
-    <Icon
-      name="play-circle"
-      size={bigButtonSize}
-      color="red"
-      style={styles.button}
+    <TouchableOpacity
       onPress={() => {
         start()
       }}
-    />
+    >
+      <Icon
+        name="play-circle"
+        size={bigButtonSize}
+        color="red"
+        style={styles.button}
+      />
+    </TouchableOpacity>
   )
 
   const smallStartButton = (
-    <Icon
-      name={'play-circle'}
-      size={smallButtonSize}
-      color={'red'}
-      style={styles.button}
+    <TouchableOpacity
       onPress={() => {
         setStatus('in-progress')
       }}
-    />
+    >
+      <Icon
+        name={'play-circle'}
+        size={smallButtonSize}
+        color={'red'}
+        style={styles.button}
+      />
+    </TouchableOpacity>
   )
 
   const pauseButton = (
-    <Icon
-      name={'pause-circle'}
-      size={smallButtonSize}
-      color={'orange'}
-      style={styles.button}
+    <TouchableOpacity
       onPress={() => {
         setStatus('paused')
       }}
-    />
+    >
+      <Icon
+        name={'pause-circle'}
+        size={smallButtonSize}
+        color={'orange'}
+        style={styles.button}
+      />
+    </TouchableOpacity>
   )
 
   const stopButton = (
-    <Icon
-      name={'stop-circle'}
-      size={smallButtonSize}
-      color={'brown'}
-      style={styles.button}
+    <TouchableOpacity
       onPress={() => {
         setStatus('stopped')
       }}
-    />
+    >
+      <Icon
+        name={'stop-circle'}
+        size={smallButtonSize}
+        color={'brown'}
+        style={styles.button}
+      />
+    </TouchableOpacity>
   )
 
   function renderButtons(): ReactNode {
@@ -102,6 +114,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    padding: 30,
+    // padding: 30,
   },
 })
