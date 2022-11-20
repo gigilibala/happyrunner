@@ -1,20 +1,20 @@
-import { useFocusEffect } from '@react-navigation/native'
 import { useContext, useEffect } from 'react'
 import {
   ActivityIndicator,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  ScrollView,
 } from 'react-native'
+import { HeartRateMonitorContext } from '../hooks/HeartRateMonitorProvider'
 import { Props } from './navigators/SettingsStack'
-import { BluetoothContext } from '../hooks/BluetoothProvider'
 
 export function ScanBluetooth({ navigation }: Props<'Scan Bluetooth'>) {
-  const { allDevices, connectedDevice, setStatus, setDeviceId } =
-    useContext(BluetoothContext)
+  const { allDevices, connectedDevice, setStatus, setDeviceId } = useContext(
+    HeartRateMonitorContext,
+  )
 
   useEffect(() => {
     setStatus('scanning')

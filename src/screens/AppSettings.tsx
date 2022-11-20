@@ -1,11 +1,10 @@
-import { useContext, useState } from 'react'
-import { Props } from './navigators/SettingsStack'
-import { SettingsList } from '../components/SettingsList'
-import { DatabaseContext } from '../hooks/DatabaseProvider'
-import Icon from 'react-native-vector-icons/FontAwesome5'
-import { AudioCuesContext } from '../hooks/AudioCuesProvider'
-import { BluetoothContext } from '../hooks/BluetoothProvider'
+import { useContext } from 'react'
 import { Alert } from 'react-native'
+import Icon from 'react-native-vector-icons/FontAwesome5'
+import { SettingsList } from '../components/SettingsList'
+import { AudioCuesContext } from '../hooks/AudioCuesProvider'
+import { DatabaseContext } from '../hooks/DatabaseProvider'
+import { Props } from './navigators/SettingsStack'
 
 export function AppSettings({ navigation }: Props<'App Settings'>) {
   const { clearDatabase } = useContext(DatabaseContext)

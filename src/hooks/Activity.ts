@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { DatabaseContext } from '../hooks/DatabaseProvider'
-import { BluetoothContext } from './BluetoothProvider'
+import { HeartRateMonitorContext } from './HeartRateMonitorProvider'
 import { useLocation } from './Location'
 
 type ActivityType = 'Running'
@@ -46,7 +46,7 @@ export default function useActivity(): IActivity {
   const [activityType, setActivityType] = useState<ActivityType>('Running')
   const { addActivity, modifyActivity, addActivityData } =
     useContext(DatabaseContext)
-  const { heartRate } = useContext(BluetoothContext)
+  const { heartRate } = useContext(HeartRateMonitorContext)
   const { position, setStatus: setLocationServiceStatus } = useLocation()
   const [dataCollectionInterval, setDataCollectionInterval] = useState<number>()
   const [timestamp, setTimestamp] = useState<number>()

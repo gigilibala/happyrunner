@@ -1,13 +1,13 @@
 import { Theme, useTheme } from '@react-navigation/native'
 import { useContext, useMemo } from 'react'
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
-import { BluetoothContext } from '../hooks/BluetoothProvider'
+import { HeartRateMonitorContext } from '../hooks/HeartRateMonitorProvider'
 
 export default function HeartRate() {
   const theme = useTheme()
   const styles = useMemo(() => createStyles(theme), [theme])
 
-  const { heartRate } = useContext(BluetoothContext)
+  const { heartRate } = useContext(HeartRateMonitorContext)
 
   return (
     <View style={styles.box}>

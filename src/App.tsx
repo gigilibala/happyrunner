@@ -3,17 +3,17 @@ import {
   DefaultTheme,
   NavigationContainer,
 } from '@react-navigation/native'
-import { BluetoothProvider } from './hooks/BluetoothProvider'
-import { DatabaseProvider } from './hooks/DatabaseProvider'
 import { LogBox, useColorScheme } from 'react-native'
 import { AudioCuesProvider } from './hooks/AudioCuesProvider'
+import { DatabaseProvider } from './hooks/DatabaseProvider'
+import { HeartRateMonitorProvider } from './hooks/HeartRateMonitorProvider'
 import { RootNavigator } from './screens/navigators/RootNavigator'
 LogBox.ignoreLogs(['new NativeEventEmitter'])
 
 export default function App() {
   const scheme = useColorScheme()
   return (
-    <BluetoothProvider>
+    <HeartRateMonitorProvider>
       <DatabaseProvider>
         <AudioCuesProvider>
           <NavigationContainer
@@ -23,6 +23,6 @@ export default function App() {
           </NavigationContainer>
         </AudioCuesProvider>
       </DatabaseProvider>
-    </BluetoothProvider>
+    </HeartRateMonitorProvider>
   )
 }

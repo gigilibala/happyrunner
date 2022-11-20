@@ -4593,10 +4593,15 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
-react-native-ble-plx@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/react-native-ble-plx/-/react-native-ble-plx-2.0.3.tgz#b0a746f33389dbf7fd7b158513330d487d5d0fbb"
-  integrity sha512-62LRDBPf/03K7sge+qq2ZuF8PWCGB782G+SBrpgNm5fA5Hs3FCY1ExTJZ1G0tB5ZhBPYEXcKRxPLuFegcDFrqA==
+react-native-ble-manager@^8.4.4:
+  version "8.4.4"
+  resolved "https://registry.yarnpkg.com/react-native-ble-manager/-/react-native-ble-manager-8.4.4.tgz#954c7a7fa7187186d0b6dd72cfe15a7f7be6c4c0"
+  integrity sha512-C9cvP8BvpUAUU8cPuwJD/UEwIqcPqG4frUIWVKkEtBmQok3JcXedHC/po5BpHXOXKhSbLqUtqiQmDuh+FL3T/g==
+
+react-native-bluetooth-state-manager@^1.3.4:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/react-native-bluetooth-state-manager/-/react-native-bluetooth-state-manager-1.3.4.tgz#3e3fd2bd7e453f9b3995fda1ea50e1841b0ec148"
+  integrity sha512-aPSoNYoz1lRC5UorRajzAzME8UUanrEIIbvzdnPFrMDrKiJNCdjwcsyEZlNBKPdDAUrSSWyGaCZ4jHVGnd4bwA==
 
 react-native-codegen@^0.70.6:
   version "0.70.6"
