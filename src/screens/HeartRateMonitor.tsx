@@ -2,7 +2,6 @@ import { Theme, useTheme } from '@react-navigation/native'
 import { useContext, useEffect, useMemo, useState } from 'react'
 import {
   Button,
-  EventSubscription,
   Modal,
   SafeAreaView,
   ScrollView,
@@ -11,7 +10,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import BM from 'react-native-bluetooth-state-manager'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { HeartRateMonitorContext } from '../hooks/HeartRateMonitorProvider'
 import { Props } from './navigators/SettingsStack'
@@ -34,9 +32,9 @@ export function HeartRateMonitor({
   const theme = useTheme()
   const styles = useMemo(() => createStyles(theme), [theme])
 
-  const [bluetoothEnabled, setBluetoothEnabled] = useState<boolean>(true)
   const {
-    requestPermission,
+    setDoWatchStateChange,
+    bluetoothEnabled,
     setIsScanning,
     devices,
     device,
@@ -45,58 +43,16 @@ export function HeartRateMonitor({
     connectionStatus,
     heartRate,
   } = useContext(HeartRateMonitorContext)
-  const [bluetoothStateSubscription, setBluetoothStateSubscription] =
-    useState<EventSubscription>()
   const [scanVisible, setScanVisible] = useState<boolean>(false)
 
   useEffect(() => {
-    console.log('Subscribing to bluetooth state changes.')
-    setBluetoothStateSubscription(
-      BM.onStateChange((state) => {
-        console.log(state)
-        switch (state) {
-          case 'PoweredOff':
-            BM.requestToEnable().catch((error) => {
-              console.log('error ', error)
-              setBluetoothEnabled(false)
-            })
-            break
-          case 'PoweredOn':
-            requestPermission()
-              .then(() => {
-                setBluetoothEnabled(true)
-              })
-              .catch((error) => {
-                setBluetoothEnabled(false)
-              })
-            break
-          case 'Unauthorized':
-          case 'Unsupported':
-            setBluetoothEnabled(false)
-            break
-          case 'Resetting':
-          case 'Unknown':
-          default:
-            break
-        }
-      }, true),
-    )
-
+    setDoWatchStateChange(true)
     return () => {
-      console.log('unmounting')
       setIsScanning(false)
       setDoConnect(false)
+      setDoWatchStateChange(false)
     }
   }, [])
-
-  useEffect(() => {
-    if (bluetoothStateSubscription === undefined) return
-
-    return () => {
-      console.log('Unsubscribing to bluetooth state changes.')
-      bluetoothStateSubscription.remove()
-    }
-  }, [bluetoothStateSubscription])
 
   useEffect(() => {
     navigation.setOptions({

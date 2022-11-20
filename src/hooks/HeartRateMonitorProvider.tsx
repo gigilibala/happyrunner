@@ -29,7 +29,8 @@ type Device = {
 }
 
 interface IHeartRateMonitorApi {
-  requestPermission: () => Promise<void>
+  setDoWatchStateChange: (watch: boolean) => void
+  bluetoothEnabled: boolean
   setIsScanning: (scan: boolean) => void
   devices: Peripheral[]
   device?: Device
@@ -41,9 +42,13 @@ interface IHeartRateMonitorApi {
 
 function useHeartRateMonitor() {
   const [initialized, setInitialized] = useState<boolean>(false)
-  const [heartRate, setHeartRate] = useState<number>()
   const [bleManagerEmitter, setBleManagerEmitter] =
     useState<NativeEventEmitter>()
+
+  const [doWatchStateChange, setDoWatchStateChange] = useState<boolean>(false)
+  const [stateSubscription, setStateSubscription] =
+    useState<EmitterSubscription>()
+  const [bluetoothEnabled, setBluetoothEnabled] = useState<boolean>(true)
   const [isScanning, setIsScanning] = useState<boolean>(false)
   const [scanningSubscription, setScanningSubscription] =
     useState<EmitterSubscription>()
@@ -55,6 +60,7 @@ function useHeartRateMonitor() {
   const { setItem, getItem } = useAsyncStorage('@bluetooth_default_device')
   const [valueSubscription, setValueSubscription] =
     useState<EmitterSubscription>()
+  const [heartRate, setHeartRate] = useState<number>()
 
   useEffect(() => {
     BleManager.start().then(() => {
@@ -64,6 +70,23 @@ function useHeartRateMonitor() {
 
     setBleManagerEmitter(new NativeEventEmitter(NativeModules.BleManager))
   }, [])
+
+  useEffect(() => {
+    if (doWatchStateChange) {
+      watchBluetoothStateChange()
+      return () => setStateSubscription(undefined)
+    }
+  }, [doWatchStateChange])
+
+  useEffect(() => {
+    if (stateSubscription !== undefined) {
+      BleManager.checkState()
+      return () => {
+        console.log('Unsubscribing to bluetooth state changes.')
+        stateSubscription.remove()
+      }
+    }
+  }, [stateSubscription])
 
   useEffect(() => {
     if (isScanning) {
@@ -103,6 +126,37 @@ function useHeartRateMonitor() {
       return () => disconnect()
     }
   }, [doConnect])
+
+  function watchBluetoothStateChange() {
+    console.log('Subscribing to bluetooth state changes.')
+    setStateSubscription(
+      bleManagerEmitter?.addListener(
+        'BleManagerDidUpdateState',
+        ({ state }: { state: string }) => {
+          console.log('herere  ', state)
+          switch (state) {
+            case 'off':
+              BleManager.enableBluetooth().catch((error) => {
+                console.log('error ', error)
+                setBluetoothEnabled(false)
+              })
+              break
+            case 'on':
+              requestPermission()
+                .then(() => {
+                  setBluetoothEnabled(true)
+                })
+                .catch((error) => {
+                  setBluetoothEnabled(false)
+                })
+              break
+            default:
+              break
+          }
+        },
+      ),
+    )
+  }
 
   function requestPermission(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
@@ -206,9 +260,7 @@ function useHeartRateMonitor() {
   }
 
   function disconnect() {
-    console.log('here bro2', connectionStatus, device)
     if (device === undefined) return
-    console.log('here again')
     setConnectionStatus('disconnecting')
     BleManager.disconnect(device.id)
       .then(() => {
@@ -277,7 +329,8 @@ function useHeartRateMonitor() {
   }
 
   return {
-    requestPermission,
+    setDoWatchStateChange,
+    bluetoothEnabled,
     setIsScanning,
     devices,
     device,
