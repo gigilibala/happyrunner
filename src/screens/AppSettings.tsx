@@ -6,7 +6,7 @@ import { AudioCuesContext } from '../hooks/AudioCuesProvider'
 import { DatabaseContext } from '../hooks/DatabaseProvider'
 import { Props } from './navigators/RootNavigator'
 
-export function AppSettings({ navigation }: Props<'App Settings'>) {
+export function AppSettings({ navigation }: Props<'Settings'>) {
   const { clearDatabase } = useContext(DatabaseContext)
   const { pref } = useContext(AudioCuesContext)
 

@@ -8,7 +8,7 @@ import { useStyles } from '../common/styles'
 import useActivity from '../hooks/Activity'
 import { Props } from './navigators/RootNavigator'
 
-export default function Home({ route, navigation }: Props<'Home Screen'>) {
+export default function Home({ route, navigation }: Props<'Home'>) {
   const styles = useStyles(createStyles)
   const { status, setStatus, start } = useActivity()
 
