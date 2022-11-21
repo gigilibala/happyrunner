@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react'
-import { PermissionsAndroid, Platform } from 'react-native'
+import {
+  Permission,
+  PermissionsAndroid,
+  PermissionStatus,
+  Platform,
+} from 'react-native'
 import Geolocation from 'react-native-geolocation-service'
 
 interface ILocationApi {
@@ -63,25 +68,33 @@ export function useLocation(): ILocationApi {
   function requestPermission() {
     return new Promise<void>((resolve, reject) => {
       if (Platform.OS === 'android') {
-        PermissionsAndroid.request(
+        const bluetoothPermissions: Permission[] = [
           'android.permission.ACCESS_FINE_LOCATION',
-        ).then((permission) => {
-          switch (permission) {
-            case 'granted':
-              setServiceEnabled(true)
-              resolve()
-              break
-            case 'denied':
-            case 'never_ask_again':
-              setServiceEnabled(false)
-              reject('Location authorization rejected.')
-              break
-            default:
-              break
-          }
-        })
+          'android.permission.ACCESS_BACKGROUND_LOCATION',
+        ]
+        PermissionsAndroid.requestMultiple(bluetoothPermissions).then(
+          (result) => {
+            const permission = bluetoothPermissions.reduce<PermissionStatus>(
+              (prev, cur) => prev && result[cur],
+              'granted',
+            )
+            switch (permission) {
+              case 'granted':
+                setServiceEnabled(true)
+                resolve()
+                break
+              case 'denied':
+              case 'never_ask_again':
+                setServiceEnabled(false)
+                reject('Location authorization rejected.')
+                break
+              default:
+                break
+            }
+          },
+        )
       } else {
-        Geolocation.requestAuthorization('whenInUse').then((permission) => {
+        Geolocation.requestAuthorization('always').then((permission) => {
           switch (permission) {
             case 'granted':
               setServiceEnabled(true)
