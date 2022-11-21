@@ -1,27 +1,13 @@
-import {
-  createNativeStackNavigator,
-  NativeStackScreenProps,
-} from '@react-navigation/native-stack'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { About } from '../About'
 import { AppSettings } from '../AppSettings'
 import { AudioCues } from '../AudioCues'
 import { HeartRateMonitor } from '../HeartRateMonitor'
-
-type SettingsStackParams = {
-  'App Settings': undefined
-  'Heart Rate Monitor': undefined
-  'Scan Bluetooth': undefined
-  'Audio Cues': undefined
-  About: undefined
-}
-export type Props<T extends keyof SettingsStackParams> = NativeStackScreenProps<
-  SettingsStackParams,
-  T
->
+import { ScreenParams } from './RootNavigator'
 
 export const SettingsTitle = 'Settings'
 
-const Stack = createNativeStackNavigator<SettingsStackParams>()
+const Stack = createNativeStackNavigator<ScreenParams>()
 
 export function SettingsStack() {
   return (

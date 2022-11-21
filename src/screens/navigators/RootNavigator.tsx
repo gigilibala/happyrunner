@@ -1,9 +1,24 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import IonIcon from 'react-native-vector-icons/Ionicons'
 import { HistoryStack, HistoryTitle } from './HistoryStack'
 import { HomeStack, HomeTitle } from './HomeStack'
 import { SettingsStack, SettingsTitle } from './SettingsStack'
+
+export type ScreenParams = {
+  History: undefined
+  'Home Screen': undefined
+  'App Settings': undefined
+  'Heart Rate Monitor': undefined
+  'Scan Bluetooth': undefined
+  'Audio Cues': undefined
+  About: undefined
+}
+export type Props<T extends keyof ScreenParams> = NativeStackScreenProps<
+  ScreenParams,
+  T
+>
 
 export type RootParams = {
   HomeStack: undefined

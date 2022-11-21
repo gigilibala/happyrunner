@@ -4,7 +4,7 @@ import { Button, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import useActivity from '../hooks/Activity'
-import { Props } from './navigators/HomeStack'
+import { Props } from './navigators/RootNavigator'
 
 export default function Home({ route, navigation }: Props<'Home Screen'>) {
   const { status, setStatus, start } = useActivity()

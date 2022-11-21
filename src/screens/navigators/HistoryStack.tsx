@@ -1,20 +1,10 @@
-import {
-  createNativeStackNavigator,
-  NativeStackScreenProps,
-} from '@react-navigation/native-stack'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { History } from '../History'
-
-export type HistoryStackParams = {
-  History: undefined
-}
-export type Props<T extends keyof HistoryStackParams> = NativeStackScreenProps<
-  HistoryStackParams,
-  T
->
+import { ScreenParams } from './RootNavigator'
 
 export const HistoryTitle = 'History'
 
-const Stack = createNativeStackNavigator<HistoryStackParams>()
+const Stack = createNativeStackNavigator<ScreenParams>()
 
 export function HistoryStack() {
   return (

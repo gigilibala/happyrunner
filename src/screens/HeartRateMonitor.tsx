@@ -12,7 +12,7 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { HeartRateMonitorContext } from '../hooks/HeartRateMonitorProvider'
-import { Props } from './navigators/SettingsStack'
+import { Props } from './navigators/RootNavigator'
 
 function BluetoothIcon() {
   return (

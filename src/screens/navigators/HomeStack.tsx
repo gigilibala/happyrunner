@@ -1,20 +1,10 @@
-import {
-  createNativeStackNavigator,
-  NativeStackScreenProps,
-} from '@react-navigation/native-stack'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Home from '../Home'
-
-type HomeStackParams = {
-  'Home Screen': undefined
-}
-export type Props<T extends keyof HomeStackParams> = NativeStackScreenProps<
-  HomeStackParams,
-  T
->
+import { ScreenParams } from './RootNavigator'
 
 export const HomeTitle = 'Home'
 
-const Stack = createNativeStackNavigator<HomeStackParams>()
+const Stack = createNativeStackNavigator<ScreenParams>()
 
 export function HomeStack() {
   return (
