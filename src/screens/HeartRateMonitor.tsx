@@ -56,7 +56,7 @@ export function HeartRateMonitor({
           <Icon
             name={'search'}
             size={ICON_SIZE}
-            color={'blue'}
+            color={bluetoothEnabled ? 'blue' : 'grey'}
             style={[styles.icon, { opacity: opacity(!isScanning) }]}
           />
         </TouchableOpacity>
