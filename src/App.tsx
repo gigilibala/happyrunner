@@ -7,7 +7,9 @@ import { LogBox, useColorScheme } from 'react-native'
 import { AudioCuesProvider } from './hooks/AudioCuesProvider'
 import { DatabaseProvider } from './hooks/DatabaseProvider'
 import { HeartRateMonitorProvider } from './hooks/HeartRateMonitorProvider'
+import './localization/i18n'
 import { RootNavigator } from './screens/navigators/RootNavigator'
+
 LogBox.ignoreLogs(['new NativeEventEmitter'])
 
 export default function App() {

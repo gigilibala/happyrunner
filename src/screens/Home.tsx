@@ -1,4 +1,5 @@
 import { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
@@ -92,11 +93,18 @@ export default function Home({ route, navigation }: Props<'Home Screen'>) {
         return bigStartButton
     }
   }
-
+  const { t, i18n } = useTranslation()
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ flex: 3 }}>
-        <Button title="Placeholder" onPress={() => {}} />
+        <Button
+          title={t('test')}
+          onPress={() => {
+            i18n.language === 'en'
+              ? i18n.changeLanguage('it')
+              : i18n.changeLanguage('en')
+          }}
+        />
       </View>
       <View style={styles.buttonsView}>{renderButtons()}</View>
     </SafeAreaView>
