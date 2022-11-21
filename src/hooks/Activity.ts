@@ -48,7 +48,7 @@ export default function useActivity(): IActivity {
   const { addActivity, modifyActivity, addActivityData } =
     useContext(DatabaseContext)
   const { heartRate } = useContext(HeartRateMonitorContext)
-  const { position, setStatus: setLocationServiceStatus } = useLocation()
+  const { setIsActive, position } = useLocation()
   const [timestamp, setTimestamp] = useState<number>()
 
   useEffect(() => {
@@ -113,14 +113,14 @@ export default function useActivity(): IActivity {
 
   function startCollectingData(): void {
     console.log('Starting to collect data.')
-    setLocationServiceStatus('running')
+    setIsActive(true)
     BT.runBackgroundTimer(() => setTimestamp(new Date().getTime()), INTERVAL_MS)
   }
 
   function stopCollectingData(): void {
     console.log('Stopping data collection.')
     BT.stopBackgroundTimer()
-    setLocationServiceStatus('stopped')
+    setIsActive(false)
   }
 
   return { status, setStatus, start }

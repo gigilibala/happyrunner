@@ -8,15 +8,13 @@ import {
 import Geolocation from 'react-native-geolocation-service'
 
 interface ILocationApi {
-  setStatus: (status: LocationServiceStatus) => void
+  setIsActive: (active: boolean) => void
   position?: Geolocation.GeoPosition
 }
 
-type LocationServiceStatus = 'running' | 'stopped'
-
 export function useLocation(): ILocationApi {
   const [position, setPosition] = useState<Geolocation.GeoPosition>()
-  const [status, setStatus] = useState<LocationServiceStatus>('stopped')
+  const [isActive, setIsActive] = useState<boolean>(false)
   const [watchId, setWatchId] = useState<number>()
   const [serviceEnabled, setServiceEnabled] = useState<boolean>(true)
 
@@ -31,20 +29,13 @@ export function useLocation(): ILocationApi {
   }, [watchId])
 
   useEffect(() => {
-    switch (status) {
-      case 'running':
-        start()
-        return () => {
-          setWatchId(undefined)
-        }
-        break
-      case 'stopped':
+    if (isActive) {
+      start()
+      return () => {
         setWatchId(undefined)
-        break
-      default:
-        break
+      }
     }
-  }, [status])
+  }, [isActive])
 
   function start() {
     if (!serviceEnabled) return
@@ -113,5 +104,5 @@ export function useLocation(): ILocationApi {
     })
   }
 
-  return { setStatus, position }
+  return { setIsActive, position }
 }
