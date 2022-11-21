@@ -39,6 +39,7 @@ export function HeartRateMonitor({
 
   useEffect(() => {
     setDoWatchStateChange(true)
+
     return () => {
       setIsScanning(false)
       setDoConnect(false)
@@ -63,12 +64,6 @@ export function HeartRateMonitor({
       ),
     })
   }, [bluetoothEnabled])
-
-  // TODO(gigilibala): Remove
-  // const devices = [
-  //   { name: 'amin', id: 'amin' },
-  //   { name: 'hassani', id: 'hassani' },
-  // ]
 
   const opacity = (visible: boolean) => (visible ? 1.0 : 0.25)
 
