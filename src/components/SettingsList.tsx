@@ -1,5 +1,5 @@
-import { Theme, useTheme } from '@react-navigation/native'
-import { ReactNode, useMemo } from 'react'
+import { Theme } from '@react-navigation/native'
+import { ReactNode } from 'react'
 import {
   SafeAreaView,
   SectionList,
@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { useStyles } from '../common/styles'
 
 type Item = {
   kind: 'navigation' | 'button' | 'switch'
@@ -27,8 +28,7 @@ type Settings = {
 }[]
 
 export function SettingsList(data: Settings) {
-  const theme = useTheme()
-  const styles = useMemo(() => createStyles(theme), [theme])
+  const styles = useStyles(createStyles)
 
   function renderHeader(title?: string) {
     return title ? (
@@ -43,11 +43,11 @@ export function SettingsList(data: Settings) {
       return (
         <View>
           <View style={styles.titleView}>
-            <Text style={styles.title}>{title}</Text>
+            <Text style={[styles.text, styles.title]}>{title}</Text>
           </View>
           {subTitle && (
             <View style={styles.subTitleView}>
-              <Text style={styles.subTitle}>{subTitle}</Text>
+              <Text style={[styles.text, styles.subTitle]}>{subTitle}</Text>
             </View>
           )}
         </View>
@@ -58,7 +58,7 @@ export function SettingsList(data: Settings) {
       <TouchableOpacity
         key={props.title}
         onPress={() => props.onPress()}
-        style={styles.touchable}
+        style={[styles.card, styles.touchable]}
         disabled={props.disabled}
       >
         <View style={styles.iconView}>{props.icon}</View>
@@ -110,23 +110,17 @@ const createStyles = (theme: Theme) =>
     },
     title: {
       fontSize: 17,
-      color: theme.colors.text,
     },
     subTitleView: {
       padding: 5,
     },
     subTitle: {
       fontSize: 15,
-      color: theme.colors.text,
     },
     touchable: {
       flex: 1,
       flexDirection: 'row',
       alignItems: 'center',
-      padding: 10,
-      backgroundColor: theme.colors.card,
-      borderRadius: 5,
-      margin: 2,
     },
     iconView: {},
     textView: {

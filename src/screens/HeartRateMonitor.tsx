@@ -1,6 +1,7 @@
-import { Theme, useTheme } from '@react-navigation/native'
-import { useContext, useEffect, useMemo } from 'react'
+import { Theme } from '@react-navigation/native'
+import { useContext, useEffect } from 'react'
 import {
+  ActivityIndicator,
   Button,
   Modal,
   SafeAreaView,
@@ -11,26 +12,17 @@ import {
   View,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { useStyles } from '../common/styles'
 import { HeartRateMonitorContext } from '../hooks/HeartRateMonitorProvider'
 import { Props } from './navigators/RootNavigator'
 
-function BluetoothIcon() {
-  return (
-    <Icon
-      name={'bluetooth-b'}
-      color={'blue'}
-      size={20}
-      style={{ padding: 10 }}
-    />
-  )
-}
+const ICON_SIZE = 20
 
 export function HeartRateMonitor({
   navigation,
   route,
 }: Props<'Heart Rate Monitor'>) {
-  const theme = useTheme()
-  const styles = useMemo(() => createStyles(theme), [theme])
+  const styles = useStyles(createStyles)
 
   const {
     setDoWatchStateChange,
@@ -63,9 +55,10 @@ export function HeartRateMonitor({
         >
           <Icon
             name={'search'}
-            size={20}
-            color={bluetoothEnabled ? 'blue' : 'grey'}
-          ></Icon>
+            size={ICON_SIZE}
+            color={'blue'}
+            style={[styles.icon, { opacity: opacity(!isScanning) }]}
+          />
         </TouchableOpacity>
       ),
     })
@@ -76,6 +69,8 @@ export function HeartRateMonitor({
   //   { name: 'amin', id: 'amin' },
   //   { name: 'hassani', id: 'hassani' },
   // ]
+
+  const opacity = (visible: boolean) => (visible ? 1.0 : 0.25)
 
   function connectButtonTitle(): string {
     switch (connectionStatus) {
@@ -90,103 +85,111 @@ export function HeartRateMonitor({
     }
   }
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.hrmInfo}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}
-        >
-          <BluetoothIcon />
-          <View>
-            <Text style={[styles.text]}>{device?.name}</Text>
-          </View>
-        </View>
+  const hrmInfo = (
+    <View style={[styles.card, styles.hrmInfo]}>
+      <View style={styles.iconWithText}>
+        <Icon
+          name={'bluetooth-b'}
+          color={'blue'}
+          size={ICON_SIZE}
+          style={styles.icon}
+        />
+
         <View>
-          <Text style={[styles.text]}>{heartRate}</Text>
+          <Text style={styles.text}>{device ? device.name : '?'}</Text>
         </View>
       </View>
+      <View style={styles.iconWithText}>
+        <Icon
+          name={'heartbeat'}
+          color={'red'}
+          size={ICON_SIZE}
+          style={styles.icon}
+        />
+        <View>
+          {heartRate ? (
+            <Text style={styles.text}>{heartRate}</Text>
+          ) : (
+            <ActivityIndicator />
+          )}
+        </View>
+      </View>
+    </View>
+  )
 
-      <Modal
-        animationType={'fade'}
-        visible={isScanning}
-        transparent={true}
-        statusBarTranslucent={true}
-        onRequestClose={() => setIsScanning(false)}
-      >
-        <View style={styles.centeredView}>
-          <View style={[styles.modalView]}>
-            <View
-              style={{
-                borderWidth: 1,
-                borderColor: 'green',
-                padding: 10,
-                alignItems: 'center',
-              }}
-            >
-              <Text
-                style={[
-                  styles.text,
-                  { color: theme.colors.primary, fontWeight: 'bold' },
-                ]}
+  const scanModal = (
+    <Modal
+      animationType={'fade'}
+      visible={isScanning}
+      transparent={true}
+      statusBarTranslucent={true}
+      onRequestClose={() => setIsScanning(false)}
+    >
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <View style={styles.card}>
+            <Text style={styles.text}>Scanning</Text>
+          </View>
+          <ScrollView>
+            {devices.map((device) => (
+              <TouchableOpacity
+                key={device.id}
+                onPress={() => {
+                  setIsScanning(false)
+                  setDevice({ id: device.id, name: device.name })
+                  setDoConnect(true)
+                }}
               >
-                Devices
-              </Text>
-            </View>
-            <ScrollView>
-              {devices.map((device) => (
-                <TouchableOpacity
-                  key={device.id}
-                  onPress={() => {
-                    setIsScanning(false)
-                    setDevice({ id: device.id, name: device.name })
-                    setDoConnect(true)
-                  }}
-                  style={{
-                    borderColor: 'black',
-                    borderWidth: 1,
-                    padding: 10,
-                  }}
-                >
-                  <View style={{ flexDirection: 'row' }}>
-                    <BluetoothIcon />
-                    <Text
-                      style={[
-                        styles.text,
-                        {
-                          fontSize: 30,
-                        },
-                      ]}
-                    >
-                      {device.name}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+                <View style={styles.iconWithText}>
+                  <Icon
+                    name={'bluetooth-b'}
+                    color={'blue'}
+                    size={ICON_SIZE}
+                    style={styles.icon}
+                  />
+                  <Text style={styles.largeText}>{device.name}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+          <View style={styles.button}>
             <Button
               title={'Cancel'}
               onPress={() => {
                 setIsScanning(false)
               }}
-            ></Button>
+            />
           </View>
         </View>
-      </Modal>
-
-      <View style={styles.button}>
-        <Button
-          title={connectButtonTitle()}
-          onPress={() => setDoConnect(connectionStatus === 'not-connected')}
-          disabled={
-            !bluetoothEnabled ||
-            connectionStatus === 'connecting' ||
-            connectionStatus === 'disconnecting'
-          }
-        />
       </View>
+    </Modal>
+  )
+
+  const connectButton = (
+    <View style={styles.button}>
+      <Button
+        title={connectButtonTitle()}
+        onPress={() => setDoConnect(connectionStatus === 'not-connected')}
+        disabled={
+          !bluetoothEnabled ||
+          connectionStatus === 'connecting' ||
+          connectionStatus === 'disconnecting'
+        }
+      />
+    </View>
+  )
+
+  return (
+    <SafeAreaView
+      style={[
+        styles.safeAreaView,
+        styles.container,
+        { opacity: opacity(!isScanning) },
+      ]}
+    >
+      {hrmInfo}
+      {scanModal}
+      {connectButton}
     </SafeAreaView>
   )
 }
@@ -194,24 +197,14 @@ export function HeartRateMonitor({
 const createStyles = (theme: Theme) =>
   StyleSheet.create({
     container: {
-      flex: 1,
       flexDirection: 'column',
       justifyContent: 'space-between',
     },
-    text: {
-      color: theme.colors.text,
-      fontSize: 20,
-    },
     hrmInfo: {
       flexDirection: 'row',
-      backgroundColor: theme.colors.card,
-      margin: 10,
       justifyContent: 'space-between',
       alignItems: 'center',
-      borderColor: 'red',
-      borderWidth: 1,
     },
-
     centeredView: {
       flex: 1,
       justifyContent: 'center',
@@ -221,10 +214,8 @@ const createStyles = (theme: Theme) =>
     modalView: {
       width: '80%',
       height: '50%',
-      borderWidth: 1,
-      borderColor: 'red',
       backgroundColor: theme.colors.card,
-      borderRadius: 10,
+      borderRadius: 5,
       shadowColor: 'black',
       shadowOffset: {
         width: 2,
@@ -232,10 +223,13 @@ const createStyles = (theme: Theme) =>
       },
       shadowOpacity: 0.25,
       shadowRadius: 0.5,
-      elevation: 20,
+      elevation: 10,
     },
-    button: {
-      margin: 10,
-      elevation: 2,
+    iconWithText: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    icon: {
+      padding: 10,
     },
   })

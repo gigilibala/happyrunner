@@ -67,6 +67,7 @@ function useHeartRateMonitor() {
 
   useEffect(() => {
     setBleManagerEmitter(new NativeEventEmitter(NativeModules.BleManager))
+    setHeartRate(123)
   }, [])
 
   useEffect(() => {

@@ -1,12 +1,15 @@
+import { Theme } from '@react-navigation/native'
 import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { useStyles } from '../common/styles'
 import useActivity from '../hooks/Activity'
 import { Props } from './navigators/RootNavigator'
 
 export default function Home({ route, navigation }: Props<'Home Screen'>) {
+  const styles = useStyles(createStyles)
   const { status, setStatus, start } = useActivity()
 
   const bigButtonSize = 80
@@ -18,12 +21,7 @@ export default function Home({ route, navigation }: Props<'Home Screen'>) {
         start()
       }}
     >
-      <Icon
-        name="play-circle"
-        size={bigButtonSize}
-        color="red"
-        style={styles.button}
-      />
+      <Icon name={'play-circle'} size={bigButtonSize} color={'red'} />
     </TouchableOpacity>
   )
 
@@ -33,12 +31,7 @@ export default function Home({ route, navigation }: Props<'Home Screen'>) {
         setStatus('in-progress')
       }}
     >
-      <Icon
-        name={'play-circle'}
-        size={smallButtonSize}
-        color={'red'}
-        style={styles.button}
-      />
+      <Icon name={'play-circle'} size={smallButtonSize} color={'red'} />
     </TouchableOpacity>
   )
 
@@ -48,12 +41,7 @@ export default function Home({ route, navigation }: Props<'Home Screen'>) {
         setStatus('paused')
       }}
     >
-      <Icon
-        name={'pause-circle'}
-        size={smallButtonSize}
-        color={'orange'}
-        style={styles.button}
-      />
+      <Icon name={'pause-circle'} size={smallButtonSize} color={'orange'} />
     </TouchableOpacity>
   )
 
@@ -63,12 +51,7 @@ export default function Home({ route, navigation }: Props<'Home Screen'>) {
         setStatus('stopped')
       }}
     >
-      <Icon
-        name={'stop-circle'}
-        size={smallButtonSize}
-        color={'brown'}
-        style={styles.button}
-      />
+      <Icon name={'stop-circle'} size={smallButtonSize} color={'brown'} />
     </TouchableOpacity>
   )
 
@@ -76,14 +59,14 @@ export default function Home({ route, navigation }: Props<'Home Screen'>) {
     switch (status) {
       case 'in-progress':
         return (
-          <View style={styles.rowButton}>
+          <View style={styles.rowButtonView}>
             <View>{pauseButton}</View>
             <View>{stopButton}</View>
           </View>
         )
       case 'paused':
         return (
-          <View style={styles.rowButton}>
+          <View style={styles.rowButtonView}>
             <View>{smallStartButton}</View>
             <View>{stopButton}</View>
           </View>
@@ -95,8 +78,8 @@ export default function Home({ route, navigation }: Props<'Home Screen'>) {
   }
   const { t, i18n } = useTranslation()
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ flex: 3 }}>
+    <SafeAreaView style={[styles.safeAreaView]}>
+      <View style={[styles.button, styles.testButtonView]}>
         <Button
           title={t('test')}
           onPress={() => {
@@ -111,17 +94,19 @@ export default function Home({ route, navigation }: Props<'Home Screen'>) {
   )
 }
 
-const styles = StyleSheet.create({
-  rowButton: {
-    flexDirection: 'row',
-    alignContent: 'space-between',
-  },
-  buttonsView: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
-  button: {
-    // padding: 30,
-  },
-})
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    testButtonView: {
+      flex: 3,
+    },
+    rowButtonView: {
+      flexDirection: 'row',
+      alignContent: 'space-between',
+    },
+    buttonsView: {
+      flex: 1,
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      alignSelf: 'auto',
+    },
+  })
