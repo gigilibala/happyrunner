@@ -41,8 +41,11 @@ interface IHeartRateMonitorApi {
   heartRate?: number
 }
 
+BleManager.start().then(() => {
+  console.log('Bluetooth module initialized.')
+})
+
 function useHeartRateMonitor() {
-  const [initialized, setInitialized] = useState<boolean>(false)
   const [bleManagerEmitter, setBleManagerEmitter] =
     useState<NativeEventEmitter>()
 
@@ -63,11 +66,6 @@ function useHeartRateMonitor() {
   const [heartRate, setHeartRate] = useState<number>()
 
   useEffect(() => {
-    BleManager.start().then(() => {
-      setInitialized(true)
-      console.log('Bluetooth module initialized.')
-    })
-
     setBleManagerEmitter(new NativeEventEmitter(NativeModules.BleManager))
   }, [])
 
@@ -117,11 +115,10 @@ function useHeartRateMonitor() {
       bleManagerEmitter?.addListener(
         'BleManagerDidUpdateState',
         ({ state }: { state: string }) => {
-          console.log('herere  ', state)
           switch (state) {
             case 'off':
               BleManager.enableBluetooth().catch((error) => {
-                console.log('error ', error)
+                console.log('Failed to enable bluetooth: ', error)
                 setBluetoothEnabled(false)
               })
               break
