@@ -30,7 +30,7 @@ const Root = createBottomTabNavigator<RootParams>()
 
 export function RootNavigator() {
   return (
-    <Root.Navigator initialRouteName={'SettingsStack'}>
+    <Root.Navigator initialRouteName={'HomeStack'}>
       <Root.Screen
         name={'HomeStack'}
         component={HomeStack}

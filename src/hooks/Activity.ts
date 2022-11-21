@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
+import BT from 'react-native-background-timer'
 import { DatabaseContext } from '../hooks/DatabaseProvider'
 import { HeartRateMonitorContext } from './HeartRateMonitorProvider'
 import { useLocation } from './Location'
@@ -48,7 +49,6 @@ export default function useActivity(): IActivity {
     useContext(DatabaseContext)
   const { heartRate } = useContext(HeartRateMonitorContext)
   const { position, setStatus: setLocationServiceStatus } = useLocation()
-  const [dataCollectionInterval, setDataCollectionInterval] = useState<number>()
   const [timestamp, setTimestamp] = useState<number>()
 
   useEffect(() => {
@@ -60,13 +60,6 @@ export default function useActivity(): IActivity {
     })
     setStatus('in-progress')
   }, [id])
-
-  useEffect(() => {
-    if (dataCollectionInterval === undefined) return
-    return () => {
-      stopCollectingData()
-    }
-  }, [dataCollectionInterval])
 
   useEffect(() => {
     if (status === undefined || id === undefined) return
@@ -84,7 +77,7 @@ export default function useActivity(): IActivity {
           id: id,
           status: 'paused',
         })
-        setDataCollectionInterval(undefined)
+        stopCollectingData()
         break
       case 'stopped':
         modifyActivity({
@@ -93,7 +86,7 @@ export default function useActivity(): IActivity {
           end_time: time.getTime(),
         })
         setId(undefined)
-        setDataCollectionInterval(undefined)
+        stopCollectingData()
         break
       default:
         break
@@ -121,15 +114,12 @@ export default function useActivity(): IActivity {
   function startCollectingData(): void {
     console.log('Starting to collect data.')
     setLocationServiceStatus('running')
-    setDataCollectionInterval(
-      setInterval(() => setTimestamp(new Date().getTime()), INTERVAL_MS),
-    )
+    BT.runBackgroundTimer(() => setTimestamp(new Date().getTime()), INTERVAL_MS)
   }
 
   function stopCollectingData(): void {
-    if (dataCollectionInterval === undefined) return
     console.log('Stopping data collection.')
-    clearInterval(dataCollectionInterval)
+    BT.stopBackgroundTimer()
     setLocationServiceStatus('stopped')
   }
 
