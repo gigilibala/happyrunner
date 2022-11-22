@@ -1,7 +1,7 @@
 import { Theme } from '@react-navigation/native'
 import { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useStyles } from '../common/styles'
@@ -10,7 +10,7 @@ import { Props } from './navigators/RootNavigator'
 
 export default function Home({ route, navigation }: Props<'Home'>) {
   const styles = useStyles(createStyles)
-  const { status, setStatus, start } = useActivity()
+  const { status, setStatus, start, position } = useActivity()
 
   const bigButtonSize = 80
   const smallButtonSize = 60
@@ -88,6 +88,11 @@ export default function Home({ route, navigation }: Props<'Home'>) {
               : i18n.changeLanguage('en')
           }}
         />
+      </View>
+      <View>
+        <Text style={styles.text}>
+          {position?.coords.latitude}...{position?.coords.longitude}
+        </Text>
       </View>
       <View style={styles.buttonsView}>{renderButtons()}</View>
     </SafeAreaView>

@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import BT from 'react-native-background-timer'
+import { GeoPosition } from 'react-native-geolocation-service'
 import { DatabaseContext } from '../hooks/DatabaseProvider'
 import { HeartRateMonitorContext } from './HeartRateMonitorProvider'
 import { useLocation } from './Location'
@@ -39,6 +40,7 @@ export interface IActivity {
   status?: Status
   setStatus: (status: Status) => void
   start: () => void
+  position?: GeoPosition
 }
 
 export default function useActivity(): IActivity {
@@ -123,5 +125,5 @@ export default function useActivity(): IActivity {
     setIsActive(false)
   }
 
-  return { status, setStatus, start }
+  return { status, setStatus, start, position }
 }
