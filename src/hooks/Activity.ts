@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from 'react'
-import BT from 'react-native-background-timer'
 import { GeoPosition } from 'react-native-geolocation-service'
 import { DatabaseContext } from '../hooks/DatabaseProvider'
 import { HeartRateMonitorContext } from './HeartRateMonitorProvider'
@@ -116,12 +115,10 @@ export default function useActivity(): IActivity {
   function startCollectingData(): void {
     console.log('Starting to collect data.')
     setIsActive(true)
-    BT.runBackgroundTimer(() => setTimestamp(new Date().getTime()), INTERVAL_MS)
   }
 
   function stopCollectingData(): void {
     console.log('Stopping data collection.')
-    BT.stopBackgroundTimer()
     setIsActive(false)
   }
 
