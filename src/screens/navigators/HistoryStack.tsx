@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { History } from '../History'
+import { History } from '../history/History'
 import { ScreenParams } from './RootNavigator'
 
 const Stack = createNativeStackNavigator<ScreenParams>()

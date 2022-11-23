@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { About } from '../About'
-import { AppSettings } from '../AppSettings'
-import { AudioCues } from '../AudioCues'
-import { HeartRateMonitor } from '../HeartRateMonitor'
+import { About } from '../settings/About'
+import { AppSettings } from '../settings/AppSettings'
+import { AudioCues } from '../settings/AudioCues'
+import { HeartRateMonitor } from '../settings/HeartRateMonitor'
 import { ScreenParams } from './RootNavigator'
 
 const Stack = createNativeStackNavigator<ScreenParams>()

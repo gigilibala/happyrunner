@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import Home from '../Home'
+import Home from '../home/Home'
 import { ScreenParams } from './RootNavigator'
 
 const Stack = createNativeStackNavigator<ScreenParams>()

@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native'
 
-import { Props } from './navigators/RootNavigator'
+import { Props } from '../navigators/RootNavigator'
 
 export function History({}: Props<'History'>) {
   return (
