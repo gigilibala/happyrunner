@@ -39,7 +39,7 @@ export function useLocation(): ILocationApi {
 
   function start() {
     if (!serviceEnabled) return
-    console.log('Starting geolocation.', Geolocation.watchPosition)
+    console.log('Starting geolocation.')
     requestPermission()
       .then(() => {
         console.log('Location service authorized.')
@@ -61,7 +61,6 @@ export function useLocation(): ILocationApi {
       if (Platform.OS === 'android') {
         const bluetoothPermissions: Permission[] = [
           'android.permission.ACCESS_FINE_LOCATION',
-          'android.permission.ACCESS_BACKGROUND_LOCATION',
         ]
         PermissionsAndroid.requestMultiple(bluetoothPermissions).then(
           (result) => {

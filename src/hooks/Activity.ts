@@ -3,6 +3,7 @@ import { GeoPosition } from 'react-native-geolocation-service'
 import { DatabaseContext } from '../hooks/DatabaseProvider'
 import { HeartRateMonitorContext } from './HeartRateMonitorProvider'
 import { useLocation } from './Location'
+import useNotification from './Notification'
 
 type ActivityType = 'Running'
 
@@ -50,7 +51,9 @@ export default function useActivity(): IActivity {
     useContext(DatabaseContext)
   const { heartRate } = useContext(HeartRateMonitorContext)
   const { setIsActive, position } = useLocation()
+  const [dataCollectionInterval, setDataCollectionInterval] = useState<number>()
   const [timestamp, setTimestamp] = useState<number>()
+  const { displayNotification, cancelNotification } = useNotification()
 
   useEffect(() => {
     if (id === undefined) return
@@ -78,7 +81,6 @@ export default function useActivity(): IActivity {
           id: id,
           status: 'paused',
         })
-        stopCollectingData()
         break
       case 'stopped':
         modifyActivity({
@@ -114,12 +116,27 @@ export default function useActivity(): IActivity {
 
   function startCollectingData(): void {
     console.log('Starting to collect data.')
+
+    setDataCollectionInterval(
+      setInterval(() => setTimestamp(new Date().getTime()), INTERVAL_MS),
+    )
+
+    displayNotification().catch((error) =>
+      console.log('Failed to start notification: ', error),
+    )
     setIsActive(true)
   }
 
   function stopCollectingData(): void {
+    if (dataCollectionInterval === undefined) return
     console.log('Stopping data collection.')
+
+    clearInterval(dataCollectionInterval)
+    setDataCollectionInterval(undefined)
     setIsActive(false)
+    cancelNotification().catch((error) =>
+      console.log('Failed to cancel notification: ', error),
+    )
   }
 
   return { status, setStatus, start, position }

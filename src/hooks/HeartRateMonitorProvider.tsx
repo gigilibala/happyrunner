@@ -153,7 +153,6 @@ function useHeartRateMonitor() {
           'android.permission.BLUETOOTH_CONNECT',
           'android.permission.BLUETOOTH_SCAN',
           'android.permission.ACCESS_FINE_LOCATION',
-          'android.permission.ACCESS_BACKGROUND_LOCATION',
         ]
         PermissionsAndroid.requestMultiple(bluetoothPermissions).then(
           (result) => {
