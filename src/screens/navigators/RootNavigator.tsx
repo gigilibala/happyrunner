@@ -10,6 +10,7 @@ import { SettingsStack } from './SettingsStack'
 export type ScreenParams = {
   History: undefined
   Home: undefined
+  'Active Workout': undefined
   Settings: undefined
   'Heart Rate Monitor': undefined
   'Scan Bluetooth': undefined

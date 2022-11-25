@@ -22,6 +22,10 @@ const createGlobalStyles = (theme: Theme) =>
       flex: 1,
       backgroundColor: theme.colors.background,
     },
+    verticalContainer: {
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+    },
     card: {
       backgroundColor: theme.colors.card,
       borderRadius: 5,

@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { useTranslation } from 'react-i18next'
+import ActiveWorkout from '../home/ActiveWorkout'
 import Home from '../home/Home'
 import { ScreenParams } from './RootNavigator'
 
@@ -14,6 +15,7 @@ export function HomeStack() {
         component={Home}
         options={{ title: t('screens.home') }}
       />
+      <Stack.Screen name={'Active Workout'} component={ActiveWorkout} />
     </Stack.Navigator>
   )
 }
