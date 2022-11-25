@@ -14,18 +14,21 @@ export default function useNotification(): INotificationApi {
         resolve()
       })
     })
-    Notifee.onForegroundEvent(({ type, detail }) => {
-      return new Promise<void>((resolve, reject) => {
-        console.log('foreground event: ', type, detail)
-        resolve()
-      })
-    })
+    const unregisterForegroundEventCallback = Notifee.onForegroundEvent(
+      ({ type, detail }) => {
+        return new Promise<void>((resolve, reject) => {
+          console.log('foreground event: ', type, detail)
+          resolve()
+        })
+      },
+    )
 
     Notifee.registerForegroundService((notification) => {
       return new Promise<void>((resolve, reject) => {})
     })
 
     return () => {
+      unregisterForegroundEventCallback()
       Notifee.stopForegroundService().then(() => {
         console.log('Stopped foreground service.')
       })
@@ -53,7 +56,6 @@ export default function useNotification(): INotificationApi {
         actions: [{ title: 'Stop', pressAction: { id: 'default' } }],
       },
     })
-    console.log('value is: ', value)
   }
 
   async function cancelNotification(): Promise<void> {
