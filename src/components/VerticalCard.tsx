@@ -5,7 +5,7 @@ import { useStyles } from '../common/styles'
 
 export default function VerticalCard({ children }: { children: ReactNode }) {
   const styles = useStyles(createStyles)
-  return <View style={styles.containerView}>{children}</View>
+  return <View style={[styles.containerView, styles.shadow]}>{children}</View>
 }
 
 const createStyles = (theme: Theme) =>

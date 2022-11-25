@@ -123,7 +123,7 @@ export function HeartRateMonitor({
       onRequestClose={() => setIsScanning(false)}
     >
       <View style={styles.centeredView}>
-        <View style={styles.modalView}>
+        <View style={[styles.modalView, styles.shadow]}>
           <View style={styles.card}>
             <Text style={styles.text}>{t('scanning')}</Text>
           </View>
@@ -213,14 +213,6 @@ const createStyles = (theme: Theme) =>
       height: '50%',
       backgroundColor: theme.colors.card,
       borderRadius: 5,
-      shadowColor: 'black',
-      shadowOffset: {
-        width: 2,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 0.5,
-      elevation: 10,
     },
     iconWithText: {
       flexDirection: 'row',

@@ -48,4 +48,14 @@ const createGlobalStyles = (theme: Theme) =>
       margin: 10,
       elevation: 2,
     },
+    shadow: {
+      shadowColor: 'black',
+      shadowOffset: {
+        width: 2,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 0.5,
+      elevation: 10,
+    },
   })
