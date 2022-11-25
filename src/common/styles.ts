@@ -10,13 +10,13 @@ import { StyleSheet } from 'react-native'
  */
 export function useStyles<T>(createStyles: (theme: Theme) => T) {
   const theme = useTheme()
-  const globalStyles = useMemo(() => getGlobalStyles(theme), [theme])
+  const globalStyles = useMemo(() => createGlobalStyles(theme), [theme])
   const localStyles = useMemo(() => createStyles(theme), [theme])
   const styles = { ...globalStyles, ...localStyles }
   return styles
 }
 
-const getGlobalStyles = (theme: Theme) =>
+const createGlobalStyles = (theme: Theme) =>
   StyleSheet.create({
     safeAreaView: {
       flex: 1,
