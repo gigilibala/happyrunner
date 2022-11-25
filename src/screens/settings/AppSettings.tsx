@@ -1,4 +1,5 @@
 import { useContext } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Alert } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { SettingsList } from '../../components/SettingsList'
@@ -9,14 +10,15 @@ import { Props } from '../navigators/RootNavigator'
 export function AppSettings({ navigation }: Props<'Settings'>) {
   const { clearDatabase } = useContext(DatabaseContext)
   const { pref } = useContext(AudioCuesContext)
+  const { t } = useTranslation()
 
   return SettingsList([
     {
-      title: 'General',
+      title: t('general'),
       data: [
         {
           kind: 'navigation',
-          title: 'Heart Rate Monitor',
+          title: t('heartRateMonitor'),
           onPress: () => navigation.navigate('Heart Rate Monitor'),
           icon: (
             <Icon.Button
@@ -28,8 +30,8 @@ export function AppSettings({ navigation }: Props<'Settings'>) {
         },
         {
           kind: 'navigation',
-          title: 'Audio Cues',
-          subTitle: pref?.enabled ? 'on' : 'off',
+          title: t('audioCues'),
+          subTitle: pref?.enabled ? t('on') : t('off'),
           onPress: () => navigation.navigate('Audio Cues'),
           icon: (
             <Icon.Button
@@ -41,7 +43,7 @@ export function AppSettings({ navigation }: Props<'Settings'>) {
         },
         {
           kind: 'navigation',
-          title: 'About',
+          title: t('about'),
           onPress: () => navigation.navigate('About'),
           icon: (
             <Icon.Button
@@ -54,18 +56,18 @@ export function AppSettings({ navigation }: Props<'Settings'>) {
       ],
     },
     {
-      title: 'Advanced',
+      title: t('advanced'),
       data: [
         {
           kind: 'button',
-          title: 'Clear Database',
+          title: t('clearDatabase'),
           onPress: () => {
             Alert.alert(
-              'Clear Database',
-              'This action deletes the database and is not recoverable. Do you want to continue?',
+              t('clearDatabase'),
+              t('clearDatabaseNotice'),
               [
-                { text: 'Yes', onPress: () => clearDatabase() },
-                { text: 'Cancel' },
+                { text: t('yes'), onPress: () => clearDatabase() },
+                { text: t('cancel') },
               ],
               { cancelable: true },
             )

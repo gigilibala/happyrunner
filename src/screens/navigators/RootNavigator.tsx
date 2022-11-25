@@ -1,5 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { useTranslation } from 'react-i18next'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import IonIcon from 'react-native-vector-icons/Ionicons'
 import { HistoryStack } from './HistoryStack'
@@ -29,13 +30,14 @@ export type RootParams = {
 const Root = createBottomTabNavigator<RootParams>()
 
 export function RootNavigator() {
+  const { t } = useTranslation()
   return (
     <Root.Navigator initialRouteName={'HomeStack'}>
       <Root.Screen
         name={'HomeStack'}
         component={HomeStack}
         options={{
-          title: 'Home',
+          title: t('screens.home'),
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Icon name={'running'} color={color} size={size} />
@@ -46,7 +48,7 @@ export function RootNavigator() {
         name={'HistoryStack'}
         component={HistoryStack}
         options={{
-          title: 'History',
+          title: t('screens.history'),
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Icon name={'history'} color={color} size={size} />
@@ -57,7 +59,7 @@ export function RootNavigator() {
         name={'SettingsStack'}
         component={SettingsStack}
         options={{
-          title: 'Settings',
+          title: t('screens.settings'),
           headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <IonIcon name={'settings'} color={color} size={size} />

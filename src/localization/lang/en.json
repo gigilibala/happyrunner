@@ -1,7 +1,27 @@
 {
-  "test": "test-eng",
-  "test2": {
-    "first": "Amin",
-    "last": "Hassani"
-  }
+  "test": "english",
+  "about": "Hello world! I wrote this App",
+  "screens": {
+    "home": "Home",
+    "history": "History",
+    "settings": "Settings",
+    "about": "About"
+  },
+  "heartRateMonitor": "Heart Rate Monitor",
+  "audioCues": "Audio Cues",
+  "enabled": "Enabled",
+  "connect": "Connect",
+  "disconnect": "Disconnect",
+  "connecting": "Connecting",
+  "disconnecting": "Disconnecting",
+  "cancel": "Cancel",
+  "scanning": "Scanning",
+  "general": "General",
+  "on": "On",
+  "off": "Off",
+  "yes": "Yes",
+  "no": "No",
+  "advanced": "Advanced",
+  "clearDatabase": "Clear Database",
+  "clearDatabaseNotice": "This action deletes the database and is not recoverable. Do you want to continue?"
 }

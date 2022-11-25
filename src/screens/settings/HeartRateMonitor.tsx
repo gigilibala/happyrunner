@@ -1,5 +1,6 @@
 import { Theme } from '@react-navigation/native'
 import { useContext, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   ActivityIndicator,
   Button,
@@ -23,6 +24,7 @@ export function HeartRateMonitor({
   route,
 }: Props<'Heart Rate Monitor'>) {
   const styles = useStyles(createStyles)
+  const { t } = useTranslation()
 
   const {
     setDoWatchStateChange,
@@ -70,13 +72,13 @@ export function HeartRateMonitor({
   function connectButtonTitle(): string {
     switch (connectionStatus) {
       case 'connected':
-        return 'Disconnect'
+        return t('disconnect')
       case 'connecting':
-        return 'Connecting...'
+        return t('connecting')
       case 'disconnecting':
-        return 'Disconnecting...'
+        return t('disconnecting')
       case 'not-connected':
-        return 'Connect'
+        return t('connect')
     }
   }
 
@@ -123,7 +125,7 @@ export function HeartRateMonitor({
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <View style={styles.card}>
-            <Text style={styles.text}>Scanning</Text>
+            <Text style={styles.text}>{t('scanning')}</Text>
           </View>
           <ScrollView>
             {devices.map((device) => (
@@ -149,7 +151,7 @@ export function HeartRateMonitor({
           </ScrollView>
           <View style={styles.button}>
             <Button
-              title={'Cancel'}
+              title={t('cancel')}
               onPress={() => {
                 setIsScanning(false)
               }}
