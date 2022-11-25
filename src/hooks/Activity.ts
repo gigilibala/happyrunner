@@ -95,7 +95,8 @@ export default function useActivity(): IActivity {
   }, [status])
 
   useEffect(() => {
-    if (timestamp === undefined || id == undefined) return
+    if (timestamp === undefined || id === undefined || status === 'paused')
+      return
 
     addActivityData({
       activity_id: id,
