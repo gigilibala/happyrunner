@@ -52,30 +52,28 @@ export function useLocation(): ILocationApi {
   function requestPermission() {
     return new Promise<void>((resolve, reject) => {
       if (Platform.OS === 'android') {
-        const bluetoothPermissions: Permission[] = [
+        const permissions: Permission[] = [
           'android.permission.ACCESS_FINE_LOCATION',
         ]
-        PermissionsAndroid.requestMultiple(bluetoothPermissions).then(
-          (result) => {
-            const permission = bluetoothPermissions.reduce<PermissionStatus>(
-              (prev, cur) => prev && result[cur],
-              'granted',
-            )
-            switch (permission) {
-              case 'granted':
-                setServiceEnabled(true)
-                resolve()
-                break
-              case 'denied':
-              case 'never_ask_again':
-                setServiceEnabled(false)
-                reject('Location authorization rejected.')
-                break
-              default:
-                break
-            }
-          },
-        )
+        PermissionsAndroid.requestMultiple(permissions).then((result) => {
+          const permission = permissions.reduce<PermissionStatus>(
+            (prev, cur) => prev && result[cur],
+            'granted',
+          )
+          switch (permission) {
+            case 'granted':
+              setServiceEnabled(true)
+              resolve()
+              break
+            case 'denied':
+            case 'never_ask_again':
+              setServiceEnabled(false)
+              reject('Location authorization rejected.')
+              break
+            default:
+              break
+          }
+        })
       } else {
         Geolocation.requestAuthorization('always').then((permission) => {
           switch (permission) {
