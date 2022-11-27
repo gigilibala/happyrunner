@@ -17,13 +17,6 @@ export type Info = {
   type?: ActivityType
   start_time?: number
   end_time?: number
-  avg_heart_rate?: number
-  max_heart_rate?: number
-  avg_pace?: number
-  total_steps?: number
-  cadence?: number
-  total_active_time_seconds?: number
-  total_distance?: number
 }
 
 export type Datum = {
@@ -32,12 +25,19 @@ export type Datum = {
   heart_rate?: number
   latitude?: number
   longitude?: number
-  status?: Status
 }
 
 export type Lap = {
   timestamp: number
   activity_id: number
+  number: number
+  avg_heart_rate?: number
+  max_heart_rate?: number
+  avg_pace?: number
+  total_steps?: number
+  cadence?: number
+  total_active_time_seconds?: number
+  total_distance?: number
 }
 
 export interface IActivity {
@@ -100,14 +100,15 @@ export default function useActivity(): IActivity {
       heart_rate: heartRate,
       latitude: position?.coords.latitude,
       longitude: position?.coords.longitude,
-      status: isActive ? 'in-progress' : 'stopped',
     })
   }, [timestamp])
 
   useEffect(() => {
+    if (lap === 0) return
     addActivityLap({
       activity_id: id,
       timestamp: new Date().getTime(),
+      number: lap,
     })
   }, [lap])
 
