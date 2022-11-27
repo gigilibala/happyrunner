@@ -17,7 +17,7 @@ export default function ActivityInProgress({
   navigation,
 }: Props<'Activity In Progress'>) {
   const styles = useStyles(createStyles)
-  const { status, setStatus, position, id } = useActivity()
+  const { isActive, setIsActive, position, id } = useActivity()
   const { displayNotification, cancelNotification } = useNotification()
   const { heartRate } = useContext(HeartRateMonitorContext)
 
@@ -44,7 +44,7 @@ export default function ActivityInProgress({
   const resumeButton = (
     <TouchableOpacity
       onPress={() => {
-        setStatus('in-progress')
+        setIsActive(true)
       }}
     >
       <Icon name={'play-circle'} size={BUTTON_SIZE} color={'green'} />
@@ -54,7 +54,7 @@ export default function ActivityInProgress({
   const pauseButton = (
     <TouchableOpacity
       onPress={() => {
-        setStatus('stopped')
+        setIsActive(false)
       }}
     >
       <Icon name={'pause-circle'} size={BUTTON_SIZE} color={'orange'} />
@@ -64,7 +64,7 @@ export default function ActivityInProgress({
   const stopButton = (
     <TouchableOpacity
       onPress={() => {
-        setStatus('stopped')
+        setIsActive(false)
         navigation.navigate('Activity Details', { activityId: id })
       }}
     >
@@ -120,7 +120,7 @@ export default function ActivityInProgress({
       </View>
 
       <View style={styles.activityButtonView}>
-        <View>{status === 'in-progress' ? pauseButton : resumeButton}</View>
+        <View>{isActive ? pauseButton : resumeButton}</View>
         <View>{stopButton}</View>
       </View>
     </SafeAreaView>

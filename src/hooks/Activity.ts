@@ -37,14 +37,14 @@ export type ActivityData = {
 
 export interface IActivity {
   id: number
-  status?: Status
-  setStatus: (status: Status) => void
+  isActive: boolean
+  setIsActive: (isActive: boolean) => void
   position?: GeoPosition
 }
 
 export default function useActivity(): IActivity {
   const [id, setId] = useState<number>(new Date().getTime())
-  const [status, setStatus] = useState<Status>()
+  const [isActive, setIsActive] = useState<boolean>(false)
   const [activityType, setActivityType] = useState<ActivityType>('Running')
   const { addActivity, modifyActivity, addActivityData } =
     useContext(DatabaseContext)
@@ -59,40 +59,33 @@ export default function useActivity(): IActivity {
       start_time: new Date().getTime(),
       type: activityType,
     })
-    setStatus('in-progress')
+    setIsActive(true)
     setDataCollectionInterval(
       setInterval(() => setTimestamp(new Date().getTime()), INTERVAL_MS),
     )
 
     return () => {
-      setStatus('stopped')
+      setIsActive(false)
     }
   }, [id])
 
   useEffect(() => {
-    if (status === undefined) return
-    const time = new Date()
-    switch (status) {
-      case 'in-progress':
-        modifyActivity({
-          id: id,
-          status: 'in-progress',
-        })
-        break
-      case 'stopped':
-        modifyActivity({
-          id: id,
-          status: 'stopped',
-          end_time: time.getTime(),
-        })
-        break
-      default:
-        break
+    if (isActive) {
+      modifyActivity({
+        id: id,
+        status: 'in-progress',
+      })
+    } else {
+      modifyActivity({
+        id: id,
+        status: 'stopped',
+        end_time: new Date().getTime(),
+      })
     }
-  }, [status])
+  }, [isActive])
 
   useEffect(() => {
-    if (timestamp === undefined || status === 'stopped') return
+    if (timestamp === undefined || !isActive) return
 
     addActivityData({
       activity_id: id,
@@ -100,7 +93,7 @@ export default function useActivity(): IActivity {
       heart_rate: heartRate,
       latitude: position?.coords.latitude,
       longitude: position?.coords.longitude,
-      status: status,
+      status: isActive ? 'in-progress' : 'stopped',
     })
   }, [timestamp])
 
@@ -109,5 +102,5 @@ export default function useActivity(): IActivity {
       return () => clearInterval(dataCollectionInterval)
   }, [dataCollectionInterval])
 
-  return { status, setStatus, position, id }
+  return { isActive, setIsActive, position, id }
 }
