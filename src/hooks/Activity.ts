@@ -35,23 +35,30 @@ export type ActivityData = {
   status?: Status
 }
 
+export type Lap = {
+  timestamp: number
+  activity_id: number
+}
+
 export interface IActivity {
   id: number
   isActive: boolean
   setIsActive: (isActive: boolean) => void
   position?: GeoPosition
+  nextLap: () => void
 }
 
 export default function useActivity(): IActivity {
   const [id, setId] = useState<number>(new Date().getTime())
   const [isActive, setIsActive] = useState<boolean>(false)
   const [activityType, setActivityType] = useState<ActivityType>('Running')
-  const { addActivity, modifyActivity, addActivityData } =
+  const { addActivity, modifyActivity, addActivityData, addLap } =
     useContext(DatabaseContext)
   const { heartRate } = useContext(HeartRateMonitorContext)
   const { position } = useLocation()
   const [dataCollectionInterval, setDataCollectionInterval] = useState<number>()
   const [timestamp, setTimestamp] = useState<number>()
+  const [lap, setLap] = useState<number>(0)
 
   useEffect(() => {
     addActivity({
@@ -98,9 +105,20 @@ export default function useActivity(): IActivity {
   }, [timestamp])
 
   useEffect(() => {
+    addLap({
+      activity_id: id,
+      timestamp: new Date().getTime(),
+    })
+  }, [lap])
+
+  useEffect(() => {
     if (dataCollectionInterval !== undefined)
       return () => clearInterval(dataCollectionInterval)
   }, [dataCollectionInterval])
 
-  return { isActive, setIsActive, position, id }
+  function nextLap() {
+    setLap((prevLap) => prevLap + 1)
+  }
+
+  return { isActive, setIsActive, position, id, nextLap }
 }

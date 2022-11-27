@@ -6,11 +6,12 @@ import {
   openDatabase,
   SQLiteDatabase,
 } from 'react-native-sqlite-storage'
-import { Activity, ActivityData } from './Activity'
+import { Activity, ActivityData, Lap } from './Activity'
 
 const databaseName = 'user-data.db'
 const activityInfoTableName = 'activity_info'
 const activityDataTableName = 'activity_data'
+const activityLapsTableName = 'activity_laps'
 
 type DatabaseColumns<Type> = {
   [Property in keyof Type]-?: string
@@ -40,6 +41,11 @@ const activityDataTableColumns: DatabaseColumns<ActivityData> = {
   status: 'status',
 }
 
+const activityLapsTableColumns: DatabaseColumns<Lap> = {
+  timestamp: 'timestamp',
+  activity_id: 'activity_id',
+}
+
 const createInfoTableScript = `
 CREATE TABLE IF NOT EXISTS ${activityInfoTableName}(
   ${activityInfoTableColumns.id} INTEGER PRIMARY KEY NOT NULL,
@@ -56,6 +62,7 @@ CREATE TABLE IF NOT EXISTS ${activityInfoTableName}(
   ${activityInfoTableColumns.total_distance} INTEGER
 );
 `
+
 const createDataTableScript = `
 CREATE TABLE IF NOT EXISTS ${activityDataTableName}(
   ${activityDataTableColumns.timestamp} INTEGER PRIMARY KEY NOT NULL,
@@ -68,12 +75,21 @@ CREATE TABLE IF NOT EXISTS ${activityDataTableName}(
 );
 `
 
+const createLapsTableScript = `
+CREATE TABLE IF NOT EXISTS ${activityLapsTableName}(
+  ${activityLapsTableColumns.timestamp} INTEGER PRIMARY KEY NOT NULL,
+  ${activityLapsTableColumns.activity_id} INTEGER NOT NULL,
+  FOREIGN KEY(${activityLapsTableColumns.activity_id}) REFERENCES ${activityInfoTableName}(${activityInfoTableColumns.id})
+);
+`
+
 enablePromise(true)
 
 interface IDatabaseApi {
   addActivity: (activity: Activity) => void
   modifyActivity: (activity: Activity) => void
   addActivityData: (data: ActivityData) => void
+  addLap: (lap: Lap) => void
 
   // Mostly for advanced users.
   clearDatabase: () => void
@@ -100,6 +116,7 @@ function useDatabase(): IDatabaseApi {
     batchSqlTransactions([
       { statement: createInfoTableScript },
       { statement: createDataTableScript },
+      { statement: createLapsTableScript },
     ]).then(() => console.log('Tables created!'))
   }
 
@@ -122,6 +139,10 @@ function useDatabase(): IDatabaseApi {
 
   function addActivityData(data: ActivityData): void {
     addRow(data, activityDataTableName)
+  }
+
+  function addLap(lap: Lap): void {
+    addRow(lap, activityLapsTableName)
   }
 
   function addRow<T extends object>(data: T, tableName: string): void {
@@ -156,7 +177,7 @@ function useDatabase(): IDatabaseApi {
       )
   }
 
-  return { addActivity, modifyActivity, addActivityData, clearDatabase }
+  return { addActivity, modifyActivity, addActivityData, addLap, clearDatabase }
 }
 
 export const DatabaseContext = createContext<IDatabaseApi>({} as IDatabaseApi)
