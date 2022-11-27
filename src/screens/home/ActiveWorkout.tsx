@@ -35,6 +35,14 @@ export default function ActiveWorkout({
     }
   }, [])
 
+  useEffect(() => {
+    // Add this so when the back button is pressed, we don't exit suddenly and
+    // force the user to either pause or stop.
+    navigation.addListener('beforeRemove', (event) => {
+      event.preventDefault()
+    })
+  }, [navigation])
+
   const resumeButton = (
     <TouchableOpacity
       onPress={() => {
