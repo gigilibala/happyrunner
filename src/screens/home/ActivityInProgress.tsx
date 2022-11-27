@@ -12,10 +12,10 @@ import { Props } from '../navigators/RootNavigator'
 
 const BUTTON_SIZE = 100
 
-export default function ActiveWorkout({
+export default function ActivityInProgress({
   route,
   navigation,
-}: Props<'Active Workout'>) {
+}: Props<'Activity In Progress'>) {
   const styles = useStyles(createStyles)
   const { status, setStatus, start, position } = useActivity()
   const { displayNotification, cancelNotification } = useNotification()

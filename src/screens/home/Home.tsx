@@ -12,7 +12,7 @@ export default function Home({ route, navigation }: Props<'Home'>) {
   const bigStartButton = (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate('Active Workout')
+        navigation.navigate('Activity In Progress')
       }}
     >
       <Icon name={'play-circle'} size={100} color={'green'} />
