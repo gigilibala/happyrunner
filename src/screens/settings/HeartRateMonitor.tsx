@@ -93,7 +93,7 @@ export function HeartRateMonitor({
         />
 
         <View>
-          <Text style={styles.text}>{device ? device.name : '?'}</Text>
+          <Text style={styles.mediumText}>{device ? device.name : '?'}</Text>
         </View>
       </View>
       <View style={styles.iconWithText}>
@@ -105,7 +105,7 @@ export function HeartRateMonitor({
         />
         <View>
           {heartRate ? (
-            <Text style={styles.text}>{heartRate}</Text>
+            <Text style={styles.mediumText}>{heartRate}</Text>
           ) : (
             <ActivityIndicator />
           )}
@@ -125,7 +125,7 @@ export function HeartRateMonitor({
       <View style={styles.centeredView}>
         <View style={[styles.modalView, styles.shadow]}>
           <View style={styles.card}>
-            <Text style={styles.text}>{t('scanning')}</Text>
+            <Text style={styles.mediumText}>{t('scanning')}</Text>
           </View>
           <ScrollView>
             {devices.map((device) => (

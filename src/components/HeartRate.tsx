@@ -11,7 +11,7 @@ export default function HeartRate() {
   return (
     <View style={styles.box}>
       {heartRate ? (
-        <Text style={styles.text}>{heartRate}</Text>
+        <Text style={styles.mediumText}>{heartRate}</Text>
       ) : (
         <ActivityIndicator size={'large'} />
       )}

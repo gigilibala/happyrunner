@@ -43,11 +43,13 @@ export function SettingsList(data: Settings) {
       return (
         <View>
           <View style={styles.titleView}>
-            <Text style={[styles.text, styles.title]}>{title}</Text>
+            <Text style={[styles.mediumText, styles.title]}>{title}</Text>
           </View>
           {subTitle && (
             <View style={styles.subTitleView}>
-              <Text style={[styles.text, styles.subTitle]}>{subTitle}</Text>
+              <Text style={[styles.mediumText, styles.subTitle]}>
+                {subTitle}
+              </Text>
             </View>
           )}
         </View>

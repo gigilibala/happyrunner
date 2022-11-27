@@ -32,14 +32,14 @@ export default function Home({ route, navigation }: Props<'Home'>) {
           }}
         />
       </View>
-      <View style={styles.buttonsView}>{bigStartButton}</View>
+      <View style={styles.activityButtonView}>{bigStartButton}</View>
     </SafeAreaView>
   )
 }
 
 const createStyles = (theme: Theme) =>
   StyleSheet.create({
-    buttonsView: {
+    activityButtonView: {
       flexDirection: 'row',
       justifyContent: 'center',
       padding: 20,

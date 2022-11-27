@@ -1,11 +1,12 @@
 import { Theme } from '@react-navigation/native'
-import React, { useEffect } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useContext, useEffect } from 'react'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useStyles } from '../../common/styles'
-import VerticalCard from '../../components/VerticalCard'
+import HarizontalCard from '../../components/HarizontalCard'
 import useActivity from '../../hooks/Activity'
+import { HeartRateMonitorContext } from '../../hooks/HeartRateMonitorProvider'
 import useNotification from '../../hooks/Notification'
 import { Props } from '../navigators/RootNavigator'
 
@@ -18,6 +19,7 @@ export default function ActiveWorkout({
   const styles = useStyles(createStyles)
   const { status, setStatus, start, position } = useActivity()
   const { displayNotification, cancelNotification } = useNotification()
+  const { heartRate } = useContext(HeartRateMonitorContext)
 
   useEffect(() => {
     displayNotification()
@@ -67,9 +69,48 @@ export default function ActiveWorkout({
   return (
     <SafeAreaView style={[styles.safeAreaView, styles.verticalContainer]}>
       <View style={styles.activityInfoView}>
-        <VerticalCard>
-          <Text>World</Text>
-        </VerticalCard>
+        <HarizontalCard
+          title={'Heart Rate'}
+          color={'red'}
+          unit={'BPM'}
+          value1={heartRate || 'N/A'}
+        />
+        <HarizontalCard
+          title={'Heart Rate'}
+          color={'red'}
+          unit={'BPM'}
+          value1={heartRate || 'N/A'}
+          value2={{ value: heartRate || 'N/A', scope: 'Lap' }}
+        />
+        <HarizontalCard
+          title={'Heart Rate'}
+          color={'red'}
+          unit={'BPM'}
+          value1={heartRate || 'N/A'}
+          value2={{ value: heartRate || 'N/A', scope: 'Lap' }}
+          value3={{ value: heartRate || 'N/A', scope: 'Total' }}
+        />
+        <HarizontalCard
+          title={'Heart Rate'}
+          color={'red'}
+          unit={'BPM'}
+          value1={heartRate || 'N/A'}
+        />
+        <HarizontalCard
+          title={'Heart Rate'}
+          color={'red'}
+          unit={'BPM'}
+          value1={heartRate || 'N/A'}
+          value2={{ value: heartRate || 'N/A', scope: 'Lap' }}
+        />
+        <HarizontalCard
+          title={'Heart Rate'}
+          color={'red'}
+          unit={'BPM'}
+          value1={heartRate || 'N/A'}
+          value2={{ value: heartRate || 'N/A', scope: 'Lap' }}
+          value3={{ value: heartRate || 'N/A', scope: 'Total' }}
+        />
       </View>
 
       <View style={styles.activityButtonView}>
@@ -85,6 +126,7 @@ const createStyles = (theme: Theme) =>
     activityInfoView: {
       flexDirection: 'column',
       alignItems: 'center',
+      justifyContent: 'center',
       flex: 1,
     },
     activityButtonView: {

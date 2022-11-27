@@ -34,6 +34,9 @@ const createGlobalStyles = (theme: Theme) =>
     },
     text: {
       color: theme.colors.text,
+    },
+    mediumText: {
+      color: theme.colors.text,
       fontSize: 20,
     },
     primaryText: {
@@ -41,8 +44,12 @@ const createGlobalStyles = (theme: Theme) =>
       fontWeight: 'bold',
     },
     largeText: {
-      color: theme.colors.primary,
+      color: theme.colors.text,
       fontSize: 25,
+    },
+    largerText: {
+      color: theme.colors.text,
+      fontSize: 35,
     },
     button: {
       margin: 10,
