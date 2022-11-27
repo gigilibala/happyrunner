@@ -57,7 +57,7 @@ export default function useActivity(): IActivity {
   const { heartRate } = useContext(HeartRateMonitorContext)
   const { position } = useLocation()
   const [dataCollectionInterval, setDataCollectionInterval] = useState<number>()
-  const [timestamp, setTimestamp] = useState<number>()
+  const [intervalTimestamp, setIntervalTimestamp] = useState<Date>()
   const [lap, setLap] = useState<number>(0)
 
   useEffect(() => {
@@ -68,7 +68,7 @@ export default function useActivity(): IActivity {
     })
     setIsActive(true)
     setDataCollectionInterval(
-      setInterval(() => setTimestamp(new Date().getTime()), INTERVAL_MS),
+      setInterval(() => setIntervalTimestamp(new Date()), INTERVAL_MS),
     )
 
     return () => {
@@ -92,16 +92,16 @@ export default function useActivity(): IActivity {
   }, [isActive])
 
   useEffect(() => {
-    if (timestamp === undefined || !isActive) return
+    if (intervalTimestamp === undefined || !isActive) return
 
     addActivityDatum({
       activity_id: id,
-      timestamp: timestamp,
+      timestamp: intervalTimestamp.getTime(),
       heart_rate: heartRate,
       latitude: position?.coords.latitude,
       longitude: position?.coords.longitude,
     })
-  }, [timestamp])
+  }, [intervalTimestamp])
 
   useEffect(() => {
     if (lap === 0) return
