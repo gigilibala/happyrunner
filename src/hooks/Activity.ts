@@ -6,7 +6,7 @@ import { useLocation } from './Location'
 
 type ActivityType = 'Running'
 
-type Status = 'in-progress' | 'paused' | 'stopped'
+type Status = 'in-progress' | 'stopped'
 
 const INTERVAL_MS = 3000
 
@@ -39,12 +39,11 @@ export interface IActivity {
   id: number
   status?: Status
   setStatus: (status: Status) => void
-  start: () => void
   position?: GeoPosition
 }
 
 export default function useActivity(): IActivity {
-  const [id, setId] = useState<number>()
+  const [id, setId] = useState<number>(new Date().getTime())
   const [status, setStatus] = useState<Status>()
   const [activityType, setActivityType] = useState<ActivityType>('Running')
   const { addActivity, modifyActivity, addActivityData } =
@@ -55,30 +54,31 @@ export default function useActivity(): IActivity {
   const [timestamp, setTimestamp] = useState<number>()
 
   useEffect(() => {
-    if (id === undefined) return
     addActivity({
       id: id,
       start_time: new Date().getTime(),
       type: activityType,
     })
     setStatus('in-progress')
+    setDataCollectionInterval(
+      setInterval(() => setTimestamp(new Date().getTime()), INTERVAL_MS),
+    )
+    setIsActive(true)
+
+    return () => {
+      setStatus('stopped')
+      setIsActive(false)
+    }
   }, [id])
 
   useEffect(() => {
-    if (status === undefined || id === undefined) return
+    if (status === undefined) return
     const time = new Date()
     switch (status) {
       case 'in-progress':
         modifyActivity({
           id: id,
           status: 'in-progress',
-        })
-        startCollectingData()
-        break
-      case 'paused':
-        modifyActivity({
-          id: id,
-          status: 'paused',
         })
         break
       case 'stopped':
@@ -87,8 +87,6 @@ export default function useActivity(): IActivity {
           status: 'stopped',
           end_time: time.getTime(),
         })
-        setId(undefined)
-        stopCollectingData()
         break
       default:
         break
@@ -96,8 +94,7 @@ export default function useActivity(): IActivity {
   }, [status])
 
   useEffect(() => {
-    if (timestamp === undefined || id === undefined || status === 'paused')
-      return
+    if (timestamp === undefined || status === 'stopped') return
 
     addActivityData({
       activity_id: id,
@@ -109,29 +106,10 @@ export default function useActivity(): IActivity {
     })
   }, [timestamp])
 
-  function start(): void {
-    // TODO(gigilibala): Maybe change ID to something else other than current time.
-    setId(new Date().getTime())
-  }
+  useEffect(() => {
+    if (dataCollectionInterval !== undefined)
+      return () => clearInterval(dataCollectionInterval)
+  }, [dataCollectionInterval])
 
-  function startCollectingData(): void {
-    console.log('Starting to collect data.')
-
-    setDataCollectionInterval(
-      setInterval(() => setTimestamp(new Date().getTime()), INTERVAL_MS),
-    )
-
-    setIsActive(true)
-  }
-
-  function stopCollectingData(): void {
-    if (dataCollectionInterval === undefined) return
-    console.log('Stopping data collection.')
-
-    clearInterval(dataCollectionInterval)
-    setDataCollectionInterval(undefined)
-    setIsActive(false)
-  }
-
-  return { status, setStatus, start, position }
+  return { status, setStatus, position, id }
 }

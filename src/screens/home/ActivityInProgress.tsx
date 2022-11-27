@@ -17,16 +17,14 @@ export default function ActivityInProgress({
   navigation,
 }: Props<'Activity In Progress'>) {
   const styles = useStyles(createStyles)
-  const { status, setStatus, start, position, id } = useActivity()
+  const { status, setStatus, position, id } = useActivity()
   const { displayNotification, cancelNotification } = useNotification()
   const { heartRate } = useContext(HeartRateMonitorContext)
 
   useEffect(() => {
-    displayNotification()
-      .then(() => {
-        start()
-      })
-      .catch((error) => console.log('Failed to start notification: ', error))
+    displayNotification().catch((error) =>
+      console.log('Failed to start notification: ', error),
+    )
 
     return () => {
       cancelNotification().catch((error) =>
@@ -56,7 +54,7 @@ export default function ActivityInProgress({
   const pauseButton = (
     <TouchableOpacity
       onPress={() => {
-        setStatus('paused')
+        setStatus('stopped')
       }}
     >
       <Icon name={'pause-circle'} size={BUTTON_SIZE} color={'orange'} />
@@ -66,7 +64,7 @@ export default function ActivityInProgress({
   const stopButton = (
     <TouchableOpacity
       onPress={() => {
-        setStatus('paused')
+        setStatus('stopped')
         navigation.navigate('Activity Details', { activityId: id })
       }}
     >
