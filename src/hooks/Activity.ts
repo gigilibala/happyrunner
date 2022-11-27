@@ -49,7 +49,7 @@ export default function useActivity(): IActivity {
   const { addActivity, modifyActivity, addActivityData } =
     useContext(DatabaseContext)
   const { heartRate } = useContext(HeartRateMonitorContext)
-  const { setIsActive, position } = useLocation()
+  const { position } = useLocation()
   const [dataCollectionInterval, setDataCollectionInterval] = useState<number>()
   const [timestamp, setTimestamp] = useState<number>()
 
@@ -63,11 +63,9 @@ export default function useActivity(): IActivity {
     setDataCollectionInterval(
       setInterval(() => setTimestamp(new Date().getTime()), INTERVAL_MS),
     )
-    setIsActive(true)
 
     return () => {
       setStatus('stopped')
-      setIsActive(false)
     }
   }, [id])
 

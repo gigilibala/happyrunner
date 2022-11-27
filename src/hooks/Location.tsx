@@ -8,15 +8,17 @@ import {
 import Geolocation from 'react-native-geolocation-service'
 
 interface ILocationApi {
-  setIsActive: (active: boolean) => void
   position?: Geolocation.GeoPosition
 }
 
 export function useLocation(): ILocationApi {
   const [position, setPosition] = useState<Geolocation.GeoPosition>()
-  const [isActive, setIsActive] = useState<boolean>(false)
   const [watchId, setWatchId] = useState<number>()
   const [serviceEnabled, setServiceEnabled] = useState<boolean>(true)
+
+  useEffect(() => {
+    start()
+  }, [])
 
   useEffect(() => {
     if (watchId === undefined) return
@@ -27,15 +29,6 @@ export function useLocation(): ILocationApi {
       console.log('Stopped geolocation.')
     }
   }, [watchId])
-
-  useEffect(() => {
-    if (isActive) {
-      start()
-      return () => {
-        setWatchId(undefined)
-      }
-    }
-  }, [isActive])
 
   function start() {
     if (!serviceEnabled) return
@@ -103,5 +96,5 @@ export function useLocation(): ILocationApi {
     })
   }
 
-  return { setIsActive, position }
+  return { position }
 }
