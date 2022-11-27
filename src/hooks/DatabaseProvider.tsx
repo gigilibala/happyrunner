@@ -113,42 +113,46 @@ function useDatabase(): IDatabaseApi {
   }
 
   function addActivity(activity: Activity): void {
-    const query = `INSERT INTO ${activityInfoTableName}
-      (${activityInfoTableColumns.id}, ${activityInfoTableColumns.type}) 
-      VALUES (${activity.id}, '${activity.type}')
-    `
-    db?.transaction((tx) => tx.executeSql(query))
-      .then(() => console.log('Activity added to the database.', activity))
-      .catch((error) =>
-        console.log('Failed to add activity to database: ', error, activity),
-      )
+    addRow(activity, activityInfoTableName)
   }
 
   function modifyActivity(activity: Activity): void {
-    const partialActivity: Partial<typeof activity> = { ...activity }
-    delete partialActivity.id
-    const columns = Object.keys(partialActivity).map((key) => `${key} = ?`)
-    const query = `UPDATE ${activityInfoTableName}
-      SET ${columns.join(', ')}
-      WHERE ${activityInfoTableColumns.id} = ${activity.id}
-    `
-    db?.executeSql(query, Object.values(partialActivity))
-      .then(() => console.log('Activity modified in the database.', activity))
-      .catch((error) =>
-        console.log('Failed to modify activity in database: ', error, activity),
-      )
+    modifyRow(activity, activityInfoTableName, 'id')
   }
 
   function addActivityData(data: ActivityData): void {
+    addRow(data, activityDataTableName)
+  }
+
+  function addRow<T extends object>(data: T, tableName: string): void {
     const keys = Object.keys(data)
-    const query = `INSERT INTO ${activityDataTableName}
+    const query = `INSERT INTO ${tableName}
       (${keys.join(', ')})
       VALUES (${Array(keys.length).fill('?').join(', ')})
     `
     db?.executeSql(query, Object.values(data))
-      .then(() => console.log('Activity added to the database.', data))
+      .then(() => console.log('Added row to table: ', tableName, data))
       .catch((error) =>
-        console.log('Failed to add activity to database: ', error, data),
+        console.log('Failed to add row to table: ', tableName, error, data),
+      )
+  }
+
+  function modifyRow<T extends object, KeyType extends keyof T>(
+    data: T,
+    tableName: string,
+    primaryKeyName: KeyType,
+  ) {
+    const partialData: Partial<typeof data> = { ...data }
+    delete partialData[primaryKeyName]
+    const columns = Object.keys(partialData).map((key) => `${key} = ?`)
+    const query = `UPDATE ${tableName}
+      SET ${columns.join(', ')}
+      WHERE ${primaryKeyName.toString()} = ${data[primaryKeyName]}
+    `
+    db?.executeSql(query, Object.values(partialData))
+      .then(() => console.log('Modified row in table: ', tableName, data))
+      .catch((error) =>
+        console.log('Failed to modify in table: ', tableName, error, data),
       )
   }
 
