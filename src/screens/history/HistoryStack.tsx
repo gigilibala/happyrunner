@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { useTranslation } from 'react-i18next'
-import { History } from '../history/History'
-import { ScreenParams } from './RootNavigator'
+import { ScreenParams } from '../RootNavigator'
+import { History } from './History'
 
 const Stack = createNativeStackNavigator<ScreenParams>()
 

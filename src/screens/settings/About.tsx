@@ -2,7 +2,7 @@ import { Theme } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView, StyleSheet, Text } from 'react-native'
 import { useStyles } from '../../common/styles'
-import { Props } from '../navigators/RootNavigator'
+import { Props } from '../RootNavigator'
 
 export function About({ route, navigation }: Props<'About'>) {
   const styles = useStyles(createStyles)

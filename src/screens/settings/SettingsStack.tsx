@@ -1,10 +1,10 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { useTranslation } from 'react-i18next'
-import { About } from '../settings/About'
-import { AppSettings } from '../settings/AppSettings'
-import { AudioCues } from '../settings/AudioCues'
-import { HeartRateMonitor } from '../settings/HeartRateMonitor'
-import { ScreenParams } from './RootNavigator'
+import { ScreenParams } from '../RootNavigator'
+import { About } from './About'
+import { AppSettings } from './AppSettings'
+import { AudioCues } from './AudioCues'
+import { HeartRateMonitor } from './HeartRateMonitor'
 
 const Stack = createNativeStackNavigator<ScreenParams>()
 

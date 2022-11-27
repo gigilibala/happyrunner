@@ -8,7 +8,7 @@ import HarizontalCard from '../../components/HarizontalCard'
 import useActivity from '../../hooks/Activity'
 import { HeartRateMonitorContext } from '../../hooks/HeartRateMonitorProvider'
 import useNotification from '../../hooks/Notification'
-import { Props } from '../navigators/RootNavigator'
+import { Props } from '../RootNavigator'
 
 const BUTTON_SIZE = 100
 
@@ -66,7 +66,7 @@ export default function ActivityInProgress({
   const stopButton = (
     <TouchableOpacity
       onPress={() => {
-        setStatus('stopped')
+        setStatus('paused')
         navigation.navigate('Activity Details')
       }}
     >

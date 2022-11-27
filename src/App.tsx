@@ -8,7 +8,7 @@ import { AudioCuesProvider } from './hooks/AudioCuesProvider'
 import { DatabaseProvider } from './hooks/DatabaseProvider'
 import { HeartRateMonitorProvider } from './hooks/HeartRateMonitorProvider'
 import './localization/i18n'
-import { RootNavigator } from './screens/navigators/RootNavigator'
+import { RootNavigator } from './screens/RootNavigator'
 
 LogBox.ignoreLogs(['new NativeEventEmitter'])
 

@@ -4,7 +4,7 @@ import { Button, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useStyles } from '../../common/styles'
-import { Props } from '../navigators/RootNavigator'
+import { Props } from '../RootNavigator'
 
 export default function Home({ route, navigation }: Props<'Home'>) {
   const styles = useStyles(createStyles)

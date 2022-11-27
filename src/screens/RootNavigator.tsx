@@ -3,9 +3,9 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { useTranslation } from 'react-i18next'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import IonIcon from 'react-native-vector-icons/Ionicons'
-import { HistoryStack } from './HistoryStack'
-import { HomeStack } from './HomeStack'
-import { SettingsStack } from './SettingsStack'
+import { HistoryStack } from './history/HistoryStack'
+import { HomeStack } from './home/HomeStack'
+import { SettingsStack } from './settings/SettingsStack'
 
 export type ScreenParams = {
   History: undefined

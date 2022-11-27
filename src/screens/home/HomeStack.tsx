@@ -1,9 +1,9 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { useTranslation } from 'react-i18next'
-import ActivityDetails from '../home/ActivityDetails'
-import ActivityInProgress from '../home/ActivityInProgress'
-import Home from '../home/Home'
-import { ScreenParams } from './RootNavigator'
+import { ScreenParams } from '../RootNavigator'
+import ActivityDetails from './ActivityDetails'
+import ActivityInProgress from './ActivityInProgress'
+import Home from './Home'
 
 const Stack = createNativeStackNavigator<ScreenParams>()
 
