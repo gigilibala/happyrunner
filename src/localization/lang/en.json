@@ -5,7 +5,8 @@
     "home": "Home",
     "history": "History",
     "settings": "Settings",
-    "about": "About"
+    "about": "About",
+    "activityDetails": "Activity Details"
   },
   "heartRateMonitor": "Heart Rate Monitor",
   "audioCues": "Audio Cues",
