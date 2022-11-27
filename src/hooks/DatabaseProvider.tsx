@@ -6,7 +6,7 @@ import {
   openDatabase,
   SQLiteDatabase,
 } from 'react-native-sqlite-storage'
-import { Activity, ActivityData, Lap } from './Activity'
+import { Datum, Info, Lap } from './Activity'
 
 const databaseName = 'user-data.db'
 const activityInfoTableName = 'activity_info'
@@ -17,7 +17,7 @@ type DatabaseColumns<Type> = {
   [Property in keyof Type]-?: string
 }
 
-const activityInfoTableColumns: DatabaseColumns<Activity> = {
+const activityInfoTableColumns: DatabaseColumns<Info> = {
   id: 'id',
   type: 'type',
   status: 'status',
@@ -32,7 +32,7 @@ const activityInfoTableColumns: DatabaseColumns<Activity> = {
   total_distance: 'total_distance',
 }
 
-const activityDataTableColumns: DatabaseColumns<ActivityData> = {
+const activityDataTableColumns: DatabaseColumns<Datum> = {
   timestamp: 'timestamp',
   activity_id: 'activity_id',
   heart_rate: 'heart_rate',
@@ -86,10 +86,10 @@ CREATE TABLE IF NOT EXISTS ${activityLapsTableName}(
 enablePromise(true)
 
 interface IDatabaseApi {
-  addActivity: (activity: Activity) => void
-  modifyActivity: (activity: Activity) => void
-  addActivityData: (data: ActivityData) => void
-  addLap: (lap: Lap) => void
+  addActivity: (activity: Info) => void
+  modifyActivity: (activity: Info) => void
+  addActivityDatum: (data: Datum) => void
+  addActivityLap: (lap: Lap) => void
 
   // Mostly for advanced users.
   clearDatabase: () => void
@@ -129,20 +129,20 @@ function useDatabase(): IDatabaseApi {
       .catch((error) => console.error('Failed to delete database: ', error))
   }
 
-  function addActivity(activity: Activity): void {
-    addRow(activity, activityInfoTableName)
+  function addActivity(value: Info): void {
+    addRow(value, activityInfoTableName)
   }
 
-  function modifyActivity(activity: Activity): void {
-    modifyRow(activity, activityInfoTableName, 'id')
+  function modifyActivity(value: Info): void {
+    modifyRow(value, activityInfoTableName, 'id')
   }
 
-  function addActivityData(data: ActivityData): void {
-    addRow(data, activityDataTableName)
+  function addActivityDatum(value: Datum): void {
+    addRow(value, activityDataTableName)
   }
 
-  function addLap(lap: Lap): void {
-    addRow(lap, activityLapsTableName)
+  function addActivityLap(value: Lap): void {
+    addRow(value, activityLapsTableName)
   }
 
   function addRow<T extends object>(data: T, tableName: string): void {
@@ -177,7 +177,13 @@ function useDatabase(): IDatabaseApi {
       )
   }
 
-  return { addActivity, modifyActivity, addActivityData, addLap, clearDatabase }
+  return {
+    addActivity,
+    modifyActivity,
+    addActivityDatum,
+    addActivityLap,
+    clearDatabase,
+  }
 }
 
 export const DatabaseContext = createContext<IDatabaseApi>({} as IDatabaseApi)

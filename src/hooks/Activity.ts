@@ -11,7 +11,7 @@ type Status = 'in-progress' | 'stopped'
 const INTERVAL_MS = 3000
 
 // Keep in sync with database table.
-export type Activity = {
+export type Info = {
   id: number
   status?: Status
   type?: ActivityType
@@ -26,7 +26,7 @@ export type Activity = {
   total_distance?: number
 }
 
-export type ActivityData = {
+export type Datum = {
   timestamp: number
   activity_id: number
   heart_rate?: number
@@ -52,7 +52,7 @@ export default function useActivity(): IActivity {
   const [id, setId] = useState<number>(new Date().getTime())
   const [isActive, setIsActive] = useState<boolean>(false)
   const [activityType, setActivityType] = useState<ActivityType>('Running')
-  const { addActivity, modifyActivity, addActivityData, addLap } =
+  const { addActivity, modifyActivity, addActivityDatum, addActivityLap } =
     useContext(DatabaseContext)
   const { heartRate } = useContext(HeartRateMonitorContext)
   const { position } = useLocation()
@@ -94,7 +94,7 @@ export default function useActivity(): IActivity {
   useEffect(() => {
     if (timestamp === undefined || !isActive) return
 
-    addActivityData({
+    addActivityDatum({
       activity_id: id,
       timestamp: timestamp,
       heart_rate: heartRate,
@@ -105,7 +105,7 @@ export default function useActivity(): IActivity {
   }, [timestamp])
 
   useEffect(() => {
-    addLap({
+    addActivityLap({
       activity_id: id,
       timestamp: new Date().getTime(),
     })
