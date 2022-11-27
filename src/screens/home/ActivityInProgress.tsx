@@ -17,7 +17,7 @@ export default function ActivityInProgress({
   navigation,
 }: Props<'Activity In Progress'>) {
   const styles = useStyles(createStyles)
-  const { status, setStatus, start, position } = useActivity()
+  const { status, setStatus, start, position, id } = useActivity()
   const { displayNotification, cancelNotification } = useNotification()
   const { heartRate } = useContext(HeartRateMonitorContext)
 
@@ -67,7 +67,7 @@ export default function ActivityInProgress({
     <TouchableOpacity
       onPress={() => {
         setStatus('paused')
-        navigation.navigate('Activity Details')
+        navigation.navigate('Activity Details', { activityId: id })
       }}
     >
       <Icon name={'stop-circle'} size={BUTTON_SIZE} color={'red'} />

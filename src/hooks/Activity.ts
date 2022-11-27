@@ -36,6 +36,7 @@ export type ActivityData = {
 }
 
 export interface IActivity {
+  id: number
   status?: Status
   setStatus: (status: Status) => void
   start: () => void
