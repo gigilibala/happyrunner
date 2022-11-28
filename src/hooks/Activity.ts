@@ -1,8 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import { GeoPosition } from 'react-native-geolocation-service'
 import { DatabaseContext } from '../hooks/DatabaseProvider'
-import { HeartRateMonitorContext } from './HeartRateMonitorProvider'
-import { useLocation } from './Location'
 
 type ActivityType = 'Running'
 
@@ -44,18 +42,21 @@ export interface IActivity {
   id: number
   isActive: boolean
   setIsActive: (isActive: boolean) => void
-  position?: GeoPosition
   nextLap: () => void
 }
 
-export default function useActivity(): IActivity {
+export default function useActivity({
+  heartRate,
+  position,
+}: {
+  heartRate?: number
+  position?: GeoPosition
+}): IActivity {
   const [id, setId] = useState<number>(new Date().getTime())
   const [isActive, setIsActive] = useState<boolean>(true)
   const [activityType, setActivityType] = useState<ActivityType>('Running')
   const { addActivity, modifyActivity, addActivityDatum, addActivityLap } =
     useContext(DatabaseContext)
-  const { heartRate } = useContext(HeartRateMonitorContext)
-  const { position } = useLocation()
   const [dataCollectionInterval, setDataCollectionInterval] = useState<number>()
   const [intervalTs, setIntervalTs] = useState<Date>()
   const [lap, setLap] = useState<number>(1)
@@ -146,7 +147,7 @@ export default function useActivity(): IActivity {
     setLap((prevLap) => prevLap + 1)
   }
 
-  return { isActive, setIsActive, position, id, nextLap }
+  return { isActive, setIsActive, id, nextLap }
 }
 
 function randomId() {

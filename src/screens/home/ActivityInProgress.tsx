@@ -7,6 +7,7 @@ import { useStyles } from '../../common/styles'
 import HarizontalCard from '../../components/HarizontalCard'
 import useActivity from '../../hooks/Activity'
 import { HeartRateMonitorContext } from '../../hooks/HeartRateMonitorProvider'
+import { useLocation } from '../../hooks/Location'
 import useNotification from '../../hooks/Notification'
 import { Props } from '../RootNavigator'
 
@@ -17,9 +18,13 @@ export default function ActivityInProgress({
   navigation,
 }: Props<'Activity In Progress'>) {
   const styles = useStyles(createStyles)
-  const { isActive, setIsActive, position, id, nextLap } = useActivity()
-  const { displayNotification, cancelNotification } = useNotification()
   const { heartRate } = useContext(HeartRateMonitorContext)
+  const { position } = useLocation()
+  const { isActive, setIsActive, id, nextLap } = useActivity({
+    heartRate,
+    position,
+  })
+  const { displayNotification, cancelNotification } = useNotification()
 
   useEffect(() => {
     displayNotification().catch((error) =>
