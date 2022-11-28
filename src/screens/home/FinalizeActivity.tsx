@@ -13,10 +13,10 @@ import { useStyles } from '../../common/styles'
 import { DatabaseContext } from '../../hooks/DatabaseProvider'
 import { Props } from '../RootNavigator'
 
-export default function ActivityDetails({
+export default function FinalizeActivity({
   route,
   navigation,
-}: Props<'Activity Details'>) {
+}: Props<'Finalize Activity'>) {
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
   const { activityId } = route.params
@@ -33,7 +33,7 @@ export default function ActivityDetails({
           multiline={true}
           value={notes}
           onChangeText={setNotes}
-          textAlignVertical="top"
+          textAlignVertical={'top'}
           style={[styles.textInput, styles.card, styles.shadow]}
         />
       </View>

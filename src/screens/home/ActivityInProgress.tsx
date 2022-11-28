@@ -74,7 +74,7 @@ export default function ActivityInProgress({
     <TouchableOpacity
       onPress={() => {
         setIsActive(false)
-        navigation.navigate('Activity Details', { activityId: id })
+        navigation.navigate('Finalize Activity', { activityId: id })
       }}
     >
       <Icon name={'stop-circle'} size={BUTTON_SIZE} color={'red'} />
