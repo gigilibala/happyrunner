@@ -90,6 +90,7 @@ interface IDatabaseApi {
   modifyActivity: (activity: Info) => void
   addActivityDatum: (data: Datum) => void
   addActivityLap: (lap: Lap) => void
+  getLaps: (activityId: number) => Promise<Lap[]>
 
   // Mostly for advanced users.
   clearDatabase: () => void
@@ -171,12 +172,29 @@ function useDatabase(): IDatabaseApi {
       )
   }
 
+  function getLaps(activity_id: number): Promise<Lap[]> {
+    return new Promise<Lap[]>((resolve, reject) => {
+      const columns = Object.values(activityLapsTableColumns)
+      const query = `SELECT ${columns.join(', ')}
+      FROM ${activityLapsTableName}
+      WHERE ${activityLapsTableColumns.activity_id} = ?
+      ORDER BY ${activityLapsTableColumns.number}
+      `
+      db?.readTransaction((tx) => {
+        tx.executeSql(query, [activity_id]).then(([tx, results]) => {
+          resolve(results.rows.raw() as Lap[])
+        })
+      })
+    })
+  }
+
   return {
     addActivity,
     modifyActivity,
     addActivityDatum,
     addActivityLap,
     clearDatabase,
+    getLaps,
   }
 }
 
