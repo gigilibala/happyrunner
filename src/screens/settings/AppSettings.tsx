@@ -66,8 +66,12 @@ export function AppSettings({ navigation }: Props<'Settings'>) {
               t('clearDatabase'),
               t('clearDatabaseNotice'),
               [
-                { text: t('yes'), onPress: () => clearDatabase() },
-                { text: t('cancel') },
+                {
+                  text: t('yes'),
+                  onPress: () => clearDatabase(),
+                  style: 'destructive',
+                },
+                { text: t('cancel'), style: 'cancel' },
               ],
               { cancelable: true },
             )
