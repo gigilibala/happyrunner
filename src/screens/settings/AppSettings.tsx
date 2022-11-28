@@ -43,7 +43,7 @@ export function AppSettings({ navigation }: Props<'Settings'>) {
         },
         {
           kind: 'navigation',
-          title: t('about'),
+          title: t('screens.about'),
           onPress: () => navigation.navigate('About'),
           icon: (
             <Icon.Button
