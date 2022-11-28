@@ -6,7 +6,7 @@ import {
   openDatabase,
   SQLiteDatabase,
 } from 'react-native-sqlite-storage'
-import { Datum, Info, Lap } from './Activity'
+import { Datum, Details, Info, Lap } from './Activity'
 
 const databaseName = 'user-data.db'
 const activityInfoTableName = 'activity_info'
@@ -91,6 +91,7 @@ interface IDatabaseApi {
   addActivityDatum: (data: Datum) => void
   addActivityLap: (lap: Lap) => void
   getActivityLaps: (activityId: number) => Promise<Lap[]>
+  getActivityDetailsList: () => Promise<Details[]>
 
   // Mostly for advanced users.
   clearDatabase: () => void
@@ -173,9 +174,8 @@ function useDatabase(): IDatabaseApi {
   }
 
   function getActivityLaps(activity_id: number): Promise<Lap[]> {
-    return new Promise<Lap[]>((resolve, reject) => {
-      const columns = Object.values(activityLapsTableColumns)
-      const query = `SELECT ${columns.join(', ')}
+    return new Promise<Lap[]>((resolve) => {
+      const query = `SELECT *
       FROM ${activityLapsTableName}
       WHERE ${activityLapsTableColumns.activity_id} = ?
       ORDER BY ${activityLapsTableColumns.number}
@@ -188,6 +188,21 @@ function useDatabase(): IDatabaseApi {
     })
   }
 
+  function getActivityDetailsList(): Promise<Details[]> {
+    return new Promise<Details[]>((resolve) => {
+      const query = `SELECT *
+      FROM ${activityInfoTableName} INNER JOIN ${activityLapsTableName}
+      ON ${activityInfoTableName}.${activityInfoTableColumns.id} = ${activityLapsTableName}.${activityLapsTableColumns.activity_id}
+      AND ${activityLapsTableName}.${activityLapsTableColumns.number} = 0
+      `
+      db?.transaction((tx) => {
+        tx.executeSql(query).then(([tx, results]) => {
+          resolve(results.rows.raw() as Details[])
+        })
+      })
+    })
+  }
+
   return {
     addActivity,
     modifyActivity,
@@ -195,6 +210,7 @@ function useDatabase(): IDatabaseApi {
     addActivityLap,
     clearDatabase,
     getActivityLaps,
+    getActivityDetailsList,
   }
 }
 

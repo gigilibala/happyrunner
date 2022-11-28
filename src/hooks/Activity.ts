@@ -39,6 +39,8 @@ export type Lap = {
   // Maybe add temperature also.
 }
 
+export type Details = Info & Lap
+
 export interface IActivity {
   id: number
   isActive: boolean
