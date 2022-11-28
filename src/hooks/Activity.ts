@@ -55,7 +55,7 @@ export default function useActivity({
   heartRate?: number
   position?: GeoPosition
 }): IActivity {
-  const [id, setId] = useState<number>(new Date().getTime())
+  const id = useRef<number>(0)
   const [isActive, setIsActive] = useState<boolean>(true)
   const [activityType, setActivityType] = useState<ActivityType>('Running')
   const { addActivity, modifyActivity, addActivityDatum, addActivityLap } =
@@ -68,8 +68,9 @@ export default function useActivity({
   const lapStartTs = useRef<Date>()
 
   useEffect(() => {
+    id.current = new Date().getTime()
     addActivity({
-      id: id,
+      id: id.current,
       type: activityType,
     })
 
@@ -80,27 +81,27 @@ export default function useActivity({
 
       addActivityLap({
         id: randomId(),
-        activity_id: id,
-        start_time: id,
+        activity_id: id.current,
+        start_time: id.current,
         end_time: pausedTs.current
           ? pausedTs.current.getTime()
           : new Date().getTime(),
         number: 0,
       })
     }
-  }, [id])
+  }, [])
 
   useEffect(() => {
     if (isActive) {
       modifyActivity({
-        id: id,
+        id: id.current,
         status: 'in-progress',
       })
       pausedTs.current = undefined
     } else {
       const time = new Date()
       modifyActivity({
-        id: id,
+        id: id.current,
         status: 'stopped',
       })
       console.log('setting paused time: ', time.getTime())
@@ -113,7 +114,7 @@ export default function useActivity({
 
     addActivityDatum({
       timestamp: intervalTs.getTime(),
-      activity_id: id,
+      activity_id: id.current,
       heart_rate: heartRate,
       latitude: position?.coords.latitude,
       longitude: position?.coords.longitude,
@@ -128,7 +129,7 @@ export default function useActivity({
       if (endTime < lapStartTs.current!) return
       addActivityLap({
         id: randomId(),
-        activity_id: id,
+        activity_id: id.current,
         start_time: lapStartTs.current!.getTime(),
         end_time: endTime.getTime(),
         number: lap,
@@ -150,7 +151,7 @@ export default function useActivity({
     setLap((prevLap) => prevLap + 1)
   }
 
-  return { isActive, setIsActive, id, nextLap }
+  return { isActive, setIsActive, id: id.current, nextLap }
 }
 
 function randomId() {
