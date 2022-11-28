@@ -67,12 +67,17 @@ function useHeartRateMonitor() {
 
   useEffect(() => {
     setBleManagerEmitter(new NativeEventEmitter(NativeModules.BleManager))
-    setHeartRate(123)
     // TODO(gigilibala): Remove
+    const handle = setInterval(
+      () => setHeartRate(Math.floor(Math.random() * 200)),
+      2000,
+    )
     setDevices([
       { name: 'amin', id: 'amin', advertising: {}, rssi: 1 },
       { name: 'hassani', id: 'hassani', advertising: {}, rssi: 1 },
     ])
+
+    return () => clearInterval(handle)
   }, [])
 
   useEffect(() => {
