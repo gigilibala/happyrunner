@@ -60,7 +60,6 @@ export default function useActivity({
   const [activityType, setActivityType] = useState<ActivityType>('Running')
   const { addActivity, modifyActivity, addActivityDatum, addActivityLap } =
     useContext(DatabaseContext)
-  const [dataCollectionInterval, setDataCollectionInterval] = useState<number>()
   const [intervalTs, setIntervalTs] = useState<Date>()
   const [lap, setLap] = useState<number>(1)
 
@@ -75,9 +74,14 @@ export default function useActivity({
     })
 
     setIsActive(true)
+    const intervalHandle = setInterval(
+      () => setIntervalTs(new Date()),
+      INTERVAL_MS,
+    )
 
     return () => {
       setIsActive(false)
+      clearInterval(intervalHandle)
 
       addActivityLap({
         id: randomId(),
@@ -113,7 +117,10 @@ export default function useActivity({
     if (intervalTs === undefined || !isActive) return
 
     addActivityDatum({
-      timestamp: intervalTs.getTime(),
+      // Do not use intervalTs here because if the component re-mounts, the old
+      // value is used again and will cause duplicate key be added to the
+      // database.
+      timestamp: new Date().getTime(),
       activity_id: id.current,
       heart_rate: heartRate,
       latitude: position?.coords.latitude,
@@ -136,16 +143,6 @@ export default function useActivity({
       })
     }
   }, [lap])
-
-  useEffect(() => {
-    if (dataCollectionInterval === undefined) {
-      setDataCollectionInterval(
-        setInterval(() => setIntervalTs(new Date()), INTERVAL_MS),
-      )
-    } else {
-      return () => clearInterval(dataCollectionInterval)
-    }
-  }, [dataCollectionInterval])
 
   function nextLap() {
     setLap((prevLap) => prevLap + 1)
