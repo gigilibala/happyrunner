@@ -103,13 +103,11 @@ export default function useActivity({
       })
       pausedTs.current = undefined
     } else {
-      const time = new Date()
       modifyActivity({
         id: id.current,
         status: 'stopped',
       })
-      console.log('setting paused time: ', time.getTime())
-      pausedTs.current = time
+      pausedTs.current = new Date()
     }
   }, [isActive])
 
