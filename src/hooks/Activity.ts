@@ -13,6 +13,7 @@ export type Info = {
   id: number
   status?: Status
   type?: ActivityType
+  notes?: string
 }
 
 export type Datum = {
@@ -35,6 +36,7 @@ export type Lap = {
   cadence?: number
   active_duration?: number
   distance?: number
+  // Maybe add temperature also.
 }
 
 export interface IActivity {

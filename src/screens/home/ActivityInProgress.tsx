@@ -1,4 +1,4 @@
-import { Theme } from '@react-navigation/native'
+import { Theme, useFocusEffect } from '@react-navigation/native'
 import React, { useContext, useEffect } from 'react'
 import { Button, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -37,6 +37,10 @@ export default function ActivityInProgress({
       )
     }
   }, [])
+
+  useFocusEffect(() => {
+    setIsActive(true)
+  })
 
   useEffect(() => {
     // Add this so when the back button is pressed, we don't exit suddenly and
