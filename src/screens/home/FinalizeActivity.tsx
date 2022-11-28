@@ -20,7 +20,7 @@ export default function FinalizeActivity({
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
   const { activityId } = route.params
-  const { getLaps } = useContext(DatabaseContext)
+  const { getActivityLaps } = useContext(DatabaseContext)
   const [notes, setNotes] = useState<string>('')
 
   return (
@@ -57,7 +57,7 @@ export default function FinalizeActivity({
             title={'Discard'}
             color={'red'}
             onPress={() =>
-              getLaps(activityId).then((laps) => console.log(laps))
+              getActivityLaps(activityId).then((laps) => console.log(laps))
             }
           />
         </View>

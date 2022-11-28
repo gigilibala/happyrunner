@@ -90,7 +90,7 @@ interface IDatabaseApi {
   modifyActivity: (activity: Info) => void
   addActivityDatum: (data: Datum) => void
   addActivityLap: (lap: Lap) => void
-  getLaps: (activityId: number) => Promise<Lap[]>
+  getActivityLaps: (activityId: number) => Promise<Lap[]>
 
   // Mostly for advanced users.
   clearDatabase: () => void
@@ -172,7 +172,7 @@ function useDatabase(): IDatabaseApi {
       )
   }
 
-  function getLaps(activity_id: number): Promise<Lap[]> {
+  function getActivityLaps(activity_id: number): Promise<Lap[]> {
     return new Promise<Lap[]>((resolve, reject) => {
       const columns = Object.values(activityLapsTableColumns)
       const query = `SELECT ${columns.join(', ')}
@@ -194,7 +194,7 @@ function useDatabase(): IDatabaseApi {
     addActivityDatum,
     addActivityLap,
     clearDatabase,
-    getLaps,
+    getActivityLaps,
   }
 }
 
