@@ -104,20 +104,14 @@ function useDatabase(): IDatabaseApi {
     else createTables()
   }, [db])
 
-  function batchSqlTransactions(
-    statements: { statement: string; params?: any[] }[],
-  ) {
-    return Promise.all(
-      statements.map(async (s) => await db?.executeSql(s.statement, s.params)),
-    )
-  }
-
   function createTables() {
-    batchSqlTransactions([
-      { statement: createInfoTableScript },
-      { statement: createDataTableScript },
-      { statement: createLapsTableScript },
-    ]).then(() => console.log('Tables created!'))
+    db?.transaction((tx) => {
+      tx.executeSql(createInfoTableScript)
+      tx.executeSql(createDataTableScript)
+      tx.executeSql(createLapsTableScript)
+    })
+      .then(() => console.log('Tables created.'))
+      .catch((error) => console.log('Failed to create tables: ', error))
   }
 
   function clearDatabase(): void {
