@@ -21,6 +21,7 @@ const activityInfoTableColumns: DatabaseColumns<Info> = {
   id: 'id',
   type: 'type',
   status: 'status',
+  notes: 'notes',
 }
 
 const activityDataTableColumns: DatabaseColumns<Datum> = {
@@ -39,18 +40,18 @@ const activityLapsTableColumns: DatabaseColumns<Lap> = {
   number: 'number',
   avg_heart_rate: 'avg_heart_rate',
   max_heart_rate: 'max_heart_rate',
-  avg_pace: 'avg_pace',
   total_steps: 'total_steps',
   cadence: 'cadence',
-  total_active_time_seconds: 'total_active_time_seconds',
-  total_distance: 'total_distance',
+  active_duration: 'active_duration',
+  distance: 'distance',
 }
 
 const createInfoTableScript = `
 CREATE TABLE IF NOT EXISTS ${activityInfoTableName}(
   ${activityInfoTableColumns.id} INTEGER PRIMARY KEY NOT NULL,
   ${activityInfoTableColumns.type} TEXT NOT NULL,
-  ${activityInfoTableColumns.status} TEXT
+  ${activityInfoTableColumns.status} TEXT,
+  ${activityInfoTableColumns.notes} TEXT
 );
 `
 
@@ -74,11 +75,10 @@ CREATE TABLE IF NOT EXISTS ${activityLapsTableName}(
   ${activityLapsTableColumns.number} INTEGER,
   ${activityLapsTableColumns.avg_heart_rate} INTEGER,
   ${activityLapsTableColumns.max_heart_rate} INTEGER,
-  ${activityLapsTableColumns.avg_pace} REAL,
   ${activityLapsTableColumns.total_steps} INTEGER,
   ${activityLapsTableColumns.cadence} INTEGER,
-  ${activityLapsTableColumns.total_active_time_seconds} INTEGER,
-  ${activityLapsTableColumns.total_distance} INTEGER,
+  ${activityLapsTableColumns.active_duration} INTEGER,
+  ${activityLapsTableColumns.distance} INTEGER,
   FOREIGN KEY(${activityLapsTableColumns.activity_id}) REFERENCES ${activityInfoTableName}(${activityInfoTableColumns.id})
 );
 `

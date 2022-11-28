@@ -31,11 +31,10 @@ export type Lap = {
   number: number
   avg_heart_rate?: number
   max_heart_rate?: number
-  avg_pace?: number
   total_steps?: number
   cadence?: number
-  total_active_time_seconds?: number
-  total_distance?: number
+  active_duration?: number
+  distance?: number
 }
 
 export interface IActivity {
