@@ -1,6 +1,6 @@
 import { Theme } from '@react-navigation/native'
 import React, { useContext, useEffect } from 'react'
-import { StyleSheet, TouchableOpacity, View } from 'react-native'
+import { Button, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useStyles } from '../../common/styles'
@@ -17,7 +17,7 @@ export default function ActivityInProgress({
   navigation,
 }: Props<'Activity In Progress'>) {
   const styles = useStyles(createStyles)
-  const { isActive, setIsActive, position, id } = useActivity()
+  const { isActive, setIsActive, position, id, nextLap } = useActivity()
   const { displayNotification, cancelNotification } = useNotification()
   const { heartRate } = useContext(HeartRateMonitorContext)
 
@@ -75,6 +75,12 @@ export default function ActivityInProgress({
   return (
     <SafeAreaView style={[styles.safeAreaView, styles.verticalContainer]}>
       <View style={styles.activityInfoView}>
+        <Button
+          title={'amin'}
+          onPress={() => {
+            nextLap()
+          }}
+        ></Button>
         <HarizontalCard
           title={'Heart Rate'}
           color={'red'}

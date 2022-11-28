@@ -21,8 +21,6 @@ const activityInfoTableColumns: DatabaseColumns<Info> = {
   id: 'id',
   type: 'type',
   status: 'status',
-  start_time: 'start_time',
-  end_time: 'end_time',
 }
 
 const activityDataTableColumns: DatabaseColumns<Datum> = {
@@ -34,7 +32,9 @@ const activityDataTableColumns: DatabaseColumns<Datum> = {
 }
 
 const activityLapsTableColumns: DatabaseColumns<Lap> = {
-  timestamp: 'timestamp',
+  id: 'id',
+  start_time: 'start_time',
+  end_time: 'end_time',
   activity_id: 'activity_id',
   number: 'number',
   avg_heart_rate: 'avg_heart_rate',
@@ -50,9 +50,7 @@ const createInfoTableScript = `
 CREATE TABLE IF NOT EXISTS ${activityInfoTableName}(
   ${activityInfoTableColumns.id} INTEGER PRIMARY KEY NOT NULL,
   ${activityInfoTableColumns.type} TEXT NOT NULL,
-  ${activityInfoTableColumns.status} TEXT,
-  ${activityInfoTableColumns.start_time} INTEGER,
-  ${activityInfoTableColumns.end_time} INTEGER
+  ${activityInfoTableColumns.status} TEXT
 );
 `
 
@@ -69,8 +67,10 @@ CREATE TABLE IF NOT EXISTS ${activityDataTableName}(
 
 const createLapsTableScript = `
 CREATE TABLE IF NOT EXISTS ${activityLapsTableName}(
-  ${activityLapsTableColumns.timestamp} INTEGER PRIMARY KEY NOT NULL,
+  ${activityLapsTableColumns.id} INTEGER PRIMARY KEY NOT NULL,
   ${activityLapsTableColumns.activity_id} INTEGER NOT NULL,
+  ${activityLapsTableColumns.start_time} INTEGER,
+  ${activityLapsTableColumns.end_time} INTEGER,
   ${activityLapsTableColumns.number} INTEGER,
   ${activityLapsTableColumns.avg_heart_rate} INTEGER,
   ${activityLapsTableColumns.max_heart_rate} INTEGER,

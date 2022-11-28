@@ -10,14 +10,12 @@ export default function useNotification(): INotificationApi {
   useEffect(() => {
     Notifee.onBackgroundEvent(({ type, detail }) => {
       return new Promise<void>((resolve, reject) => {
-        console.log('background event: ', type, detail)
         resolve()
       })
     })
     const unregisterForegroundEventCallback = Notifee.onForegroundEvent(
       ({ type, detail }) => {
         return new Promise<void>((resolve, reject) => {
-          console.log('foreground event: ', type, detail)
           resolve()
         })
       },
