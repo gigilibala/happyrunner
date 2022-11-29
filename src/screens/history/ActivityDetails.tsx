@@ -13,10 +13,10 @@ import { useStyles } from '../../common/styles'
 import { DatabaseContext } from '../../hooks/DatabaseProvider'
 import { Props } from '../RootNavigator'
 
-export default function FinalizeActivity({
+export default function ActivityDetails({
   route,
   navigation,
-}: Props<'Finalize Activity'>) {
+}: Props<'Activity Details'>) {
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
   const { activityId } = route.params

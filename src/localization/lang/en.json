@@ -6,7 +6,7 @@
     "history": "History",
     "settings": "Settings",
     "about": "About",
-    "finalizeActivity": "Finalize Activity"
+    "activityDetails": "Activity Details"
   },
   "heartRateMonitor": "Heart Rate Monitor",
   "audioCues": "Audio Cues",

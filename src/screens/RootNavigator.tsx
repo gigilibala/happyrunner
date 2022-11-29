@@ -11,7 +11,7 @@ export type ScreenParams = {
   History: undefined
   Home: undefined
   'Activity In Progress': undefined
-  'Finalize Activity': { activityId: number }
+  'Activity Details': { activityId: number }
   Settings: undefined
   'Heart Rate Monitor': undefined
   'Scan Bluetooth': undefined

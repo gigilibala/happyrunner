@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { useTranslation } from 'react-i18next'
+import ActivityDetails from '../history/ActivityDetails'
 import { ScreenParams } from '../RootNavigator'
 import ActivityInProgress from './ActivityInProgress'
-import FinalizeActivity from './FinalizeActivity'
 import Home from './Home'
 
 const Stack = createNativeStackNavigator<ScreenParams>()
@@ -21,9 +21,9 @@ export function HomeStack() {
         component={ActivityInProgress}
       />
       <Stack.Screen
-        name={'Finalize Activity'}
-        component={FinalizeActivity}
-        options={{ title: t('screens.finalizeActivity') }}
+        name={'Activity Details'}
+        component={ActivityDetails}
+        options={{ title: t('screens.activityDetails') }}
       />
     </Stack.Navigator>
   )
