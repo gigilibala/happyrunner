@@ -20,7 +20,7 @@ export default function FinalizeActivity({
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
   const { activityId } = route.params
-  const { getActivityLaps } = useContext(DatabaseContext)
+  const { modifyActivity, getActivityLaps } = useContext(DatabaseContext)
   const [notes, setNotes] = useState<string>('')
 
   return (
@@ -49,7 +49,10 @@ export default function FinalizeActivity({
           <Button
             title={'Save'}
             color={'green'}
-            onPress={() => navigation.popToTop()}
+            onPress={() => {
+              modifyActivity({ id: activityId, notes: notes })
+              navigation.popToTop()
+            }}
           />
         </View>
         <View style={styles.button}>

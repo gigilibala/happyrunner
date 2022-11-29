@@ -46,9 +46,10 @@ export default function ActivityInProgress({
     // Add this so when the back button is pressed, we don't exit suddenly and
     // force the user to either pause or stop.
     navigation.addListener('beforeRemove', (event) => {
-      event.preventDefault()
+      if (isActive) event.preventDefault()
+      else navigation.dispatch(event.data.action)
     })
-  }, [navigation])
+  }, [navigation, isActive])
 
   const resumeButton = (
     <TouchableOpacity
