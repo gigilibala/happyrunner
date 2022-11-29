@@ -1,5 +1,5 @@
 import { Theme } from '@react-navigation/native'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   ActivityIndicator,
@@ -25,6 +25,7 @@ export function HeartRateMonitor({
 }: Props<'Heart Rate Monitor'>) {
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
+  const [backgroundOpacity, setBackgroundOpacity] = useState<number>(1)
 
   const {
     setDoWatchStateChange,
@@ -60,14 +61,16 @@ export function HeartRateMonitor({
             name={'search'}
             size={ICON_SIZE}
             color={bluetoothEnabled ? 'blue' : 'grey'}
-            style={[styles.icon, { opacity: opacity(!isScanning) }]}
+            style={[styles.icon, { opacity: backgroundOpacity }]}
           />
         </TouchableOpacity>
       ),
     })
   }, [bluetoothEnabled])
 
-  const opacity = (visible: boolean) => (visible ? 1.0 : 0.25)
+  useEffect(() => {
+    setBackgroundOpacity(isScanning ? 0.25 : 1.0)
+  }, [isScanning])
 
   function connectButtonTitle(): string {
     switch (connectionStatus) {
@@ -181,7 +184,7 @@ export function HeartRateMonitor({
       style={[
         styles.safeAreaView,
         styles.container,
-        { opacity: opacity(!isScanning) },
+        { opacity: backgroundOpacity },
       ]}
     >
       {hrmInfo}
