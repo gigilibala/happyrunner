@@ -1,8 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 import { GeoPosition } from 'react-native-geolocation-service'
+import { ActivityType } from '../components/ActivityTypes'
 import { DatabaseContext } from '../hooks/DatabaseProvider'
-
-type ActivityType = 'Running'
 
 type Status = 'in-progress' | 'stopped'
 
@@ -57,7 +56,7 @@ export default function useActivity({
 }): IActivity {
   const id = useRef<number>(0)
   const [isActive, setIsActive] = useState<boolean>(true)
-  const [activityType, setActivityType] = useState<ActivityType>('Running')
+  const [activityType, setActivityType] = useState<ActivityType>('running')
   const { addActivity, modifyActivity, addActivityDatum, addActivityLap } =
     useContext(DatabaseContext)
   const [intervalTs, setIntervalTs] = useState<Date>()
