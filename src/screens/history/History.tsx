@@ -1,4 +1,4 @@
-import { Theme, useFocusEffect } from '@react-navigation/native'
+import { Theme } from '@react-navigation/native'
 import React, { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
@@ -18,10 +18,6 @@ export function History({}: Props<'History'>) {
   useEffect(() => {
     getActivityDetailsList().then((detailsList) => setActivityList(detailsList))
   }, [])
-
-  useFocusEffect(() => {
-    return () => setActivityList(undefined)
-  })
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
