@@ -1,16 +1,25 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import {
+  Dispatch,
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from 'react'
 import { GeoPosition } from 'react-native-geolocation-service'
 import { ActivityType } from '../components/ActivityTypes'
 import { DatabaseContext } from '../hooks/DatabaseProvider'
 
-type Status = 'in-progress' | 'stopped'
+type Status = 'in-progress' | 'paused' | 'stopped'
+type Action = { type: 'pause' | 'stop' | 'resume' }
+type State = { status: Status }
 
 const INTERVAL_MS = 3000
 
 // Keep in sync with database table.
 export type Info = {
   id: number
-  status?: Status
+  status?: 'in-progress' | 'stopped'
   type?: ActivityType
   notes?: string
 }
@@ -42,8 +51,8 @@ export type Details = Info & Lap
 
 export interface IActivity {
   id: number
-  isActive: boolean
-  setIsActive: (isActive: boolean) => void
+  state: State
+  dispatch: Dispatch<Action>
   nextLap: () => void
 }
 
@@ -55,7 +64,6 @@ export default function useActivity({
   position?: GeoPosition
 }): IActivity {
   const id = useRef<number>(0)
-  const [isActive, setIsActive] = useState<boolean>(true)
   const [activityType, setActivityType] = useState<ActivityType>('running')
   const { addActivity, modifyActivity, addActivityDatum, addActivityLap } =
     useContext(DatabaseContext)
@@ -65,6 +73,22 @@ export default function useActivity({
   const pausedTs = useRef<Date>()
   const lapStartTs = useRef<Date>()
 
+  const [state, dispatch] = useReducer(
+    (state: State, action: Action): State => {
+      switch (action.type) {
+        case 'resume':
+          return { status: 'in-progress' }
+        case 'pause':
+          return { status: 'paused' }
+        case 'stop':
+          return { status: 'stopped' }
+      }
+    },
+    {
+      status: 'in-progress',
+    },
+  )
+
   useEffect(() => {
     id.current = new Date().getTime()
     addActivity({
@@ -72,14 +96,13 @@ export default function useActivity({
       type: activityType,
     })
 
-    setIsActive(true)
     const intervalHandle = setInterval(
       () => setIntervalTs(new Date()),
       INTERVAL_MS,
     )
 
     return () => {
-      setIsActive(false)
+      dispatch({ type: 'stop' })
       clearInterval(intervalHandle)
 
       addActivityLap({
@@ -95,7 +118,7 @@ export default function useActivity({
   }, [])
 
   useEffect(() => {
-    if (isActive) {
+    if (state.status === 'in-progress') {
       modifyActivity({
         id: id.current,
         status: 'in-progress',
@@ -108,10 +131,10 @@ export default function useActivity({
       })
       pausedTs.current = new Date()
     }
-  }, [isActive])
+  }, [state])
 
   useEffect(() => {
-    if (intervalTs === undefined || !isActive) return
+    if (intervalTs === undefined || state.status !== 'in-progress') return
 
     addActivityDatum({
       // Do not use intervalTs here because if the component re-mounts, the old
@@ -145,7 +168,7 @@ export default function useActivity({
     setLap((prevLap) => prevLap + 1)
   }
 
-  return { isActive, setIsActive, id: id.current, nextLap }
+  return { state, dispatch, id: id.current, nextLap }
 }
 
 function randomId() {

@@ -1,6 +1,6 @@
-import { Theme, useFocusEffect } from '@react-navigation/native'
+import { Theme } from '@react-navigation/native'
 import React, { useContext, useEffect } from 'react'
-import { Button, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useStyles } from '../../common/styles'
@@ -20,7 +20,7 @@ export default function ActivityInProgress({
   const styles = useStyles(createStyles)
   const { heartRate } = useContext(HeartRateMonitorContext)
   const { position } = useLocation()
-  const { isActive, setIsActive, id, nextLap } = useActivity({
+  const { state, dispatch, id, nextLap } = useActivity({
     heartRate,
     position,
   })
@@ -38,46 +38,35 @@ export default function ActivityInProgress({
     }
   }, [])
 
-  useFocusEffect(() => {
-    setIsActive(true)
-  })
-
   useEffect(() => {
     // Add this so when the back button is pressed, we don't exit suddenly and
     // force the user to either pause or stop.
     navigation.addListener('beforeRemove', (event) => {
-      if (isActive) event.preventDefault()
-      else navigation.dispatch(event.data.action)
+      if (state.status === 'stopped') navigation.dispatch(event.data.action)
+      else event.preventDefault()
     })
-  }, [navigation, isActive])
+  }, [navigation, state])
+
+  useEffect(() => {
+    if (state.status === 'stopped') {
+      navigation.replace('Activity Details', { activityId: id })
+    }
+  }, [state])
 
   const resumeButton = (
-    <TouchableOpacity
-      onPress={() => {
-        setIsActive(true)
-      }}
-    >
+    <TouchableOpacity onPress={() => dispatch({ type: 'resume' })}>
       <Icon name={'play-circle'} size={BUTTON_SIZE} color={'green'} />
     </TouchableOpacity>
   )
 
   const pauseButton = (
-    <TouchableOpacity
-      onPress={() => {
-        setIsActive(false)
-      }}
-    >
+    <TouchableOpacity onPress={() => dispatch({ type: 'pause' })}>
       <Icon name={'pause-circle'} size={BUTTON_SIZE} color={'orange'} />
     </TouchableOpacity>
   )
 
   const stopButton = (
-    <TouchableOpacity
-      onPress={() => {
-        setIsActive(false)
-        navigation.navigate('Activity Details', { activityId: id })
-      }}
-    >
+    <TouchableOpacity onPress={() => dispatch({ type: 'stop' })}>
       <Icon name={'stop-circle'} size={BUTTON_SIZE} color={'red'} />
     </TouchableOpacity>
   )
@@ -85,12 +74,6 @@ export default function ActivityInProgress({
   return (
     <SafeAreaView style={[styles.safeAreaView, styles.verticalContainer]}>
       <View style={styles.activityInfoView}>
-        <Button
-          title={'amin'}
-          onPress={() => {
-            nextLap()
-          }}
-        ></Button>
         <HarizontalCard
           title={'Heart Rate'}
           color={'red'}
