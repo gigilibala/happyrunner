@@ -3,20 +3,16 @@ import { useTranslation } from 'react-i18next'
 import { Button, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { useStyles } from '../../common/styles'
+import { BUTTON_SIZE, useStyles } from '../../common/styles'
 import { HomeScreenProps } from '../RootNavigator'
 
 export default function Home({ navigation }: HomeScreenProps<'Home'>) {
   const styles = useStyles(createStyles)
   const { t, i18n } = useTranslation()
 
-  const bigStartButton = (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.navigate('ActivityInProgress')
-      }}
-    >
-      <Icon name={'play-circle'} size={100} color={'green'} />
+  const startButton = (
+    <TouchableOpacity onPress={() => navigation.navigate('ActivityInProgress')}>
+      <Icon name={'play-circle'} size={BUTTON_SIZE} color={'green'} />
     </TouchableOpacity>
   )
 
@@ -33,7 +29,7 @@ export default function Home({ navigation }: HomeScreenProps<'Home'>) {
         />
       </View>
       <View style={[styles.activityButtonView, { justifyContent: 'center' }]}>
-        {bigStartButton}
+        {startButton}
       </View>
     </SafeAreaView>
   )

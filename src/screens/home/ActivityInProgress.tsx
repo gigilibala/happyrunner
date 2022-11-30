@@ -4,15 +4,13 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import IconMat from 'react-native-vector-icons/MaterialIcons'
-import { useStyles } from '../../common/styles'
+import { BUTTON_SIZE, useStyles } from '../../common/styles'
 import HarizontalCard from '../../components/HarizontalCard'
 import useActivity from '../../hooks/Activity'
 import { HeartRateMonitorContext } from '../../hooks/HeartRateMonitorProvider'
 import { useLocation } from '../../hooks/Location'
 import useNotification from '../../hooks/Notification'
 import { HomeScreenProps } from '../RootNavigator'
-
-const BUTTON_SIZE = 100
 
 export default function ActivityInProgress({
   navigation,
@@ -78,7 +76,7 @@ export default function ActivityInProgress({
 
   const lapButton = (
     <TouchableOpacity onPress={() => dispatch({ type: 'nextLap' })}>
-      <IconMat name={'timelapse'} size={BUTTON_SIZE} color={'blue'} />
+      <IconMat name={'timelapse'} size={BUTTON_SIZE + 5} color={'blue'} />
     </TouchableOpacity>
   )
 

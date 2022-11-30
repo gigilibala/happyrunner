@@ -2,14 +2,15 @@ import { Theme } from '@react-navigation/native'
 import React, { useContext, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  Button,
   SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native'
-import { useStyles } from '../../common/styles'
+import Icon from 'react-native-vector-icons/FontAwesome5'
+import { BUTTON_SIZE, useStyles } from '../../common/styles'
 import { DatabaseContext } from '../../hooks/DatabaseProvider'
 import { HistoryScreenProps } from '../RootNavigator'
 
@@ -22,6 +23,23 @@ export default function ActivityDetails({
   const { activityId } = route.params
   const { modifyActivity, getActivityLaps } = useContext(DatabaseContext)
   const [notes, setNotes] = useState<string>('')
+
+  const saveButton = (
+    <TouchableOpacity
+      onPress={() => {
+        modifyActivity({ id: activityId, notes: notes })
+        navigation.popToTop()
+      }}
+    >
+      <Icon name={'save'} size={BUTTON_SIZE} color={'blue'} />
+    </TouchableOpacity>
+  )
+
+  const discardButton = (
+    <TouchableOpacity onPress={() => {}}>
+      <Icon name={'trash-alt'} size={BUTTON_SIZE - 5} color={'red'} />
+    </TouchableOpacity>
+  )
 
   return (
     <SafeAreaView
@@ -37,26 +55,9 @@ export default function ActivityDetails({
           style={[styles.textInput, styles.card, styles.shadow]}
         />
       </View>
-      <View>
-        <View style={styles.button}>
-          <Button
-            title={'Save'}
-            color={'green'}
-            onPress={() => {
-              modifyActivity({ id: activityId, notes: notes })
-              navigation.popToTop()
-            }}
-          />
-        </View>
-        <View style={styles.button}>
-          <Button
-            title={'Discard'}
-            color={'red'}
-            onPress={() =>
-              getActivityLaps(activityId).then((laps) => console.log(laps))
-            }
-          />
-        </View>
+      <View style={styles.activityButtonView}>
+        {discardButton}
+        {saveButton}
       </View>
     </SafeAreaView>
   )

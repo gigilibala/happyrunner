@@ -71,3 +71,5 @@ const createGlobalStyles = (theme: Theme) =>
       padding: 20,
     },
   })
+
+export const BUTTON_SIZE = 100
