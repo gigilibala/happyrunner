@@ -52,6 +52,7 @@ export default function ActivityInProgress({
       navigation.navigate('HistoryRoot', {
         screen: 'ActivityDetails',
         params: { activityId: id },
+        initial: false,
       })
     }
   }, [state])
