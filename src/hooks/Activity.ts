@@ -37,9 +37,9 @@ export type Datum = {
 export type Lap = {
   id: IdType
   activity_id: IdType
-  start_time?: number
-  end_time?: number
   number: number
+  start_time: number
+  end_time: number
   avg_heart_rate?: number
   max_heart_rate?: number
   total_steps?: number
@@ -112,11 +112,11 @@ export default function useActivity({
       addActivityLap({
         id: randomId(),
         activity_id: id.current,
+        number: 0,
         start_time: id.current,
         end_time: pausedTs.current
           ? pausedTs.current.getTime()
           : new Date().getTime(),
-        number: 0,
       })
     }
   }, [])
@@ -161,9 +161,9 @@ export default function useActivity({
       addActivityLap({
         id: randomId(),
         activity_id: id.current,
+        number: lap,
         start_time: lapStartTs.current!.getTime(),
         end_time: endTime.getTime(),
-        number: lap,
       })
     }
   }, [lap])

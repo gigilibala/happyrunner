@@ -34,10 +34,10 @@ const activityDataTableColumns: DatabaseColumns<Datum> = {
 
 const activityLapsTableColumns: DatabaseColumns<Lap> = {
   id: 'id',
-  start_time: 'start_time',
-  end_time: 'end_time',
   activity_id: 'activity_id',
   number: 'number',
+  start_time: 'start_time',
+  end_time: 'end_time',
   avg_heart_rate: 'avg_heart_rate',
   max_heart_rate: 'max_heart_rate',
   total_steps: 'total_steps',
@@ -70,9 +70,9 @@ const createLapsTableScript = `
 CREATE TABLE IF NOT EXISTS ${activityLapsTableName}(
   ${activityLapsTableColumns.id} INTEGER PRIMARY KEY NOT NULL,
   ${activityLapsTableColumns.activity_id} INTEGER NOT NULL,
-  ${activityLapsTableColumns.start_time} INTEGER,
-  ${activityLapsTableColumns.end_time} INTEGER,
-  ${activityLapsTableColumns.number} INTEGER,
+  ${activityLapsTableColumns.number} INTEGER NOT NULL,
+  ${activityLapsTableColumns.start_time} INTEGER NOT NULL,
+  ${activityLapsTableColumns.end_time} INTEGER NOT NULL,
   ${activityLapsTableColumns.avg_heart_rate} INTEGER,
   ${activityLapsTableColumns.max_heart_rate} INTEGER,
   ${activityLapsTableColumns.total_steps} INTEGER,
