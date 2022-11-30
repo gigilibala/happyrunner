@@ -16,7 +16,7 @@ const BUTTON_SIZE = 100
 
 export default function ActivityInProgress({
   navigation,
-}: HomeScreenProps<'Activity In Progress'>) {
+}: HomeScreenProps<'ActivityInProgress'>) {
   const styles = useStyles(createStyles)
   const { heartRate } = useContext(HeartRateMonitorContext)
   const { position } = useLocation()

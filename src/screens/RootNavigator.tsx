@@ -75,7 +75,7 @@ export function RootNavigator() {
 
 type HomeScreenParams = {
   Home: undefined
-  'Activity In Progress': undefined
+  ActivityInProgress: undefined
 }
 export type HomeScreenProps<T extends keyof HomeScreenParams> =
   CompositeScreenProps<
@@ -93,8 +93,9 @@ function HomeRoot() {
         options={{ title: t('screens.home') }}
       />
       <HomeStack.Screen
-        name={'Activity In Progress'}
+        name={'ActivityInProgress'}
         component={ActivityInProgress}
+        options={{ title: t('screens.activityInProgress') }}
       />
     </HomeStack.Navigator>
   )

@@ -13,7 +13,7 @@ export default function Home({ navigation }: HomeScreenProps<'Home'>) {
   const bigStartButton = (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate('Activity In Progress')
+        navigation.navigate('ActivityInProgress')
       }}
     >
       <Icon name={'play-circle'} size={100} color={'green'} />
