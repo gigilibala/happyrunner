@@ -65,4 +65,9 @@ const createGlobalStyles = (theme: Theme) =>
       shadowRadius: 0.5,
       elevation: 10,
     },
+    activityButtonView: {
+      flexDirection: 'row',
+      justifyContent: 'space-evenly',
+      padding: 20,
+    },
   })

@@ -147,9 +147,4 @@ const createStyles = (theme: Theme) =>
       justifyContent: 'center',
       flex: 1,
     },
-    activityButtonView: {
-      flexDirection: 'row',
-      padding: 20,
-      justifyContent: 'space-evenly',
-    },
   })

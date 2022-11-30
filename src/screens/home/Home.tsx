@@ -32,16 +32,11 @@ export default function Home({ navigation }: HomeScreenProps<'Home'>) {
           }}
         />
       </View>
-      <View style={styles.activityButtonView}>{bigStartButton}</View>
+      <View style={[styles.activityButtonView, { justifyContent: 'center' }]}>
+        {bigStartButton}
+      </View>
     </SafeAreaView>
   )
 }
 
-const createStyles = (theme: Theme) =>
-  StyleSheet.create({
-    activityButtonView: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      padding: 20,
-    },
-  })
+const createStyles = (theme: Theme) => StyleSheet.create({})
