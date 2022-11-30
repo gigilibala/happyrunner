@@ -103,7 +103,7 @@ function HomeRoot() {
 
 type HistoryScreenParams = {
   History: undefined
-  'Activity Details': { activityId: number }
+  ActivityDetails: { activityId: number }
 }
 export type HistoryScreenProps<T extends keyof HistoryScreenParams> =
   CompositeScreenProps<
@@ -121,9 +121,9 @@ function HistoryRoot() {
         options={{ title: t('screens.history') }}
       />
       <HistoryStack.Screen
-        name={'Activity Details'}
+        name={'ActivityDetails'}
         component={ActivityDetails}
-        options={{ title: t('screens.ActivityDetails') }}
+        options={{ title: t('screens.activityDetails') }}
       />
     </HistoryStack.Navigator>
   )

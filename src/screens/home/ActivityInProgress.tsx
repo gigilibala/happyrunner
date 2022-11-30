@@ -50,7 +50,7 @@ export default function ActivityInProgress({
   useEffect(() => {
     if (state.status === 'stopped') {
       navigation.navigate('HistoryRoot', {
-        screen: 'Activity Details',
+        screen: 'ActivityDetails',
         params: { activityId: id },
       })
     }

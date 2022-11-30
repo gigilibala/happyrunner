@@ -16,7 +16,7 @@ import { HistoryScreenProps } from '../RootNavigator'
 export default function ActivityDetails({
   route,
   navigation,
-}: HistoryScreenProps<'Activity Details'>) {
+}: HistoryScreenProps<'ActivityDetails'>) {
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
   const { activityId } = route.params
