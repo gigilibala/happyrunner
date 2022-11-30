@@ -16,9 +16,11 @@ type State = { status: Status }
 
 const INTERVAL_MS = 3000
 
+export type IdType = number
+
 // Keep in sync with database table.
 export type Info = {
-  id: number
+  id: IdType
   status?: 'in-progress' | 'stopped'
   type?: ActivityType
   notes?: string
@@ -26,15 +28,15 @@ export type Info = {
 
 export type Datum = {
   timestamp: number
-  activity_id: number
+  activity_id: IdType
   heart_rate?: number
   latitude?: number
   longitude?: number
 }
 
 export type Lap = {
-  id: number
-  activity_id: number
+  id: IdType
+  activity_id: IdType
   start_time?: number
   end_time?: number
   number: number
@@ -50,7 +52,7 @@ export type Lap = {
 export type Details = Info & Lap
 
 export interface IActivity {
-  id: number
+  id: IdType
   state: State
   dispatch: Dispatch<Action>
 }
@@ -62,7 +64,7 @@ export default function useActivity({
   heartRate?: number
   position?: GeoPosition
 }): IActivity {
-  const id = useRef<number>(0)
+  const id = useRef<IdType>(0)
   const [activityType, setActivityType] = useState<ActivityType>('running')
   const { addActivity, modifyActivity, addActivityDatum, addActivityLap } =
     useContext(DatabaseContext)
