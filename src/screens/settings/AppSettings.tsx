@@ -5,9 +5,9 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import { SettingsList } from '../../components/SettingsList'
 import { AudioCuesContext } from '../../hooks/AudioCuesProvider'
 import { DatabaseContext } from '../../hooks/DatabaseProvider'
-import { Props } from '../RootNavigator'
+import { SettingsScreenProps } from '../RootNavigator'
 
-export function AppSettings({ navigation }: Props<'Settings'>) {
+export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
   const { clearDatabase } = useContext(DatabaseContext)
   const { pref } = useContext(AudioCuesContext)
   const { t } = useTranslation()

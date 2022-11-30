@@ -2,9 +2,9 @@ import { Theme } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView, StyleSheet, Text } from 'react-native'
 import { useStyles } from '../../common/styles'
-import { Props } from '../RootNavigator'
+import { SettingsScreenProps } from '../RootNavigator'
 
-export function About({ route, navigation }: Props<'About'>) {
+export function About({}: SettingsScreenProps<'About'>) {
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
 

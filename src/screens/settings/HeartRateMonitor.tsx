@@ -15,14 +15,13 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useStyles } from '../../common/styles'
 import { HeartRateMonitorContext } from '../../hooks/HeartRateMonitorProvider'
-import { Props } from '../RootNavigator'
+import { SettingsScreenProps } from '../RootNavigator'
 
 const ICON_SIZE = 20
 
 export function HeartRateMonitor({
   navigation,
-  route,
-}: Props<'Heart Rate Monitor'>) {
+}: SettingsScreenProps<'Heart Rate Monitor'>) {
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
   const [backgroundOpacity, setBackgroundOpacity] = useState<number>(1)

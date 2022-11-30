@@ -1,43 +1,44 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { NativeStackScreenProps } from '@react-navigation/native-stack'
+import {
+  BottomTabScreenProps,
+  createBottomTabNavigator,
+} from '@react-navigation/bottom-tabs'
+import {
+  CompositeScreenProps,
+  NavigatorScreenParams,
+} from '@react-navigation/native'
+import {
+  createNativeStackNavigator,
+  NativeStackScreenProps,
+} from '@react-navigation/native-stack'
 import { useTranslation } from 'react-i18next'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import IonIcon from 'react-native-vector-icons/Ionicons'
-import { HistoryStack } from './history/HistoryStack'
-import { HomeStack } from './home/HomeStack'
-import { SettingsStack } from './settings/SettingsStack'
+import ActivityDetails from './history/ActivityDetails'
+import { History } from './history/History'
+import ActivityInProgress from './home/ActivityInProgress'
+import Home from './home/Home'
+import { About } from './settings/About'
+import { AppSettings } from './settings/AppSettings'
+import { AudioCues } from './settings/AudioCues'
+import { HeartRateMonitor } from './settings/HeartRateMonitor'
 
-export type ScreenParams = {
-  History: undefined
-  Home: undefined
-  'Activity In Progress': undefined
-  'Activity Details': { activityId: number }
-  Settings: undefined
-  'Heart Rate Monitor': undefined
-  'Scan Bluetooth': undefined
-  'Audio Cues': undefined
-  About: undefined
+type RootParams = {
+  HomeRoot: NavigatorScreenParams<HomeScreenParams>
+  HistoryRoot: NavigatorScreenParams<HistoryScreenParams>
+  SettingsRoot: NavigatorScreenParams<SettingsScreenParams>
 }
-export type Props<T extends keyof ScreenParams> = NativeStackScreenProps<
-  ScreenParams,
+type RootScreenProps<T extends keyof RootParams> = BottomTabScreenProps<
+  RootParams,
   T
 >
-
-export type RootParams = {
-  HomeStack: undefined
-  HistoryStack: undefined
-  SettingsStack: undefined
-}
-
 const Root = createBottomTabNavigator<RootParams>()
-
 export function RootNavigator() {
   const { t } = useTranslation()
   return (
-    <Root.Navigator initialRouteName={'HomeStack'}>
+    <Root.Navigator initialRouteName={'HomeRoot'}>
       <Root.Screen
-        name={'HomeStack'}
-        component={HomeStack}
+        name={'HomeRoot'}
+        component={HomeRoot}
         options={{
           title: t('screens.home'),
           headerShown: false,
@@ -47,8 +48,8 @@ export function RootNavigator() {
         }}
       />
       <Root.Screen
-        name={'HistoryStack'}
-        component={HistoryStack}
+        name={'HistoryRoot'}
+        component={HistoryRoot}
         options={{
           title: t('screens.history'),
           headerShown: false,
@@ -58,8 +59,8 @@ export function RootNavigator() {
         }}
       />
       <Root.Screen
-        name={'SettingsStack'}
-        component={SettingsStack}
+        name={'SettingsRoot'}
+        component={SettingsRoot}
         options={{
           title: t('screens.settings'),
           headerShown: false,
@@ -69,5 +70,101 @@ export function RootNavigator() {
         }}
       />
     </Root.Navigator>
+  )
+}
+
+type HomeScreenParams = {
+  Home: undefined
+  'Activity In Progress': undefined
+}
+export type HomeScreenProps<T extends keyof HomeScreenParams> =
+  CompositeScreenProps<
+    NativeStackScreenProps<HomeScreenParams, T>,
+    RootScreenProps<keyof RootParams>
+  >
+const HomeStack = createNativeStackNavigator<HomeScreenParams>()
+function HomeRoot() {
+  const { t } = useTranslation()
+  return (
+    <HomeStack.Navigator>
+      <HomeStack.Screen
+        name={'Home'}
+        component={Home}
+        options={{ title: t('screens.home') }}
+      />
+      <HomeStack.Screen
+        name={'Activity In Progress'}
+        component={ActivityInProgress}
+      />
+    </HomeStack.Navigator>
+  )
+}
+
+type HistoryScreenParams = {
+  History: undefined
+  'Activity Details': { activityId: number }
+}
+export type HistoryScreenProps<T extends keyof HistoryScreenParams> =
+  CompositeScreenProps<
+    NativeStackScreenProps<HistoryScreenParams, T>,
+    RootScreenProps<keyof RootParams>
+  >
+const HistoryStack = createNativeStackNavigator<HistoryScreenParams>()
+function HistoryRoot() {
+  const { t } = useTranslation()
+  return (
+    <HistoryStack.Navigator>
+      <HistoryStack.Screen
+        name={'History'}
+        component={History}
+        options={{ title: t('screens.history') }}
+      />
+      <HistoryStack.Screen
+        name={'Activity Details'}
+        component={ActivityDetails}
+        options={{ title: t('screens.ActivityDetails') }}
+      />
+    </HistoryStack.Navigator>
+  )
+}
+
+type SettingsScreenParams = {
+  Settings: undefined
+  'Heart Rate Monitor': undefined
+  'Scan Bluetooth': undefined
+  'Audio Cues': undefined
+  About: undefined
+}
+export type SettingsScreenProps<T extends keyof SettingsScreenParams> =
+  CompositeScreenProps<
+    NativeStackScreenProps<SettingsScreenParams, T>,
+    RootScreenProps<keyof RootParams>
+  >
+const SettingsStack = createNativeStackNavigator<SettingsScreenParams>()
+function SettingsRoot() {
+  const { t } = useTranslation()
+  return (
+    <SettingsStack.Navigator>
+      <SettingsStack.Screen
+        name={'Settings'}
+        component={AppSettings}
+        options={{ title: t('screens.settings') }}
+      />
+      <SettingsStack.Screen
+        name={'Heart Rate Monitor'}
+        component={HeartRateMonitor}
+        options={{ title: t('heartRateMonitor') }}
+      />
+      <SettingsStack.Screen
+        name={'Audio Cues'}
+        component={AudioCues}
+        options={{ title: t('audioCues') }}
+      />
+      <SettingsStack.Screen
+        name={'About'}
+        component={About}
+        options={{ title: t('screens.about') }}
+      />
+    </SettingsStack.Navigator>
   )
 }

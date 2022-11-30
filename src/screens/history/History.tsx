@@ -6,10 +6,9 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useStyles } from '../../common/styles'
 import { Details } from '../../hooks/Activity'
 import { DatabaseContext } from '../../hooks/DatabaseProvider'
+import { HistoryScreenProps } from '../RootNavigator'
 
-import { Props } from '../RootNavigator'
-
-export function History({}: Props<'History'>) {
+export function History({}: HistoryScreenProps<'History'>) {
   const { t } = useTranslation()
   const styles = useStyles(createStyles)
   const { getActivityDetailsList } = useContext(DatabaseContext)

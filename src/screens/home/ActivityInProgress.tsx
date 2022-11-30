@@ -10,14 +10,13 @@ import useActivity from '../../hooks/Activity'
 import { HeartRateMonitorContext } from '../../hooks/HeartRateMonitorProvider'
 import { useLocation } from '../../hooks/Location'
 import useNotification from '../../hooks/Notification'
-import { Props } from '../RootNavigator'
+import { HomeScreenProps } from '../RootNavigator'
 
 const BUTTON_SIZE = 100
 
 export default function ActivityInProgress({
-  route,
   navigation,
-}: Props<'Activity In Progress'>) {
+}: HomeScreenProps<'Activity In Progress'>) {
   const styles = useStyles(createStyles)
   const { heartRate } = useContext(HeartRateMonitorContext)
   const { position } = useLocation()
@@ -50,7 +49,10 @@ export default function ActivityInProgress({
 
   useEffect(() => {
     if (state.status === 'stopped') {
-      navigation.replace('Activity Details', { activityId: id })
+      navigation.navigate('HistoryRoot', {
+        screen: 'Activity Details',
+        params: { activityId: id },
+      })
     }
   }, [state])
 

@@ -5,9 +5,9 @@ import {
   AudioCuesContext,
   AudioCuesPreferences,
 } from '../../hooks/AudioCuesProvider'
-import { Props } from '../RootNavigator'
+import { SettingsScreenProps } from '../RootNavigator'
 
-export function AudioCues({ route, navigation }: Props<'Audio Cues'>) {
+export function AudioCues({}: SettingsScreenProps<'Audio Cues'>) {
   const { speak, pref, setPref } = useContext(AudioCuesContext)
   const { t } = useTranslation()
 

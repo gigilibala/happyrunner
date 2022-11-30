@@ -11,12 +11,12 @@ import {
 } from 'react-native'
 import { useStyles } from '../../common/styles'
 import { DatabaseContext } from '../../hooks/DatabaseProvider'
-import { Props } from '../RootNavigator'
+import { HistoryScreenProps } from '../RootNavigator'
 
 export default function ActivityDetails({
   route,
   navigation,
-}: Props<'Activity Details'>) {
+}: HistoryScreenProps<'Activity Details'>) {
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
   const { activityId } = route.params
