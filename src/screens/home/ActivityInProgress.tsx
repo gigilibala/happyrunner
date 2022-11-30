@@ -54,6 +54,7 @@ export default function ActivityInProgress({
         params: { activityId: id },
         initial: false,
       })
+      navigation.pop()
     }
   }, [state])
 

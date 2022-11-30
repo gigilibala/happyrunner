@@ -40,13 +40,6 @@ export default function ActivityDetails({
       <View>
         <View style={styles.button}>
           <Button
-            title={'Resume'}
-            color={'orange'}
-            onPress={() => navigation.pop()}
-          />
-        </View>
-        <View style={styles.button}>
-          <Button
             title={'Save'}
             color={'green'}
             onPress={() => {
