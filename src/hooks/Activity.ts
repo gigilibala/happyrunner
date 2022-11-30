@@ -11,7 +11,7 @@ import { ActivityType } from '../components/ActivityTypes'
 import { DatabaseContext } from '../hooks/DatabaseProvider'
 
 type Status = 'in-progress' | 'paused' | 'stopped'
-type Action = { type: 'pause' | 'stop' | 'resume' }
+type Action = { type: 'pause' | 'stop' | 'resume' | 'nextLap' }
 type State = { status: Status }
 
 const INTERVAL_MS = 3000
@@ -53,7 +53,6 @@ export interface IActivity {
   id: number
   state: State
   dispatch: Dispatch<Action>
-  nextLap: () => void
 }
 
 export default function useActivity({
@@ -82,6 +81,9 @@ export default function useActivity({
           return { status: 'paused' }
         case 'stop':
           return { status: 'stopped' }
+        case 'nextLap':
+          setLap((prevLap) => prevLap + 1)
+          return state
       }
     },
     {
@@ -164,11 +166,7 @@ export default function useActivity({
     }
   }, [lap])
 
-  function nextLap() {
-    setLap((prevLap) => prevLap + 1)
-  }
-
-  return { state, dispatch, id: id.current, nextLap }
+  return { state, dispatch, id: id.current }
 }
 
 function randomId() {

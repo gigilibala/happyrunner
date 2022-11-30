@@ -3,6 +3,7 @@ import React, { useContext, useEffect } from 'react'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import IconMat from 'react-native-vector-icons/MaterialIcons'
 import { useStyles } from '../../common/styles'
 import HarizontalCard from '../../components/HarizontalCard'
 import useActivity from '../../hooks/Activity'
@@ -20,7 +21,7 @@ export default function ActivityInProgress({
   const styles = useStyles(createStyles)
   const { heartRate } = useContext(HeartRateMonitorContext)
   const { position } = useLocation()
-  const { state, dispatch, id, nextLap } = useActivity({
+  const { state, dispatch, id } = useActivity({
     heartRate,
     position,
   })
@@ -68,6 +69,12 @@ export default function ActivityInProgress({
   const stopButton = (
     <TouchableOpacity onPress={() => dispatch({ type: 'stop' })}>
       <Icon name={'stop-circle'} size={BUTTON_SIZE} color={'red'} />
+    </TouchableOpacity>
+  )
+
+  const lapButton = (
+    <TouchableOpacity onPress={() => dispatch({ type: 'nextLap' })}>
+      <IconMat name={'timelapse'} size={BUTTON_SIZE} color={'blue'} />
     </TouchableOpacity>
   )
 
@@ -119,8 +126,10 @@ export default function ActivityInProgress({
       </View>
 
       <View style={styles.activityButtonView}>
-        <View>{isActive ? pauseButton : resumeButton}</View>
-        <View>{stopButton}</View>
+        <View>{state.status === 'in-progress' ? lapButton : stopButton}</View>
+        <View>
+          {state.status === 'in-progress' ? pauseButton : resumeButton}
+        </View>
       </View>
     </SafeAreaView>
   )
