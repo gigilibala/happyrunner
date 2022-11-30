@@ -19,7 +19,7 @@ export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
         {
           kind: 'navigation',
           title: t('heartRateMonitor'),
-          onPress: () => navigation.navigate('Heart Rate Monitor'),
+          onPress: () => navigation.navigate('HeartRateMonitor'),
           icon: (
             <Icon.Button
               name={'bluetooth-b'}
@@ -32,7 +32,7 @@ export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
           kind: 'navigation',
           title: t('audioCues'),
           subTitle: pref?.enabled ? t('on') : t('off'),
-          onPress: () => navigation.navigate('Audio Cues'),
+          onPress: () => navigation.navigate('AudioCues'),
           icon: (
             <Icon.Button
               name={'headphones-alt'}

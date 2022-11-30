@@ -131,9 +131,8 @@ function HistoryRoot() {
 
 type SettingsScreenParams = {
   Settings: undefined
-  'Heart Rate Monitor': undefined
-  'Scan Bluetooth': undefined
-  'Audio Cues': undefined
+  HeartRateMonitor: undefined
+  AudioCues: undefined
   About: undefined
 }
 export type SettingsScreenProps<T extends keyof SettingsScreenParams> =
@@ -152,12 +151,12 @@ function SettingsRoot() {
         options={{ title: t('screens.settings') }}
       />
       <SettingsStack.Screen
-        name={'Heart Rate Monitor'}
+        name={'HeartRateMonitor'}
         component={HeartRateMonitor}
         options={{ title: t('heartRateMonitor') }}
       />
       <SettingsStack.Screen
-        name={'Audio Cues'}
+        name={'AudioCues'}
         component={AudioCues}
         options={{ title: t('audioCues') }}
       />

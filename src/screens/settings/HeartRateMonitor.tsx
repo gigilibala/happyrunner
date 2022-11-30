@@ -21,7 +21,7 @@ const ICON_SIZE = 20
 
 export function HeartRateMonitor({
   navigation,
-}: SettingsScreenProps<'Heart Rate Monitor'>) {
+}: SettingsScreenProps<'HeartRateMonitor'>) {
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
   const [backgroundOpacity, setBackgroundOpacity] = useState<number>(1)

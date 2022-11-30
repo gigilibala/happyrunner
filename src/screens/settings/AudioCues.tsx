@@ -7,7 +7,7 @@ import {
 } from '../../hooks/AudioCuesProvider'
 import { SettingsScreenProps } from '../RootNavigator'
 
-export function AudioCues({}: SettingsScreenProps<'Audio Cues'>) {
+export function AudioCues({}: SettingsScreenProps<'AudioCues'>) {
   const { speak, pref, setPref } = useContext(AudioCuesContext)
   const { t } = useTranslation()
 
