@@ -8,6 +8,7 @@ import { Props } from '../RootNavigator'
 
 export default function Home({ route, navigation }: Props<'Home'>) {
   const styles = useStyles(createStyles)
+  const { t, i18n } = useTranslation()
 
   const bigStartButton = (
     <TouchableOpacity
@@ -19,7 +20,6 @@ export default function Home({ route, navigation }: Props<'Home'>) {
     </TouchableOpacity>
   )
 
-  const { t, i18n } = useTranslation()
   return (
     <SafeAreaView style={[styles.safeAreaView, styles.verticalContainer]}>
       <View style={styles.button}>

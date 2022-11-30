@@ -15,7 +15,7 @@ export function SettingsStack() {
       <Stack.Screen
         name={'Settings'}
         component={AppSettings}
-        options={{ title: t('screens.history') }}
+        options={{ title: t('screens.settings') }}
       />
       <Stack.Screen
         name={'Heart Rate Monitor'}
