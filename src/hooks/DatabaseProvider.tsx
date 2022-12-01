@@ -200,7 +200,9 @@ function useDatabase(): IDatabaseApi {
         tx.executeSql(query).then(([tx, results]) => {
           resolve(results.rows.raw() as Details[])
         })
-      })
+      }).catch((error) =>
+        console.log('Failed to query activity details: ', error),
+      )
     })
   }
 

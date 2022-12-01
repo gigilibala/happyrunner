@@ -51,6 +51,10 @@ export type Lap = {
 
 export type Details = Info & Lap
 
+export type ActivityParams = {
+  type: ActivityType
+}
+
 export interface IActivity {
   id: IdType
   state: State
@@ -60,12 +64,13 @@ export interface IActivity {
 export default function useActivity({
   heartRate,
   position,
+  params,
 }: {
   heartRate?: number
   position?: GeoPosition
+  params: ActivityParams
 }): IActivity {
   const id = useRef<IdType>(0)
-  const [activityType, setActivityType] = useState<ActivityType>('running')
   const { addActivity, modifyActivity, addActivityDatum, addActivityLap } =
     useContext(DatabaseContext)
   const [intervalTs, setIntervalTs] = useState<Date>()
@@ -97,7 +102,7 @@ export default function useActivity({
     id.current = new Date().getTime()
     addActivity({
       id: id.current,
-      type: activityType,
+      type: params.type,
     })
 
     const intervalHandle = setInterval(
