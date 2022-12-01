@@ -1,14 +1,22 @@
 import { Theme } from '@react-navigation/native'
 import React, { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native'
+import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useStyles } from '../../common/styles'
+import { ActivityIcon } from '../../components/ActivityTypes'
 import { Details } from '../../hooks/Activity'
 import { DatabaseContext } from '../../hooks/DatabaseProvider'
 import { HistoryScreenProps } from '../RootNavigator'
 
-export function History({}: HistoryScreenProps<'History'>) {
+export function History({ navigation }: HistoryScreenProps<'History'>) {
   const { t } = useTranslation()
   const styles = useStyles(createStyles)
   const { getActivityDetailsList } = useContext(DatabaseContext)
@@ -18,15 +26,43 @@ export function History({}: HistoryScreenProps<'History'>) {
     getActivityDetailsList().then((detailsList) => setActivityList(detailsList))
   }, [])
 
+  function ActivityItem({ detail }: { detail: Details }) {
+    const date = new Date(detail.start_time).toLocaleString('en-us', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    })
+
+    return (
+      <TouchableOpacity
+        style={[
+          styles.card,
+          {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          },
+        ]}
+        onPress={() =>
+          navigation.navigate('ActivityDetails', {
+            activityId: detail.activity_id,
+          })
+        }
+      >
+        <ActivityIcon type={detail.type} size={30} />
+        <View>
+          <Text style={styles.text}>{date}</Text>
+        </View>
+        <Icon name={'chevron-right'} color={'grey'} />
+      </TouchableOpacity>
+    )
+  }
+
   return (
     <SafeAreaView style={styles.safeAreaView}>
       <ScrollView>
         {activityList?.map((detail) => (
-          <TouchableOpacity key={detail.activity_id}>
-            <View>
-              <Text>{detail.activity_id}</Text>
-            </View>
-          </TouchableOpacity>
+          <ActivityItem detail={detail} key={detail.activity_id} />
         ))}
       </ScrollView>
     </SafeAreaView>
