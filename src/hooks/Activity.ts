@@ -10,9 +10,8 @@ import { GeoPosition } from 'react-native-geolocation-service'
 import { ActivityType } from '../components/ActivityTypes'
 import { DatabaseContext } from '../hooks/DatabaseProvider'
 
-type Status = 'in-progress' | 'paused' | 'stopped'
 type Action = { type: 'pause' | 'stop' | 'resume' | 'nextLap' }
-type State = { status: Status }
+type State = { status: 'in-progress' | 'paused' | 'stopped' }
 
 const INTERVAL_MS = 3000
 
