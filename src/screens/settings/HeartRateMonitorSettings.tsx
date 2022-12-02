@@ -27,7 +27,6 @@ export function HeartRateMonitorSettings({
   const [backgroundOpacity, setBackgroundOpacity] = useState<number>(1)
 
   const {
-    setDoWatchStateChange,
     bluetoothEnabled,
     isScanning,
     setIsScanning,
@@ -40,12 +39,9 @@ export function HeartRateMonitorSettings({
   } = useHeartRateMonitor()
 
   useEffect(() => {
-    setDoWatchStateChange(true)
-
     return () => {
       setIsScanning(false)
       setDoConnect(false)
-      setDoWatchStateChange(false)
     }
   }, [])
 

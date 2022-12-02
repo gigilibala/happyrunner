@@ -29,7 +29,6 @@ type Device = {
 }
 
 interface IHeartRateMonitorApi {
-  setDoWatchStateChange: (watch: boolean) => void
   bluetoothEnabled: boolean
   isScanning: boolean
   setIsScanning: (scan: boolean) => void
@@ -45,11 +44,10 @@ BleManager.start().then(() => {
   console.log('Bluetooth module initialized.')
 })
 
-export function useHeartRateMonitor() {
+export function useHeartRateMonitor(): IHeartRateMonitorApi {
   const [bleManagerEmitter, setBleManagerEmitter] =
     useState<NativeEventEmitter>()
 
-  const [doWatchStateChange, setDoWatchStateChange] = useState<boolean>(false)
   const [stateSubscription, setStateSubscription] =
     useState<EmitterSubscription>()
   const [bluetoothEnabled, setBluetoothEnabled] = useState<boolean>(true)
@@ -67,6 +65,7 @@ export function useHeartRateMonitor() {
 
   useEffect(() => {
     setBleManagerEmitter(new NativeEventEmitter(NativeModules.BleManager))
+    watchBluetoothStateChange()
     // TODO(gigilibala): Remove
     const handle = setInterval(
       () => setHeartRate(Math.floor(Math.random() * 200)),
@@ -77,15 +76,13 @@ export function useHeartRateMonitor() {
       { name: 'hassani', id: 'hassani', advertising: {}, rssi: 1 },
     ])
 
-    return () => clearInterval(handle)
-  }, [])
+    return () => {
+      console.log('Unubscribing to bluetooth state changes.')
+      setStateSubscription(undefined)
 
-  useEffect(() => {
-    if (doWatchStateChange) {
-      watchBluetoothStateChange()
-      return () => setStateSubscription(undefined)
+      clearInterval(handle)
     }
-  }, [doWatchStateChange])
+  }, [])
 
   useEffect(() => {
     if (stateSubscription !== undefined) {
@@ -315,7 +312,6 @@ export function useHeartRateMonitor() {
   }
 
   return {
-    setDoWatchStateChange,
     bluetoothEnabled,
     isScanning,
     setIsScanning,
