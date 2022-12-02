@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Dispatch, useEffect, useReducer, useState } from 'react'
 import {
   EmitterSubscription,
   NativeEventEmitter,
@@ -17,12 +17,6 @@ import usePrefs from '../common/prefs'
 const HEART_RATE_GATT_SERVICE = '180d'
 const HEART_RATE_GATT_CHARACTERISTIC = '2a37'
 
-type ConnectionStatus =
-  | 'connecting'
-  | 'connected'
-  | 'disconnecting'
-  | 'not-connected'
-
 type Device = {
   id: string
   name?: string
@@ -30,14 +24,20 @@ type Device = {
 
 interface IHeartRateMonitorApi {
   bluetoothEnabled: boolean
-  isScanning: boolean
-  setIsScanning: (scan: boolean) => void
   devices: Peripheral[]
   device?: Device
-  setDevice: (device: Device) => void
-  setDoConnect: (connect: boolean) => void
-  connectionStatus: ConnectionStatus
   heartRate?: number
+  state: State
+  dispatch: Dispatch<Action>
+}
+
+type Action =
+  | { type: 'scan' | 'stopScan' | 'disconnect' }
+  | { type: 'connect'; payload?: { device: Device } }
+  | { type: 'connectionAttempt'; payload: { result: boolean } }
+  | { type: 'disconnectionAttempt' }
+type State = {
+  status?: 'scanning' | 'connecting' | 'connected' | 'disconnecting'
 }
 
 export function useHeartRateMonitor(): IHeartRateMonitorApi {
@@ -49,17 +49,69 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
   const [stateSubscription, setStateSubscription] =
     useState<EmitterSubscription>()
   const [bluetoothEnabled, setBluetoothEnabled] = useState<boolean>(true)
-  const [isScanning, setIsScanning] = useState<boolean>(false)
   const [scanningSubscription, setScanningSubscription] =
     useState<EmitterSubscription>()
   const [devices, setDevices] = useState<Peripheral[]>([])
-  const [doConnect, setDoConnect] = useState<boolean>(false)
-  const [connectionStatus, setConnectionStatus] =
-    useState<ConnectionStatus>('not-connected')
   const [device, setDevice] = usePrefs<Device>('@bluetooth_default_device')
   const [valueSubscription, setValueSubscription] =
     useState<EmitterSubscription>()
   const [heartRate, setHeartRate] = useState<number>()
+
+  const [state, dispatch] = useReducer(
+    (state: State, action: Action): State => {
+      switch (action.type) {
+        case 'scan':
+          if (state.status === 'scanning') return state
+          startScan()
+          return { status: 'scanning' }
+        case 'stopScan':
+          if (state.status === undefined) return state
+          stopScan()
+          return {}
+        case 'connect':
+          if (state.status === 'connected' || state.status === 'connecting')
+            return state
+          connect(action.payload?.device.id)
+            .then(() =>
+              dispatch({
+                type: 'connectionAttempt',
+                payload: { result: true },
+              }),
+            )
+            .catch((error) => {
+              console.log(error)
+              dispatch({
+                type: 'connectionAttempt',
+                payload: { result: false },
+              })
+            })
+          return { status: 'connecting' }
+        case 'connectionAttempt':
+          return {
+            status: action.payload.result ? 'connected' : undefined,
+          }
+        case 'disconnect':
+          if (state.status !== 'connecting' && state.status !== 'connected')
+            return state
+          disconnect().finally(() => {
+            dispatch({ type: 'disconnectionAttempt' })
+          })
+          return { status: 'disconnecting' }
+        case 'disconnectionAttempt':
+          return {}
+      }
+    },
+    {},
+  )
+
+  useEffect(() => {
+    if (state.status === 'scanning') {
+      return () => dispatch({ type: 'stopScan' })
+    }
+    if (state.status === 'connected') {
+      return () => dispatch({ type: 'disconnect' })
+    }
+  }, [state])
 
   useEffect(() => {
     // TODO(gigilibala): Remove
@@ -72,7 +124,9 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
       { name: 'hassani', id: 'hassani', advertising: {}, rssi: 1 },
     ])
 
-    return () => clearInterval(handle)
+    return () => {
+      clearInterval(handle)
+    }
   }, [])
 
   useEffect(() => {
@@ -83,29 +137,6 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
       stateSubscription?.remove()
     }
   }, [bleManagerEmitter])
-
-  useEffect(() => {
-    if (isScanning) {
-      startScan()
-      return () => stopScan()
-    }
-  }, [isScanning])
-
-  useEffect(() => {
-    if (scanningSubscription !== undefined)
-      return () => scanningSubscription.remove()
-  }, [scanningSubscription])
-
-  useEffect(() => {
-    if (valueSubscription !== undefined) return () => valueSubscription.remove()
-  }, [valueSubscription])
-
-  useEffect(() => {
-    if (doConnect) {
-      connect()
-      return () => disconnect()
-    }
-  }, [doConnect])
 
   function watchBluetoothStateChange() {
     console.log('Subscribing to bluetooth state changes.')
@@ -200,7 +231,6 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
   }
 
   function stopScan() {
-    setScanningSubscription(undefined)
     BleManager?.stopScan()
       .then(() => {
         console.log('Stopped scanning for BLE devices.')
@@ -209,46 +239,58 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
       .catch((error) =>
         console.log('Failed to stop scanning for BLE devices: ', error),
       )
+      .finally(() => scanningSubscription?.remove())
   }
 
   function connect(id?: string) {
-    if (id !== undefined) {
-      const d = devices.find((p) => p.id === id)
-      if (d === undefined) {
-        console.log('Trying to connect to a device that we have never found!')
+    return new Promise<void>((resolve, reject) => {
+      if (id !== undefined) {
+        const d = devices.find((p) => p.id === id)
+        if (d === undefined) {
+          reject('Trying to connect to a device that we have never found!')
+          return
+        }
+        setDevice({ id: d.id, name: d.name })
+      } else {
+        id = device?.id
+      }
+      if (id === undefined) {
+        reject('No device is available.')
         return
       }
-      setDevice({ id: d.id, name: d.name })
-    } else {
-      id = device?.id
-    }
-    if (id === undefined) return
-    setConnectionStatus('connecting')
-    BleManager.connect(id)
-      .then(() => {
-        console.log('Connected to device: ', id)
-        setConnectionStatus('connected')
-        return BleManager.retrieveServices(id!)
-      })
-      .then((info) => startReadingData(info))
-      .catch((error) => {
-        console.log('Failed to connect to device: ', id, error)
-        setConnectionStatus('not-connected')
-      })
+      BleManager.connect(id)
+        .then(() => {
+          console.log('Connected to device: ', id)
+          return BleManager.retrieveServices(id!)
+        })
+        .then((info) => startReadingData(info))
+        .then(() => resolve())
+        .catch((error) => {
+          reject(`Failed to connect to device: ${id}, ${error}`)
+        })
+    })
   }
 
   function disconnect() {
-    setValueSubscription(undefined)
-    if (device === undefined) return
-    setConnectionStatus('disconnecting')
-    BleManager.disconnect(device.id)
-      .then(() => console.log('Disconnected from device: ', device))
-      .catch((error) =>
-        console.log('Failed to disconnect from device, forcing disconnection!'),
-      )
-      .finally(() => {
-        setConnectionStatus('not-connected')
-      })
+    return new Promise<void>((resolve, reject) => {
+      if (device === undefined) {
+        resolve()
+        return
+      }
+      BleManager.disconnect(device.id)
+        .then(() => {
+          console.log('Disconnected from device: ', device)
+        })
+        .catch((error) =>
+          console.log(
+            'Failed to disconnect from device, forcing disconnection!',
+          ),
+        )
+        .finally(() => {
+          valueSubscription?.remove()
+          resolve()
+        })
+    })
   }
 
   function startReadingData(info: PeripheralInfo): Promise<void> {
@@ -257,11 +299,11 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
       HEART_RATE_GATT_SERVICE,
       HEART_RATE_GATT_CHARACTERISTIC,
     ).then(() => {
-      console.log('Notification started.')
+      console.log('Bluetooth notification started.')
       setValueSubscription(
         bleManagerEmitter?.addListener(
           'BleManagerDidUpdateValueForCharacteristic',
-          (event: any) => onHeartRateUpdate(event),
+          (event) => onHeartRateUpdate(event),
         ),
       )
     })
@@ -303,13 +345,10 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
 
   return {
     bluetoothEnabled,
-    isScanning,
-    setIsScanning,
     devices,
     device,
-    setDevice,
-    setDoConnect,
-    connectionStatus,
     heartRate,
+    state,
+    dispatch,
   }
 }

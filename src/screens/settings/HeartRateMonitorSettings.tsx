@@ -26,30 +26,14 @@ export function HeartRateMonitorSettings({
   const { t } = useTranslation()
   const [backgroundOpacity, setBackgroundOpacity] = useState<number>(1)
 
-  const {
-    bluetoothEnabled,
-    isScanning,
-    setIsScanning,
-    devices,
-    device,
-    setDevice,
-    setDoConnect,
-    connectionStatus,
-    heartRate,
-  } = useHeartRateMonitor()
-
-  useEffect(() => {
-    return () => {
-      setIsScanning(false)
-      setDoConnect(false)
-    }
-  }, [])
+  const { bluetoothEnabled, devices, device, heartRate, state, dispatch } =
+    useHeartRateMonitor()
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity
-          onPress={() => setIsScanning(true)}
+          onPress={() => dispatch({ type: 'scan' })}
           disabled={!bluetoothEnabled}
         >
           <Icon
@@ -64,18 +48,18 @@ export function HeartRateMonitorSettings({
   }, [bluetoothEnabled])
 
   useEffect(() => {
-    setBackgroundOpacity(isScanning ? 0.25 : 1.0)
-  }, [isScanning])
+    setBackgroundOpacity(state.status === 'scanning' ? 0.25 : 1.0)
+  }, [state])
 
   function connectButtonTitle(): string {
-    switch (connectionStatus) {
+    switch (state.status) {
       case 'connected':
         return t('disconnect')
       case 'connecting':
         return t('connecting')
       case 'disconnecting':
         return t('disconnecting')
-      case 'not-connected':
+      default:
         return t('connect')
     }
   }
@@ -115,10 +99,10 @@ export function HeartRateMonitorSettings({
   const scanModal = (
     <Modal
       animationType={'fade'}
-      visible={isScanning}
+      visible={state.status === 'scanning'}
       transparent={true}
       statusBarTranslucent={true}
-      onRequestClose={() => setIsScanning(false)}
+      onRequestClose={() => dispatch({ type: 'disconnect' })}
     >
       <View style={styles.centeredView}>
         <View style={[styles.modalView, styles.shadow]}>
@@ -130,9 +114,10 @@ export function HeartRateMonitorSettings({
               <TouchableOpacity
                 key={device.id}
                 onPress={() => {
-                  setIsScanning(false)
-                  setDevice({ id: device.id, name: device.name })
-                  setDoConnect(true)
+                  dispatch({
+                    type: 'connect',
+                    payload: { device: { id: device.id, name: device.name } },
+                  })
                 }}
               >
                 <View style={styles.iconWithText}>
@@ -151,7 +136,9 @@ export function HeartRateMonitorSettings({
             <Button
               title={t('cancel')}
               onPress={() => {
-                setIsScanning(false)
+                dispatch({
+                  type: 'stopScan',
+                })
               }}
             />
           </View>
@@ -164,11 +151,11 @@ export function HeartRateMonitorSettings({
     <View style={styles.button}>
       <Button
         title={connectButtonTitle()}
-        onPress={() => setDoConnect(connectionStatus === 'not-connected')}
+        onPress={() => dispatch({ type: 'connect' })}
         disabled={
           !bluetoothEnabled ||
-          connectionStatus === 'connecting' ||
-          connectionStatus === 'disconnecting'
+          state.status === 'connecting' ||
+          state.status === 'disconnecting'
         }
       />
     </View>
