@@ -21,7 +21,7 @@ import Home from './home/Home'
 import { About } from './settings/About'
 import { AppSettings } from './settings/AppSettings'
 import { AudioCues } from './settings/AudioCues'
-import { HeartRateMonitor } from './settings/HeartRateMonitor'
+import { HeartRateMonitorSettings } from './settings/HeartRateMonitorSettings'
 
 type RootParams = {
   HomeRoot: NavigatorScreenParams<HomeScreenParams>
@@ -132,7 +132,7 @@ function HistoryRoot() {
 
 type SettingsScreenParams = {
   Settings: undefined
-  HeartRateMonitor: undefined
+  HeartRateMonitorSettings: undefined
   AudioCues: undefined
   About: undefined
 }
@@ -152,8 +152,8 @@ function SettingsRoot() {
         options={{ title: t('screens.settings') }}
       />
       <SettingsStack.Screen
-        name={'HeartRateMonitor'}
-        component={HeartRateMonitor}
+        name={'HeartRateMonitorSettings'}
+        component={HeartRateMonitorSettings}
         options={{ title: t('heartRateMonitor') }}
       />
       <SettingsStack.Screen

@@ -19,7 +19,7 @@ export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
         {
           kind: 'navigation',
           title: t('heartRateMonitor'),
-          onPress: () => navigation.navigate('HeartRateMonitor'),
+          onPress: () => navigation.navigate('HeartRateMonitorSettings'),
           icon: (
             <Icon.Button
               name={'bluetooth-b'}
