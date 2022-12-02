@@ -23,12 +23,13 @@ export default function ActivityDetails({
   const { activityId } = route.params
   const { modifyActivity, getActivityLaps } = useContext(DatabaseContext)
   const [notes, setNotes] = useState<string>('')
+  const [editing, setEditing] = useState<boolean>(route.params.edit)
 
   const saveButton = (
     <TouchableOpacity
       onPress={() => {
         modifyActivity({ id: activityId, notes: notes })
-        navigation.popToTop()
+        setEditing(false)
       }}
     >
       <Icon name={'save'} size={BUTTON_SIZE} color={'blue'} />
@@ -47,25 +48,40 @@ export default function ActivityDetails({
     >
       <View>
         <Text style={[styles.largeText]}>{t('notes')}</Text>
-        <TextInput
-          multiline={true}
-          value={notes}
-          onChangeText={setNotes}
-          textAlignVertical={'top'}
-          style={[styles.textInput, styles.card, styles.shadow]}
-        />
+        {editing ? (
+          <TextInput
+            multiline={true}
+            value={notes}
+            onChangeText={setNotes}
+            textAlignVertical={'top'}
+            style={[styles.editNotes, styles.card, styles.shadow]}
+            editable={editing}
+          />
+        ) : (
+          <View style={styles.readNotes}>
+            <Text style={styles.text}>{notes}</Text>
+          </View>
+        )}
       </View>
-      <View style={styles.activityButtonView}>
-        {discardButton}
-        {saveButton}
-      </View>
+      {editing && (
+        <View style={styles.activityButtonView}>
+          {discardButton}
+          {saveButton}
+        </View>
+      )}
     </SafeAreaView>
   )
 }
 
 const createStyles = (theme: Theme) =>
   StyleSheet.create({
-    textInput: {
+    editNotes: {
       height: '50%',
+      width: '90%',
+      alignSelf: 'center',
+    },
+    readNotes: {
+      width: '90%',
+      alignSelf: 'center',
     },
   })

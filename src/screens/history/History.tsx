@@ -46,6 +46,7 @@ export function History({ navigation }: HistoryScreenProps<'History'>) {
         onPress={() =>
           navigation.navigate('ActivityDetails', {
             activityId: detail.activity_id,
+            edit: false,
           })
         }
       >

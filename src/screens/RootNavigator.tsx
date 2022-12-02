@@ -108,7 +108,7 @@ function HomeRoot() {
 
 type HistoryScreenParams = {
   History: undefined
-  ActivityDetails: { activityId: number }
+  ActivityDetails: { activityId: number; edit: boolean }
 }
 export type HistoryScreenProps<T extends keyof HistoryScreenParams> =
   CompositeScreenProps<

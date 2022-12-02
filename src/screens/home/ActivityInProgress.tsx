@@ -57,7 +57,7 @@ export default function ActivityInProgress({
     if (state.status === 'stopped') {
       navigation.navigate('HistoryRoot', {
         screen: 'ActivityDetails',
-        params: { activityId: id },
+        params: { activityId: id, edit: true },
         initial: false,
       })
       navigation.pop()

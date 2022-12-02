@@ -26,7 +26,7 @@
   "advanced": "Advanced",
   "clearDatabase": "Clear Database",
   "clearDatabaseNotice": "This action deletes the database and is not recoverable. Do you want to continue?",
-  "notes": "Notes:",
+  "notes": "Notes",
   "activityType": {
     "running": "Running",
     "swimming": "Swimming"
