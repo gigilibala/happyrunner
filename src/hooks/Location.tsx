@@ -40,7 +40,12 @@ export function useLocation(): ILocationApi {
           Geolocation.watchPosition(
             (pos) => setPosition(pos),
             (error) => console.log('Failed to watch position', error),
-            { interval: 1000, fastestInterval: 500, enableHighAccuracy: true },
+            {
+              interval: 2000,
+              fastestInterval: 1000,
+              enableHighAccuracy: true,
+              distanceFilter: 1,
+            },
           ),
         )
       })
