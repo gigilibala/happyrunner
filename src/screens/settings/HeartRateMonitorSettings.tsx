@@ -1,5 +1,5 @@
 import { Theme } from '@react-navigation/native'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   ActivityIndicator,
@@ -14,7 +14,7 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useStyles } from '../../common/styles'
-import { HeartRateMonitorContext } from '../../hooks/HeartRateMonitorProvider'
+import { useHeartRateMonitor } from '../../hooks/HeartRateMonitor'
 import { SettingsScreenProps } from '../RootNavigator'
 
 const ICON_SIZE = 20
@@ -37,7 +37,7 @@ export function HeartRateMonitorSettings({
     setDoConnect,
     connectionStatus,
     heartRate,
-  } = useContext(HeartRateMonitorContext)
+  } = useHeartRateMonitor()
 
   useEffect(() => {
     setDoWatchStateChange(true)

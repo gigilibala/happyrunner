@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   EmitterSubscription,
   NativeEventEmitter,
@@ -45,7 +45,7 @@ BleManager.start().then(() => {
   console.log('Bluetooth module initialized.')
 })
 
-function useHeartRateMonitor() {
+export function useHeartRateMonitor() {
   const [bleManagerEmitter, setBleManagerEmitter] =
     useState<NativeEventEmitter>()
 
@@ -326,22 +326,4 @@ function useHeartRateMonitor() {
     connectionStatus,
     heartRate,
   }
-}
-
-export const HeartRateMonitorContext = createContext<IHeartRateMonitorApi>(
-  {} as IHeartRateMonitorApi,
-)
-
-export function HeartRateMonitorProvider({
-  children,
-}: {
-  children: ReactNode
-}) {
-  const state = useHeartRateMonitor()
-
-  return (
-    <HeartRateMonitorContext.Provider value={state}>
-      {children}
-    </HeartRateMonitorContext.Provider>
-  )
 }

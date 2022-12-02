@@ -6,7 +6,6 @@ import {
 import { LogBox, useColorScheme } from 'react-native'
 import { AudioCuesProvider } from './hooks/AudioCuesProvider'
 import { DatabaseProvider } from './hooks/DatabaseProvider'
-import { HeartRateMonitorProvider } from './hooks/HeartRateMonitorProvider'
 import './localization/i18n'
 import { RootNavigator } from './screens/RootNavigator'
 
@@ -15,16 +14,14 @@ LogBox.ignoreLogs(['new NativeEventEmitter'])
 export default function App() {
   const scheme = useColorScheme()
   return (
-    <HeartRateMonitorProvider>
-      <DatabaseProvider>
-        <AudioCuesProvider>
-          <NavigationContainer
-            theme={scheme === 'dark' ? DarkTheme : DefaultTheme}
-          >
-            <RootNavigator />
-          </NavigationContainer>
-        </AudioCuesProvider>
-      </DatabaseProvider>
-    </HeartRateMonitorProvider>
+    <DatabaseProvider>
+      <AudioCuesProvider>
+        <NavigationContainer
+          theme={scheme === 'dark' ? DarkTheme : DefaultTheme}
+        >
+          <RootNavigator />
+        </NavigationContainer>
+      </AudioCuesProvider>
+    </DatabaseProvider>
   )
 }
