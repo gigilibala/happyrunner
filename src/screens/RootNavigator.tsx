@@ -57,6 +57,7 @@ export function RootNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Icon name={'history'} color={color} size={size} />
           ),
+          freezeOnBlur: true,
         }}
       />
       <Root.Screen
@@ -69,6 +70,7 @@ export function RootNavigator() {
             <IonIcon name={'settings'} color={color} size={size} />
           ),
           unmountOnBlur: true,
+          freezeOnBlur: true,
         }}
       />
     </Root.Navigator>
