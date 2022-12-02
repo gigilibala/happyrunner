@@ -24,7 +24,7 @@ type Device = {
 
 interface IHeartRateMonitorApi {
   bluetoothEnabled: boolean
-  devices: Peripheral[]
+  devices: Device[]
   device?: Device
   heartRate?: number
   state: State
@@ -51,7 +51,7 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
   const [bluetoothEnabled, setBluetoothEnabled] = useState<boolean>(true)
   const [scanningSubscription, setScanningSubscription] =
     useState<EmitterSubscription>()
-  const [devices, setDevices] = useState<Peripheral[]>([])
+  const [devices, setDevices] = useState<Device[]>([])
   const [device, setDevice] = usePrefs<Device>('@bluetooth_default_device')
   const [valueSubscription, setValueSubscription] =
     useState<EmitterSubscription>()
@@ -120,8 +120,8 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
       2000,
     )
     setDevices([
-      { name: 'amin', id: 'amin', advertising: {}, rssi: 1 },
-      { name: 'hassani', id: 'hassani', advertising: {}, rssi: 1 },
+      { name: 'amin', id: 'amin' },
+      { name: 'hassani', id: 'hassani' },
     ])
 
     return () => {
@@ -215,7 +215,7 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
                   HEART_RATE_GATT_SERVICE,
                 )
               ) {
-                setDevices((prev: Peripheral[]): Peripheral[] => {
+                setDevices((prev: Device[]): Device[] => {
                   if (prev.some((d) => d.id === device.id)) {
                     return prev
                   }

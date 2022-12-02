@@ -116,7 +116,7 @@ export function HeartRateMonitorSettings({
                 onPress={() => {
                   dispatch({
                     type: 'connect',
-                    payload: { device: { id: device.id, name: device.name } },
+                    payload: { device: device },
                   })
                 }}
               >
