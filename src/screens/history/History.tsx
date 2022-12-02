@@ -28,9 +28,12 @@ export function History({ navigation }: HistoryScreenProps<'History'>) {
 
   function ActivityItem({ detail }: { detail: Details }) {
     const date = new Date(detail.start_time).toLocaleString('en-us', {
+      weekday: 'short',
       day: '2-digit',
       month: 'short',
       year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
     })
 
     return (
