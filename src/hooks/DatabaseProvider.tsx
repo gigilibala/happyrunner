@@ -194,7 +194,7 @@ function useDatabase(): IDatabaseApi {
       FROM ${activityInfoTableName} INNER JOIN ${activityLapsTableName}
       ON ${activityInfoTableName}.${activityInfoTableColumns.id} = ${activityLapsTableName}.${activityLapsTableColumns.activity_id}
       AND ${activityLapsTableName}.${activityLapsTableColumns.number} = 0
-      ORDER BY ${activityLapsTableColumns.start_time}
+      ORDER BY ${activityLapsTableColumns.start_time} DESC
       `
       db?.transaction((tx) => {
         tx.executeSql(query).then(([tx, results]) => {
