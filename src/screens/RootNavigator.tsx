@@ -57,7 +57,6 @@ export function RootNavigator() {
           tabBarIcon: ({ color, size }) => (
             <Icon name={'history'} color={color} size={size} />
           ),
-          unmountOnBlur: true,
           freezeOnBlur: true,
         }}
       />
