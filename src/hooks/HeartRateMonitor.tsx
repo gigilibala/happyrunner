@@ -34,10 +34,12 @@ interface IHeartRateMonitorApi {
 type Action =
   | { type: 'scan' | 'stopScan' | 'disconnect' }
   | { type: 'connect'; payload?: { device: Device } }
-  | { type: 'connectionAttempt'; payload: { result: boolean } }
-  | { type: 'disconnectionAttempt' }
+  | { type: 'success' }
+  | { type: 'failure'; error: Error }
 type State = {
-  status?: 'scanning' | 'connecting' | 'connected' | 'disconnecting'
+  status: 'idle' | 'scanning' | 'connected'
+  isLoading: boolean
+  error?: Error
 }
 
 export function useHeartRateMonitor(): IHeartRateMonitorApi {
@@ -63,45 +65,39 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
         case 'scan':
           if (state.status === 'scanning') return state
           startScan()
-          return { status: 'scanning' }
+          return { status: 'scanning', isLoading: false }
         case 'stopScan':
-          if (state.status === undefined) return state
+          if (state.status !== 'scanning') return state
           stopScan()
-          return {}
+          return { status: 'idle', isLoading: false }
         case 'connect':
-          if (state.status === 'connected' || state.status === 'connecting')
-            return state
+          if (state.status === 'connected' || state.isLoading) return state
           connect(action.payload?.device.id)
-            .then(() =>
-              dispatch({
-                type: 'connectionAttempt',
-                payload: { result: true },
-              }),
-            )
+            .then(() => dispatch({ type: 'success' }))
             .catch((error) => {
               console.log(error)
-              dispatch({
-                type: 'connectionAttempt',
-                payload: { result: false },
-              })
+              dispatch({ type: 'failure', error: error })
             })
-          return { status: 'connecting' }
-        case 'connectionAttempt':
-          return {
-            status: action.payload.result ? 'connected' : undefined,
-          }
+          state = { ...state }
+          state.isLoading = true
+          return state
         case 'disconnect':
-          if (state.status !== 'connecting' && state.status !== 'connected')
-            return state
-          disconnect().finally(() => {
-            dispatch({ type: 'disconnectionAttempt' })
-          })
-          return { status: 'disconnecting' }
-        case 'disconnectionAttempt':
-          return {}
+          if (state.status !== 'connected' || !state.isLoading) return state
+          disconnect().finally(() => dispatch({ type: 'success' }))
+          return state
+        case 'success':
+          return {
+            status: state.isLoading ? 'connected' : 'idle',
+            isLoading: false,
+          }
+        case 'failure':
+          return {
+            status: 'idle',
+            isLoading: false,
+          }
       }
     },
-    {},
+    { status: 'idle', isLoading: false },
   )
 
   useEffect(() => {

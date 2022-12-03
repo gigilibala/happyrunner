@@ -55,13 +55,10 @@ export function HeartRateMonitorSettings({
     switch (state.status) {
       case 'connected':
         return t('disconnect')
-      case 'connecting':
-        return t('connecting')
-      case 'disconnecting':
-        return t('disconnecting')
       default:
-        return t('connect')
+        if (state.isLoading) return t('connecting')
     }
+    return t('connect')
   }
 
   const hrmInfo = (
@@ -152,11 +149,7 @@ export function HeartRateMonitorSettings({
       <Button
         title={connectButtonTitle()}
         onPress={() => dispatch({ type: 'connect' })}
-        disabled={
-          !bluetoothEnabled ||
-          state.status === 'connecting' ||
-          state.status === 'disconnecting'
-        }
+        disabled={!bluetoothEnabled || state.isLoading}
       />
     </View>
   )
