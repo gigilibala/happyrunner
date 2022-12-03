@@ -26,22 +26,12 @@ export default function ActivityInProgress({
     position,
     params: route.params.activityParams,
   })
-  const { displayNotification, cancelNotification } = useNotification()
+  const [notificationState, notificationDispatch] = useNotification()
 
   useEffect(() => {
     navigation.setOptions({
       title: t(`activityType.${route.params.activityParams.type}`),
     })
-
-    displayNotification().catch((error) =>
-      console.log('Failed to start notification: ', error),
-    )
-
-    return () => {
-      cancelNotification().catch((error) =>
-        console.log('Failed to cancel notification: ', error),
-      )
-    }
   }, [])
 
   useEffect(() => {
