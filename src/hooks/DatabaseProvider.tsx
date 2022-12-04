@@ -10,6 +10,7 @@ import {
   deleteDatabase,
   openDatabase,
   SQLiteDatabase,
+  Transaction,
 } from 'react-native-sqlite-storage'
 import { Datum, Details, IdType, Info, Lap } from './Activity'
 
@@ -92,6 +93,7 @@ type Action =
   | { type: 'clearDatabase' }
   | { type: 'addActivity'; payload: { data: Info } }
   | { type: 'modifyActivity'; payload: { data: Info } }
+  | { type: 'deleteActivity'; payload: { activityId: IdType } }
   | { type: 'addActivityDatum'; payload: { data: Datum } }
   | { type: 'addActivityLap'; payload: { data: Lap } }
   | { type: 'getActivityLaps'; payload: { activityId: IdType } }
@@ -122,6 +124,9 @@ function useDatabase(): IDatabaseApi {
           return { status: 'idle' }
         case 'modifyActivity':
           modifyActivity(action.payload.data)
+          return { status: 'idle' }
+        case 'deleteActivity':
+          deleteActivity(action.payload.activityId)
           return { status: 'idle' }
         case 'addActivityDatum':
           addActivityDatum(action.payload.data)
@@ -206,6 +211,38 @@ function useDatabase(): IDatabaseApi {
 
   function addActivity(value: Info): void {
     addRow(value, activityInfoTableName)
+  }
+
+  function deleteActivity(activityId: IdType) {
+    function deleteRows(tx: Transaction, table: string, column: string) {
+      const query = `DELETE FROM ${table}
+      WHERE ${column} = ?
+      `
+      tx.executeSql(query, [activityId])
+        .then(() =>
+          console.log(
+            `Deleted rows from ${table} with activity ID ${activityId}`,
+          ),
+        )
+        .catch((error) =>
+          console.log(
+            `Failed to delete rows from ${table} for activity ID ${activityId}`,
+          ),
+        )
+    }
+    db?.transaction((tx) => {
+      deleteRows(
+        tx,
+        activityDataTableName,
+        activityDataTableColumns.activity_id,
+      )
+      deleteRows(
+        tx,
+        activityLapsTableName,
+        activityLapsTableColumns.activity_id,
+      )
+      deleteRows(tx, activityInfoTableName, activityInfoTableColumns.id)
+    })
   }
 
   function modifyActivity(value: Info): void {

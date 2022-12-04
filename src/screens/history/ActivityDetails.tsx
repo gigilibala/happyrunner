@@ -71,7 +71,15 @@ export default function ActivityDetails({
           <MenuOption onSelect={() => setEditing(true)}>
             <Text style={styles.mediumText}>{t('edit')}</Text>
           </MenuOption>
-          <MenuOption onSelect={() => console.log('delete')}>
+          <MenuOption
+            onSelect={() => {
+              dbDispatch({
+                type: 'deleteActivity',
+                payload: { activityId: activityId },
+              })
+              navigation.goBack()
+            }}
+          >
             <Text style={styles.mediumText}>{t('delete')}</Text>
           </MenuOption>
         </MenuOptions>
