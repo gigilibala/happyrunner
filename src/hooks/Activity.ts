@@ -70,8 +70,7 @@ export default function useActivity({
   params: ActivityParams
 }): IActivity {
   const id = useRef<IdType>(0)
-  const { addActivity, modifyActivity, addActivityDatum, addActivityLap } =
-    useContext(DatabaseContext)
+  const [_, dbDispatch] = useContext(DatabaseContext)
   const [intervalTs, setIntervalTs] = useState<Date>()
   const [lap, setLap] = useState<number>(1)
 
@@ -99,9 +98,9 @@ export default function useActivity({
 
   useEffect(() => {
     id.current = new Date().getTime()
-    addActivity({
-      id: id.current,
-      type: params.type,
+    dbDispatch({
+      type: 'addActivity',
+      payload: { data: { id: id.current, type: params.type } },
     })
 
     const intervalHandle = setInterval(
@@ -113,29 +112,34 @@ export default function useActivity({
       dispatch({ type: 'stop' })
       clearInterval(intervalHandle)
 
-      addActivityLap({
-        id: randomId(),
-        activity_id: id.current,
-        number: 0,
-        start_time: id.current,
-        end_time: pausedTs.current
-          ? pausedTs.current.getTime()
-          : new Date().getTime(),
+      dbDispatch({
+        type: 'addActivityLap',
+        payload: {
+          data: {
+            id: randomId(),
+            activity_id: id.current,
+            number: 0,
+            start_time: id.current,
+            end_time: pausedTs.current
+              ? pausedTs.current.getTime()
+              : new Date().getTime(),
+          },
+        },
       })
     }
   }, [])
 
   useEffect(() => {
     if (state.status === 'in-progress') {
-      modifyActivity({
-        id: id.current,
-        status: 'in-progress',
+      dbDispatch({
+        type: 'modifyActivity',
+        payload: { data: { id: id.current, status: 'in-progress' } },
       })
       pausedTs.current = undefined
     } else {
-      modifyActivity({
-        id: id.current,
-        status: 'stopped',
+      dbDispatch({
+        type: 'modifyActivity',
+        payload: { data: { id: id.current, status: 'stopped' } },
       })
       pausedTs.current = new Date()
     }
@@ -144,15 +148,20 @@ export default function useActivity({
   useEffect(() => {
     if (intervalTs === undefined || state.status !== 'in-progress') return
 
-    addActivityDatum({
-      // Do not use intervalTs here because if the component re-mounts, the old
-      // value is used again and will cause duplicate key be added to the
-      // database.
-      timestamp: new Date().getTime(),
-      activity_id: id.current,
-      heart_rate: heartRate,
-      latitude: position?.coords.latitude,
-      longitude: position?.coords.longitude,
+    dbDispatch({
+      type: 'addActivityDatum',
+      payload: {
+        data: {
+          // Do not use intervalTs here because if the component re-mounts, the old
+          // value is used again and will cause duplicate key be added to the
+          // database.
+          timestamp: new Date().getTime(),
+          activity_id: id.current,
+          heart_rate: heartRate,
+          latitude: position?.coords.latitude,
+          longitude: position?.coords.longitude,
+        },
+      },
     })
   }, [intervalTs])
 
@@ -162,12 +171,17 @@ export default function useActivity({
     return () => {
       const endTime = pausedTs.current ? pausedTs.current : new Date()
       if (endTime < lapStartTs.current!) return
-      addActivityLap({
-        id: randomId(),
-        activity_id: id.current,
-        number: lap,
-        start_time: lapStartTs.current!.getTime(),
-        end_time: endTime.getTime(),
+      dbDispatch({
+        type: 'addActivityLap',
+        payload: {
+          data: {
+            id: randomId(),
+            activity_id: id.current,
+            number: lap,
+            start_time: lapStartTs.current!.getTime(),
+            end_time: endTime.getTime(),
+          },
+        },
       })
     }
   }, [lap])

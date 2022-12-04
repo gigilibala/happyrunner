@@ -19,12 +19,20 @@ import { HistoryScreenProps } from '../RootNavigator'
 export function History({ navigation }: HistoryScreenProps<'History'>) {
   const { t } = useTranslation()
   const styles = useStyles(createStyles)
-  const { getActivityDetailsList } = useContext(DatabaseContext)
-
+  const [dbState, dbDispatch] = useContext(DatabaseContext)
   const [activityList, setActivityList] = useState<Details[]>()
+
   useEffect(() => {
-    getActivityDetailsList().then((detailsList) => setActivityList(detailsList))
+    dbDispatch({ type: 'getActivityDetailsList' })
   }, [])
+
+  useEffect(() => {
+    if (
+      dbState.status === 'success' &&
+      dbState.actionType === 'getActivityDetailsList'
+    )
+      setActivityList(dbState.payload.details)
+  }, [dbState])
 
   function ActivityItem({ detail }: { detail: Details }) {
     const date = new Date(detail.start_time).toLocaleString('en-us', {

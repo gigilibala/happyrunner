@@ -8,7 +8,7 @@ import { DatabaseContext } from '../../hooks/DatabaseProvider'
 import { SettingsScreenProps } from '../RootNavigator'
 
 export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
-  const { clearDatabase } = useContext(DatabaseContext)
+  const [_, dbDispatch] = useContext(DatabaseContext)
   const { pref } = useContext(AudioCuesContext)
   const { t } = useTranslation()
 
@@ -68,7 +68,7 @@ export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
               [
                 {
                   text: t('yes'),
-                  onPress: () => clearDatabase(),
+                  onPress: () => dbDispatch({ type: 'clearDatabase' }),
                   style: 'destructive',
                 },
                 { text: t('cancel'), style: 'cancel' },

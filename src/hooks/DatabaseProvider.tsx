@@ -1,12 +1,17 @@
-import { createContext, ReactNode, useEffect, useState } from 'react'
+import {
+  createContext,
+  ReactNode,
+  useEffect,
+  useReducer,
+  useState,
+} from 'react'
 import {
   DatabaseParams,
   deleteDatabase,
-  enablePromise,
   openDatabase,
   SQLiteDatabase,
 } from 'react-native-sqlite-storage'
-import { Datum, Details, Info, Lap } from './Activity'
+import { Datum, Details, IdType, Info, Lap } from './Activity'
 
 const databaseName = 'user-data.db'
 const activityInfoTableName = 'activity_info'
@@ -82,24 +87,98 @@ CREATE TABLE IF NOT EXISTS ${activityLapsTableName}(
   FOREIGN KEY(${activityLapsTableColumns.activity_id}) REFERENCES ${activityInfoTableName}(${activityInfoTableColumns.id})
 );
 `
+type ActionType = 'getActivityLaps' | 'getActivityDetailsList'
+type Action =
+  | { type: 'clearDatabase' }
+  | { type: 'addActivity'; payload: { data: Info } }
+  | { type: 'modifyActivity'; payload: { data: Info } }
+  | { type: 'addActivityDatum'; payload: { data: Datum } }
+  | { type: 'addActivityLap'; payload: { data: Lap } }
+  | { type: 'getActivityLaps'; payload: { activityId: IdType } }
+  | { type: 'getActivityDetailsList' }
+  | { type: 'success'; actionType: ActionType; payload: StatePayload }
+  | { type: 'failure'; actionType: ActionType; error: Error }
 
-enablePromise(true)
+type StatePayload = { laps?: Lap[]; details?: Details[] }
+type State =
+  | { status: 'idle' }
+  | { status: 'success'; actionType: ActionType; payload: StatePayload }
+  | { status: 'failure'; actionType: ActionType; error: Error }
 
-interface IDatabaseApi {
-  addActivity: (activity: Info) => void
-  modifyActivity: (activity: Info) => void
-  addActivityDatum: (data: Datum) => void
-  addActivityLap: (lap: Lap) => void
-  getActivityLaps: (activityId: number) => Promise<Lap[]>
-  getActivityDetailsList: () => Promise<Details[]>
-
-  // Mostly for advanced users.
-  clearDatabase: () => void
-}
+type IDatabaseApi = [State, React.Dispatch<Action>]
 
 function useDatabase(): IDatabaseApi {
   const [db, setDb] = useState<SQLiteDatabase>()
   const dbParams: DatabaseParams = { name: databaseName, location: 'default' }
+
+  const [state, dispatch] = useReducer(
+    (state: State, action: Action): State => {
+      switch (action.type) {
+        case 'clearDatabase':
+          clearDatabase()
+          return { status: 'idle' }
+        case 'addActivity':
+          addActivity(action.payload.data)
+          return { status: 'idle' }
+        case 'modifyActivity':
+          modifyActivity(action.payload.data)
+          return { status: 'idle' }
+        case 'addActivityDatum':
+          addActivityDatum(action.payload.data)
+          return { status: 'idle' }
+        case 'addActivityLap':
+          addActivityLap(action.payload.data)
+          return { status: 'idle' }
+        case 'getActivityLaps':
+          getActivityLaps(action.payload.activityId)
+            .then((laps) =>
+              dispatch({
+                type: 'success',
+                actionType: action.type,
+                payload: { laps: laps },
+              }),
+            )
+            .catch((error) =>
+              dispatch({
+                type: 'failure',
+                actionType: action.type,
+                error: error,
+              }),
+            )
+          return { status: 'idle' }
+        case 'getActivityDetailsList':
+          getActivityDetailsList()
+            .then((details) =>
+              dispatch({
+                type: 'success',
+                actionType: action.type,
+                payload: { details: details },
+              }),
+            )
+            .catch((error) =>
+              dispatch({
+                type: 'failure',
+                actionType: action.type,
+                error: error,
+              }),
+            )
+          return { status: 'idle' }
+        case 'success':
+          return {
+            status: 'success',
+            actionType: action.actionType,
+            payload: action.payload,
+          }
+        case 'failure':
+          return {
+            status: 'failure',
+            actionType: action.actionType,
+            error: action.error,
+          }
+      }
+    },
+    { status: 'idle' },
+  )
 
   useEffect(() => {
     if (db === undefined) openDatabase(dbParams).then((db) => setDb(db))
@@ -173,7 +252,7 @@ function useDatabase(): IDatabaseApi {
       )
   }
 
-  function getActivityLaps(activity_id: number): Promise<Lap[]> {
+  function getActivityLaps(activity_id: IdType): Promise<Lap[]> {
     return new Promise<Lap[]>((resolve) => {
       const query = `SELECT *
       FROM ${activityLapsTableName}
@@ -206,15 +285,7 @@ function useDatabase(): IDatabaseApi {
     })
   }
 
-  return {
-    addActivity,
-    modifyActivity,
-    addActivityDatum,
-    addActivityLap,
-    clearDatabase,
-    getActivityLaps,
-    getActivityDetailsList,
-  }
+  return [state, dispatch]
 }
 
 export const DatabaseContext = createContext<IDatabaseApi>({} as IDatabaseApi)

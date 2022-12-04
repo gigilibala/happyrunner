@@ -21,14 +21,22 @@ export default function ActivityDetails({
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
   const { activityId } = route.params
-  const { modifyActivity, getActivityLaps } = useContext(DatabaseContext)
+  const [_, dbDispatch] = useContext(DatabaseContext)
   const [notes, setNotes] = useState<string>('')
   const [editing, setEditing] = useState<boolean>(route.params.edit)
 
   const saveButton = (
     <TouchableOpacity
       onPress={() => {
-        modifyActivity({ id: activityId, notes: notes })
+        dbDispatch({
+          type: 'modifyActivity',
+          payload: {
+            data: {
+              id: activityId,
+              notes: notes,
+            },
+          },
+        })
         setEditing(false)
       }}
     >
