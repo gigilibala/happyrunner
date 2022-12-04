@@ -14,7 +14,7 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { useStyles } from '../../common/styles'
-import { useHeartRateMonitor } from '../../hooks/HeartRateMonitor'
+import { useHeartRateMonitor } from '../../hooks/heartRateMonitor'
 import { SettingsScreenProps } from '../RootNavigator'
 
 const ICON_SIZE = 20

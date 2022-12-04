@@ -60,7 +60,7 @@ export interface IActivity {
   dispatch: Dispatch<Action>
 }
 
-export default function useActivity({
+export function useActivity({
   heartRate,
   position,
   params,

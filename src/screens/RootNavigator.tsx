@@ -13,7 +13,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import IonIcon from 'react-native-vector-icons/Ionicons'
-import { ActivityParams } from '../hooks/Activity'
+import { ActivityParams } from '../hooks/activity'
 import ActivityDetails from './history/ActivityDetails'
 import { History } from './history/History'
 import ActivityInProgress from './home/ActivityInProgress'

@@ -7,7 +7,7 @@ type Action =
   | { type: 'failure'; error: Error }
 type State = { status: 'on' | 'off'; isLoading: boolean; error?: Error }
 
-export default function useNotification(): [State, React.Dispatch<Action>] {
+export function useNotification(): [State, React.Dispatch<Action>] {
   const [state, dispatch] = useReducer(
     (state: State, action: Action): State => {
       switch (action.type) {
