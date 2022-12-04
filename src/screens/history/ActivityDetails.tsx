@@ -19,7 +19,7 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import MatIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { BUTTON_SIZE, useStyles } from '../../common/styles'
-import { DatabaseContext } from '../../hooks/DatabaseProvider'
+import { DatabaseContext } from '../../components/providers/DatabaseProvider'
 import { HistoryScreenProps } from '../RootNavigator'
 
 export default function ActivityDetails({

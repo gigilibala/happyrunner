@@ -8,7 +8,7 @@ import {
 } from 'react'
 import { GeoPosition } from 'react-native-geolocation-service'
 import { ActivityType } from '../components/ActivityTypes'
-import { DatabaseContext } from '../hooks/DatabaseProvider'
+import { DatabaseContext } from '../components/providers/DatabaseProvider'
 
 type Action = { type: 'pause' | 'stop' | 'resume' | 'nextLap' }
 type State = { status: 'in-progress' | 'paused' | 'stopped' }

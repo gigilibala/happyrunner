@@ -2,9 +2,9 @@ import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Alert } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { AudioCuesContext } from '../../components/providers/AudioCuesProvider'
+import { DatabaseContext } from '../../components/providers/DatabaseProvider'
 import { SettingsList } from '../../components/SettingsList'
-import { AudioCuesContext } from '../../hooks/AudioCuesProvider'
-import { DatabaseContext } from '../../hooks/DatabaseProvider'
 import { SettingsScreenProps } from '../RootNavigator'
 
 export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {

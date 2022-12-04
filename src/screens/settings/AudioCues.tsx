@@ -1,10 +1,10 @@
 import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SettingsList } from '../../components/SettingsList'
 import {
   AudioCuesContext,
   AudioCuesPreferences,
-} from '../../hooks/AudioCuesProvider'
+} from '../../components/providers/AudioCuesProvider'
+import { SettingsList } from '../../components/SettingsList'
 import { SettingsScreenProps } from '../RootNavigator'
 
 export function AudioCues({}: SettingsScreenProps<'AudioCues'>) {

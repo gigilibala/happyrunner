@@ -1,6 +1,6 @@
 import { createContext, ReactNode } from 'react'
 import Tts from 'react-native-tts'
-import usePrefs from '../common/prefs'
+import usePrefs from '../../common/prefs'
 
 interface IAudioCuesApi {
   pref?: AudioCuesPreferences
