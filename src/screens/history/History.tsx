@@ -1,5 +1,5 @@
-import { Theme } from '@react-navigation/native'
-import React, { useContext, useEffect, useState } from 'react'
+import { Theme, useFocusEffect } from '@react-navigation/native'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   SafeAreaView,
@@ -22,9 +22,11 @@ export function History({ navigation }: HistoryScreenProps<'History'>) {
   const [dbState, dbDispatch] = useContext(DatabaseContext)
   const [activityList, setActivityList] = useState<Details[]>()
 
-  useEffect(() => {
-    dbDispatch({ type: 'getActivityDetailsList' })
-  }, [])
+  useFocusEffect(
+    useCallback(() => {
+      dbDispatch({ type: 'getActivityDetailsList' })
+    }, []),
+  )
 
   useEffect(() => {
     if (
