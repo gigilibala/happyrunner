@@ -13,8 +13,8 @@ import {
   View,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { useStyles } from '../../common/styles'
 import { useHeartRateMonitor } from '../../hooks/heartRateMonitor'
+import { useStyles } from '../../hooks/styles'
 import { SettingsScreenProps } from '../RootNavigator'
 
 const ICON_SIZE = 20

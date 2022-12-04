@@ -10,10 +10,10 @@ import {
   View,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { useStyles } from '../../common/styles'
 import { ActivityIcon } from '../../components/ActivityTypes'
 import { DatabaseContext } from '../../components/providers/DatabaseProvider'
 import { Details } from '../../hooks/activity'
+import { useStyles } from '../../hooks/styles'
 import { HistoryScreenProps } from '../RootNavigator'
 
 export function History({ navigation }: HistoryScreenProps<'History'>) {

@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next'
 import { Button, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { BUTTON_SIZE, useStyles } from '../../common/styles'
 import { ActivityType, ACTIVITY_TYPES } from '../../components/ActivityTypes'
+import { BUTTON_SIZE, useStyles } from '../../hooks/styles'
 import { HomeScreenProps } from '../RootNavigator'
 
 export default function Home({ navigation }: HomeScreenProps<'Home'>) {

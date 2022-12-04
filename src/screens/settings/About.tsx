@@ -1,7 +1,7 @@
 import { Theme } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView, StyleSheet, Text } from 'react-native'
-import { useStyles } from '../../common/styles'
+import { useStyles } from '../../hooks/styles'
 import { SettingsScreenProps } from '../RootNavigator'
 
 export function About({}: SettingsScreenProps<'About'>) {

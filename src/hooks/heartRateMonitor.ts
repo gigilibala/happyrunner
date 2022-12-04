@@ -12,7 +12,7 @@ import BleManager, {
   Peripheral,
   PeripheralInfo,
 } from 'react-native-ble-manager'
-import usePrefs from '../common/prefs'
+import usePrefs from './prefs'
 
 const HEART_RATE_GATT_SERVICE = '180d'
 const HEART_RATE_GATT_CHARACTERISTIC = '2a37'

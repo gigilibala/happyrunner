@@ -18,8 +18,8 @@ import {
 } from 'react-native-popup-menu'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import MatIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { BUTTON_SIZE, useStyles } from '../../common/styles'
 import { DatabaseContext } from '../../components/providers/DatabaseProvider'
+import { BUTTON_SIZE, useStyles } from '../../hooks/styles'
 import { HistoryScreenProps } from '../RootNavigator'
 
 export default function ActivityDetails({

@@ -5,12 +5,12 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import IconMat from 'react-native-vector-icons/MaterialIcons'
-import { BUTTON_SIZE, useStyles } from '../../common/styles'
 import HarizontalCard from '../../components/HarizontalCard'
 import { useActivity } from '../../hooks/activity'
 import { useHeartRateMonitor } from '../../hooks/heartRateMonitor'
 import { useLocation } from '../../hooks/location'
 import { useNotification } from '../../hooks/notification'
+import { BUTTON_SIZE, useStyles } from '../../hooks/styles'
 import { HomeScreenProps } from '../RootNavigator'
 
 export default function ActivityInProgress({

@@ -1,7 +1,7 @@
 import { Theme } from '@react-navigation/native'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { useStyles } from '../common/styles'
+import { useStyles } from '../hooks/styles'
 
 type ValueWithScope = {
   value: string | number

@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { useStyles } from '../common/styles'
+import { useStyles } from '../hooks/styles'
 
 type Item = {
   kind: 'navigation' | 'button' | 'switch'
