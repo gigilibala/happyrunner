@@ -32,6 +32,9 @@ const createGlobalStyles = (theme: Theme) =>
       margin: 2,
       padding: 10,
     },
+    menu: {
+      backgroundColor: theme.colors.background,
+    },
     text: {
       color: theme.colors.text,
     },
@@ -69,6 +72,9 @@ const createGlobalStyles = (theme: Theme) =>
       flexDirection: 'row',
       justifyContent: 'space-evenly',
       padding: 20,
+    },
+    threeDots: {
+      color: theme.colors.text,
     },
   })
 

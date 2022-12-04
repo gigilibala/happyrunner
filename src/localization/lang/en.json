@@ -30,5 +30,7 @@
   "activityType": {
     "running": "Running",
     "swimming": "Swimming"
-  }
+  },
+  "edit": "Edit",
+  "delete": "Delete"
 }

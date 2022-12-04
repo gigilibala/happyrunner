@@ -5,6 +5,7 @@ import {
 } from '@react-navigation/native'
 import { LogBox, useColorScheme } from 'react-native'
 import BleManager from 'react-native-ble-manager'
+import { MenuProvider } from 'react-native-popup-menu'
 import { enablePromise } from 'react-native-sqlite-storage'
 import { AudioCuesProvider } from './hooks/AudioCuesProvider'
 import { DatabaseProvider } from './hooks/DatabaseProvider'
@@ -27,7 +28,9 @@ export default function App() {
         <NavigationContainer
           theme={scheme === 'dark' ? DarkTheme : DefaultTheme}
         >
-          <RootNavigator />
+          <MenuProvider>
+            <RootNavigator />
+          </MenuProvider>
         </NavigationContainer>
       </AudioCuesProvider>
     </DatabaseProvider>

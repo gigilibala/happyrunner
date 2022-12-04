@@ -1,5 +1,5 @@
 import { Theme } from '@react-navigation/native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   SafeAreaView,
@@ -9,7 +9,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
+import {
+  Menu,
+  MenuOption,
+  MenuOptions,
+  MenuTrigger,
+} from 'react-native-popup-menu'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import MatIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { BUTTON_SIZE, useStyles } from '../../common/styles'
 import { DatabaseContext } from '../../hooks/DatabaseProvider'
 import { HistoryScreenProps } from '../RootNavigator'
@@ -49,6 +56,32 @@ export default function ActivityDetails({
       <Icon name={'trash-alt'} size={BUTTON_SIZE - 5} color={'red'} />
     </TouchableOpacity>
   )
+
+  const menu = (
+    <TouchableOpacity>
+      <Menu>
+        <MenuTrigger>
+          <MatIcon name={'dots-vertical'} size={30} style={styles.threeDots} />
+        </MenuTrigger>
+        <MenuOptions
+          customStyles={{
+            optionsContainer: styles.menu,
+          }}
+        >
+          <MenuOption onSelect={() => setEditing(true)}>
+            <Text style={styles.mediumText}>{t('edit')}</Text>
+          </MenuOption>
+          <MenuOption onSelect={() => console.log('delete')}>
+            <Text style={styles.mediumText}>{t('delete')}</Text>
+          </MenuOption>
+        </MenuOptions>
+      </Menu>
+    </TouchableOpacity>
+  )
+
+  useEffect(() => {
+    navigation.setOptions({ headerRight: (props) => menu })
+  }, [])
 
   return (
     <SafeAreaView
