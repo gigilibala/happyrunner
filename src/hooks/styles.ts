@@ -33,7 +33,7 @@ const createGlobalStyles = (theme: Theme) =>
       padding: 10,
     },
     menu: {
-      backgroundColor: theme.colors.background,
+      backgroundColor: theme.colors.card,
     },
     text: {
       color: theme.colors.text,
