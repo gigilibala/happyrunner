@@ -2,6 +2,7 @@ import { Theme } from '@react-navigation/native'
 import React, { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
+  Alert,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -71,15 +72,7 @@ export default function ActivityDetails({
           <MenuOption onSelect={() => setEditing(true)}>
             <Text style={styles.mediumText}>{t('edit')}</Text>
           </MenuOption>
-          <MenuOption
-            onSelect={() => {
-              dbDispatch({
-                type: 'deleteActivity',
-                payload: { activityId: activityId },
-              })
-              navigation.goBack()
-            }}
-          >
+          <MenuOption onSelect={() => deleteActivity()}>
             <Text style={styles.mediumText}>{t('delete')}</Text>
           </MenuOption>
         </MenuOptions>
@@ -90,6 +83,28 @@ export default function ActivityDetails({
   useEffect(() => {
     navigation.setOptions({ headerRight: (props) => menu })
   }, [])
+
+  function deleteActivity() {
+    Alert.alert(
+      t('deleteActivity'),
+      t('deleteActivityNotice'),
+      [
+        {
+          text: t('yes'),
+          onPress: () => {
+            dbDispatch({
+              type: 'deleteActivity',
+              payload: { activityId: activityId },
+            })
+            navigation.goBack()
+          },
+          style: 'destructive',
+        },
+        { text: t('cancel'), style: 'cancel' },
+      ],
+      { cancelable: true },
+    )
+  }
 
   return (
     <SafeAreaView

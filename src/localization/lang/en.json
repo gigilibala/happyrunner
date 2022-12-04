@@ -32,5 +32,7 @@
     "swimming": "Swimming"
   },
   "edit": "Edit",
-  "delete": "Delete"
+  "delete": "Delete",
+  "deleteActivity": "Deleting Activity",
+  "deleteActivityNotice": "This action deletes the activity and is not recoverable. Do you want to continue?"
 }
