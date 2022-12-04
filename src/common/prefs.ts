@@ -3,8 +3,8 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 export default function usePrefs<T>(
   key: string,
-  defaultPrefs?: T,
-): [T | undefined, Dispatch<SetStateAction<T | undefined>>] {
+  defaultPrefs: T,
+): [T, Dispatch<SetStateAction<T>>] {
   const { getItem, setItem } = useAsyncStorage(key)
   const [prefs, setPrefs] = useState<T>()
   const [initialRead, setInitialRead] = useState<boolean>(false)
@@ -14,7 +14,7 @@ export default function usePrefs<T>(
       getItem()
         .then((value) => {
           if (value === null) {
-            if (defaultPrefs !== undefined) setPrefs(defaultPrefs)
+            setPrefs(defaultPrefs)
           } else {
             setInitialRead(true)
             setPrefs(JSON.parse(value) as T)
@@ -36,5 +36,5 @@ export default function usePrefs<T>(
     }
   }, [prefs])
 
-  return [prefs, setPrefs]
+  return [prefs!, setPrefs as Dispatch<SetStateAction<T>>]
 }

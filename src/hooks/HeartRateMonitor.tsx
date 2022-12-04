@@ -54,7 +54,10 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
   const [scanningSubscription, setScanningSubscription] =
     useState<EmitterSubscription>()
   const [devices, setDevices] = useState<Device[]>([])
-  const [device, setDevice] = usePrefs<Device>('@bluetooth_default_device')
+  const [device, setDevice] = usePrefs<Device>('@bluetooth_default_device', {
+    name: '',
+    id: '',
+  })
   const [valueSubscription, setValueSubscription] =
     useState<EmitterSubscription>()
   const [heartRate, setHeartRate] = useState<number>()
