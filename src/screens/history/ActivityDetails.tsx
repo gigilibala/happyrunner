@@ -16,10 +16,9 @@ import {
   MenuOptions,
   MenuTrigger,
 } from 'react-native-popup-menu'
-import Icon from 'react-native-vector-icons/FontAwesome5'
 import MatIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { DatabaseContext } from '../../components/providers/DatabaseProvider'
-import { BUTTON_SIZE, useStyles } from '../../hooks/styles'
+import { useStyles } from '../../hooks/styles'
 import { HistoryScreenProps } from '../RootNavigator'
 
 export default function ActivityDetails({
@@ -35,6 +34,7 @@ export default function ActivityDetails({
 
   const saveButton = (
     <TouchableOpacity
+      style={[styles.button, { backgroundColor: 'green' }]}
       onPress={() => {
         dbDispatch({
           type: 'modifyActivity',
@@ -48,13 +48,16 @@ export default function ActivityDetails({
         setEditing(false)
       }}
     >
-      <Icon name={'save'} size={BUTTON_SIZE} color={'blue'} />
+      <Text style={styles.buttonText}>{t('save')}</Text>
     </TouchableOpacity>
   )
 
   const discardButton = (
-    <TouchableOpacity onPress={() => {}}>
-      <Icon name={'trash-alt'} size={BUTTON_SIZE - 5} color={'red'} />
+    <TouchableOpacity
+      style={[styles.button, { backgroundColor: 'red' }]}
+      onPress={() => deleteActivity()}
+    >
+      <Text style={styles.buttonText}>{t('delete')}</Text>
     </TouchableOpacity>
   )
 
@@ -128,9 +131,9 @@ export default function ActivityDetails({
         )}
       </View>
       {editing && (
-        <View style={styles.activityButtonView}>
-          {discardButton}
+        <View>
           {saveButton}
+          {discardButton}
         </View>
       )}
     </SafeAreaView>

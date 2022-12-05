@@ -55,8 +55,18 @@ const createGlobalStyles = (theme: Theme) =>
       fontSize: 35,
     },
     button: {
-      margin: 10,
-      elevation: 2,
+      width: '95%',
+      backgroundColor: 'dodgerblue',
+      padding: 10,
+      marginHorizontal: 10,
+      marginVertical: 5,
+      borderRadius: 5,
+      alignItems: 'center',
+      alignSelf: 'center',
+    },
+    buttonText: {
+      color: 'white',
+      fontSize: 20,
     },
     shadow: {
       shadowColor: 'black',

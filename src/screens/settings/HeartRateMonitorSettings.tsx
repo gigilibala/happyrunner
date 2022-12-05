@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   ActivityIndicator,
-  Button,
   Modal,
   SafeAreaView,
   ScrollView,
@@ -129,29 +128,29 @@ export function HeartRateMonitorSettings({
               </TouchableOpacity>
             ))}
           </ScrollView>
-          <View style={styles.button}>
-            <Button
-              title={t('cancel')}
-              onPress={() => {
-                dispatch({
-                  type: 'stopScan',
-                })
-              }}
-            />
-          </View>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              dispatch({
+                type: 'stopScan',
+              })
+            }}
+          >
+            <Text style={styles.buttonText}>{t('cancel')}</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </Modal>
   )
 
   const connectButton = (
-    <View style={styles.button}>
-      <Button
-        title={connectButtonTitle()}
-        onPress={() => dispatch({ type: 'connect' })}
-        disabled={!bluetoothEnabled || state.isLoading}
-      />
-    </View>
+    <TouchableOpacity
+      style={styles.button}
+      onPress={() => dispatch({ type: 'connect' })}
+      disabled={!bluetoothEnabled || state.isLoading}
+    >
+      <Text style={styles.buttonText}>{connectButtonTitle()}</Text>
+    </TouchableOpacity>
   )
 
   return (
