@@ -8,7 +8,7 @@ type SubValue = {
   value: Value
   scope: string
 }
-type HarizontalCardInfo = {
+type ProgressCardProps = {
   title: string
   color: string
   unit: string
@@ -17,7 +17,7 @@ type HarizontalCardInfo = {
   subValue2?: SubValue
 }
 
-export default function HarizontalCard(props: HarizontalCardInfo) {
+export function ProgressCard(props: ProgressCardProps) {
   const styles = useStyles(createStyles)
 
   function renderScopedValue(value: SubValue) {
