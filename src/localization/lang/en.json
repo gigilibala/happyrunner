@@ -29,7 +29,8 @@
   "notes": "Notes",
   "activityType": {
     "running": "Running",
-    "swimming": "Swimming"
+    "swimming": "Swimming",
+    "treadmill": "Treadmill"
   },
   "edit": "Edit",
   "save": "Save",
