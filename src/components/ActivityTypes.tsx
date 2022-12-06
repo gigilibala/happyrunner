@@ -1,7 +1,6 @@
-import { createIconSetFromIcoMoon } from 'react-native-vector-icons'
+import React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import icoMoonConfig from '../../assets/fonts/selection.json'
-const IcoMoon = createIconSetFromIcoMoon(icoMoonConfig)
+import { IcoMoon } from './IcoMoon'
 
 export const ACTIVITY_TYPES = ['running', 'swimming', 'treadmill'] as const
 export type ActivityType = typeof ACTIVITY_TYPES[number]

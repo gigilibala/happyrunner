@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import IconMat from 'react-native-vector-icons/MaterialIcons'
 import HarizontalCard from '../../components/HarizontalCard'
+import { IcoMoon } from '../../components/IcoMoon'
 import { useActivity } from '../../hooks/activity'
 import { useHeartRateMonitor } from '../../hooks/heartRateMonitor'
 import { useLocation } from '../../hooks/location'
@@ -74,7 +74,7 @@ export default function ActivityInProgress({
 
   const lapButton = (
     <TouchableOpacity onPress={() => dispatch({ type: 'nextLap' })}>
-      <IconMat name={'timelapse'} size={BUTTON_SIZE + 5} color={'blue'} />
+      <IcoMoon name={'lap'} size={BUTTON_SIZE} color={'blue'} />
     </TouchableOpacity>
   )
 
