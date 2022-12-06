@@ -18,16 +18,14 @@ export function useLocation(): ILocationApi {
 
   useEffect(() => {
     start()
-  }, [])
-
-  useEffect(() => {
-    if (watchId === undefined) return
-
     return () => {
-      Geolocation.clearWatch(watchId)
       Geolocation.stopObserving()
       console.log('Stopped geolocation.')
     }
+  }, [])
+
+  useEffect(() => {
+    if (watchId !== undefined) return () => Geolocation.clearWatch(watchId)
   }, [watchId])
 
   function start() {
