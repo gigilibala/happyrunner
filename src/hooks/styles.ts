@@ -81,12 +81,6 @@ const createGlobalStyles = (theme: Theme) =>
       shadowRadius: 0.5,
       elevation: 10,
     },
-    activityInfoView: {
-      backgroundColor: theme.colors.card,
-      width: '48%',
-      height: '32%',
-      borderRadius: 5,
-    },
     activityButtonView: {
       flexDirection: 'row',
       justifyContent: 'space-evenly',

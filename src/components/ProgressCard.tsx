@@ -1,41 +1,18 @@
 import { Theme } from '@react-navigation/native'
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { useStyles } from '../hooks/styles'
 
-type Value = string | number
-type SubValue = {
-  value: Value
-  scope: string
-}
-type ProgressCardProps = {
+export type ProgressCardProps = {
   title: string
   color: string
   unit: string
-  value: Value
-  subValue1?: SubValue
-  subValue2?: SubValue
 }
 
-export function ProgressCard(props: ProgressCardProps) {
+export function ProgressCard(props: PropsWithChildren<ProgressCardProps>) {
   const styles = useStyles(createStyles)
-
-  function renderScopedValue(value: SubValue) {
-    return (
-      <View style={styles.subValueRowView}>
-        <View style={styles.scopeView} />
-        <View style={styles.subValueView}>
-          <Text style={[styles.largeText, styles.boldText]}>{value.value}</Text>
-        </View>
-        <View style={styles.scopeView}>
-          <Text style={[styles.text, styles.boldText]}>{value.scope}</Text>
-        </View>
-      </View>
-    )
-  }
-
   return (
-    <View style={[styles.activityInfoView, styles.shadow]}>
+    <View style={[styles.activityCardView, styles.shadow]}>
       <View style={[styles.titleView, { backgroundColor: props.color }]}>
         <View>
           <Text style={styles.mediumText}>{props.title}</Text>
@@ -44,21 +21,19 @@ export function ProgressCard(props: ProgressCardProps) {
           <Text style={styles.text}>{props.unit}</Text>
         </View>
       </View>
-      <View style={styles.valuesView}>
-        <View>
-          <Text style={[styles.text, styles.boldText, { fontSize: 50 }]}>
-            {props.value}
-          </Text>
-        </View>
-        {props.subValue1 && renderScopedValue(props.subValue1)}
-        {props.subValue2 && renderScopedValue(props.subValue2)}
-      </View>
+      {props.children}
     </View>
   )
 }
 
 const createStyles = (theme: Theme) =>
   StyleSheet.create({
+    activityCardView: {
+      backgroundColor: theme.colors.card,
+      width: '48%',
+      height: '32%',
+      borderRadius: 5,
+    },
     titleView: {
       alignItems: 'center',
       borderTopEndRadius: 5,
@@ -66,24 +41,5 @@ const createStyles = (theme: Theme) =>
       width: '100%',
       justifyContent: 'space-evenly',
       flexDirection: 'row',
-    },
-    valuesView: {
-      justifyContent: 'space-evenly',
-      alignItems: 'center',
-      flexGrow: 1,
-    },
-    subValueRowView: {
-      flexDirection: 'row',
-      justifyContent: 'space-evenly',
-      alignItems: 'center',
-      width: '100%',
-    },
-    subValueView: {
-      justifyContent: 'center',
-      alignItems: 'center',
-      width: '60%',
-    },
-    scopeView: {
-      width: '20%',
     },
   })
