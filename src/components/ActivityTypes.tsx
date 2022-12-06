@@ -17,7 +17,7 @@ export function ActivityIcon({
     case 'running':
       return <Icon name={'running'} color={'blue'} size={size} />
     case 'swimming':
-      return <Icon name={'swimmer'} color={'blue'} size={size - 10} />
+      return <IcoMoon name={'swimming'} color={'blue'} size={size - 10} />
     case 'treadmill':
       return <IcoMoon name={'treadmill'} color={'blue'} size={size} />
     default:

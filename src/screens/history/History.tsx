@@ -54,6 +54,7 @@ export function History({ navigation }: HistoryScreenProps<'History'>) {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
+            height: 60,
           },
         ]}
         onPress={() =>
