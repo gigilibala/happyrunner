@@ -20,6 +20,7 @@ type Item = {
   onPress: () => void
   switchValue?: boolean
   disabled?: boolean
+  value?: string | number
 }
 
 type Settings = {
@@ -67,6 +68,11 @@ export function SettingsList(data: Settings) {
         <View style={styles.textView}>
           {renderText(props.title, props.subTitle)}
         </View>
+        {props.value && (
+          <View style={styles.valueView}>
+            <Text style={styles.text}>{props.value}</Text>
+          </View>
+        )}
         <View>
           {props.kind === 'navigation' ? (
             <Icon
@@ -127,6 +133,9 @@ const createStyles = (theme: Theme) =>
     iconView: {},
     textView: {
       flexGrow: 1,
+    },
+    valueView: {
+      padding: 5,
     },
     navIcon: {
       padding: 5,

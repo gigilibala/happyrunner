@@ -31,7 +31,7 @@ export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
         {
           kind: 'navigation',
           title: t('audioCues'),
-          subTitle: pref?.enabled ? t('on') : t('off'),
+          value: pref?.enabled ? t('on') : t('off'),
           onPress: () => navigation.navigate('AudioCues'),
           icon: (
             <Icon.Button
