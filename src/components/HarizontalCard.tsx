@@ -3,65 +3,55 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { useStyles } from '../hooks/styles'
 
-type ValueWithScope = {
-  value: string | number
-  scope?: string
+type Value = string | number
+type SubValue = {
+  value: Value
+  scope: string
 }
-
 type HarizontalCardInfo = {
   title: string
   color: string
   unit: string
-  value1: string | number
-  value2?: ValueWithScope
-  value3?: ValueWithScope
+  value: Value
+  subValue1?: SubValue
+  subValue2?: SubValue
 }
 
 export default function HarizontalCard(props: HarizontalCardInfo) {
   const styles = useStyles(createStyles)
 
-  function renderScopedValue(value: ValueWithScope) {
+  function renderScopedValue(value: SubValue) {
     return (
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '100%',
-        }}
-      >
-        <View>
-          <Text style={styles.largeText}>{value.value}</Text>
+      <View style={styles.subValueRowView}>
+        <View style={styles.scopeView} />
+        <View style={styles.subValueView}>
+          <Text style={[styles.largeText, styles.boldText]}>{value.value}</Text>
         </View>
-        {value.scope && (
-          <View style={styles.unitOrScopeView}>
-            <Text style={styles.text}>{value.scope}</Text>
-          </View>
-        )}
+        <View style={styles.scopeView}>
+          <Text style={[styles.text, styles.boldText]}>{value.scope}</Text>
+        </View>
       </View>
     )
   }
 
   return (
-    <View style={[styles.containerView, styles.shadow]}>
+    <View style={[styles.activityInfoView, styles.shadow]}>
       <View style={[styles.titleView, { backgroundColor: props.color }]}>
         <View>
           <Text style={styles.mediumText}>{props.title}</Text>
         </View>
-        <View style={styles.unitOrScopeView}>
+        <View>
           <Text style={styles.text}>{props.unit}</Text>
         </View>
       </View>
-      <View style={styles.valueView}>
-        <View style={styles.valueBreakView}>
-          <Text style={[styles.text, { fontWeight: 'bold', fontSize: 50 }]}>
-            {props.value1}
+      <View style={styles.valuesView}>
+        <View>
+          <Text style={[styles.text, styles.boldText, { fontSize: 50 }]}>
+            {props.value}
           </Text>
         </View>
-        <View style={styles.valueBreakView}>
-          {props.value2 && renderScopedValue(props.value2)}
-          {props.value3 && renderScopedValue(props.value3)}
-        </View>
+        {props.subValue1 && renderScopedValue(props.subValue1)}
+        {props.subValue2 && renderScopedValue(props.subValue2)}
       </View>
     </View>
   )
@@ -69,34 +59,31 @@ export default function HarizontalCard(props: HarizontalCardInfo) {
 
 const createStyles = (theme: Theme) =>
   StyleSheet.create({
-    containerView: {
-      backgroundColor: theme.colors.card,
-      width: '98%',
-      alignItems: 'center',
-      borderRadius: 5,
-      margin: 1,
-      flexDirection: 'column',
-      flex: 1,
-    },
     titleView: {
       alignItems: 'center',
-      borderRadius: 5,
+      borderTopEndRadius: 5,
+      borderTopStartRadius: 5,
       width: '100%',
-      justifyContent: 'center',
-    },
-    valueView: {
-      flex: 1,
+      justifyContent: 'space-evenly',
       flexDirection: 'row',
-      justifyContent: 'flex-start',
+    },
+    valuesView: {
+      justifyContent: 'space-evenly',
+      alignItems: 'center',
+      flexGrow: 1,
+    },
+    subValueRowView: {
+      flexDirection: 'row',
+      justifyContent: 'space-evenly',
       alignItems: 'center',
       width: '100%',
     },
-    valueBreakView: {
-      width: '50%',
+    subValueView: {
+      justifyContent: 'center',
       alignItems: 'center',
+      width: '60%',
     },
-    unitOrScopeView: {
-      right: 10,
-      position: 'absolute',
+    scopeView: {
+      width: '20%',
     },
   })

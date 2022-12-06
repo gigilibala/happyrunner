@@ -85,43 +85,35 @@ export default function ActivityInProgress({
           title={'Heart Rate'}
           color={'red'}
           unit={'BPM'}
-          value1={heartRate || 'N/A'}
+          value={heartRate || 'N/A'}
         />
         <HarizontalCard
           title={'Heart Rate'}
           color={'red'}
           unit={'BPM'}
-          value1={heartRate || 'N/A'}
-          value2={{ value: heartRate || 'N/A', scope: 'Lap' }}
+          value={heartRate || 'N/A'}
+          subValue1={{ value: heartRate || 'N/A', scope: 'Lap' }}
         />
         <HarizontalCard
           title={'Heart Rate'}
           color={'red'}
           unit={'BPM'}
-          value1={heartRate || 'N/A'}
-          value2={{ value: heartRate || 'N/A', scope: 'Lap' }}
-          value3={{ value: heartRate || 'N/A', scope: 'Total' }}
+          value={heartRate || 'N/A'}
+          subValue1={{ value: heartRate || 'N/A', scope: 'Lap' }}
+          subValue2={{ value: heartRate || 'N/A', scope: 'Total' }}
         />
         <HarizontalCard
           title={'Heart Rate'}
           color={'red'}
           unit={'BPM'}
-          value1={heartRate || 'N/A'}
+          value={heartRate || 'N/A'}
         />
         <HarizontalCard
           title={'Heart Rate'}
           color={'red'}
           unit={'BPM'}
-          value1={heartRate || 'N/A'}
-          value2={{ value: heartRate || 'N/A', scope: 'Lap' }}
-        />
-        <HarizontalCard
-          title={'Heart Rate'}
-          color={'red'}
-          unit={'BPM'}
-          value1={heartRate || 'N/A'}
-          value2={{ value: heartRate || 'N/A', scope: 'Lap' }}
-          value3={{ value: heartRate || 'N/A', scope: 'Total' }}
+          value={heartRate || 'N/A'}
+          subValue1={{ value: heartRate || 'N/A', scope: 'Lap' }}
         />
       </View>
 
@@ -138,9 +130,12 @@ export default function ActivityInProgress({
 const createStyles = (theme: Theme) =>
   StyleSheet.create({
     activityInfoView: {
-      flexDirection: 'column',
+      flexDirection: 'row',
       alignItems: 'center',
-      justifyContent: 'center',
-      flex: 1,
+      justifyContent: 'space-evenly',
+      alignContent: 'stretch',
+      flexWrap: 'wrap',
+      flexBasis: 'auto',
+      flexGrow: 1,
     },
   })

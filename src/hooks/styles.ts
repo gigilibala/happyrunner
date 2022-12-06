@@ -54,6 +54,9 @@ const createGlobalStyles = (theme: Theme) =>
       color: theme.colors.text,
       fontSize: 35,
     },
+    boldText: {
+      fontWeight: 'bold',
+    },
     button: {
       width: '95%',
       backgroundColor: 'dodgerblue',
@@ -77,6 +80,12 @@ const createGlobalStyles = (theme: Theme) =>
       shadowOpacity: 0.25,
       shadowRadius: 0.5,
       elevation: 10,
+    },
+    activityInfoView: {
+      backgroundColor: theme.colors.card,
+      width: '48%',
+      height: '32%',
+      borderRadius: 5,
     },
     activityButtonView: {
       flexDirection: 'row',
