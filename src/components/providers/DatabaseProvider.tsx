@@ -1,6 +1,6 @@
 import {
   createContext,
-  ReactNode,
+  PropsWithChildren,
   useEffect,
   useReducer,
   useState,
@@ -327,7 +327,7 @@ function useDatabase(): IDatabaseApi {
 
 export const DatabaseContext = createContext<IDatabaseApi>({} as IDatabaseApi)
 
-export function DatabaseProvider({ children }: { children: ReactNode }) {
+export function DatabaseProvider({ children }: PropsWithChildren) {
   const state = useDatabase()
 
   return (

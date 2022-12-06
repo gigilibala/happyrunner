@@ -1,4 +1,4 @@
-import { createContext, ReactNode } from 'react'
+import { createContext, PropsWithChildren } from 'react'
 import Tts from 'react-native-tts'
 import usePrefs from '../../hooks/prefs'
 
@@ -33,7 +33,7 @@ export const AudioCuesContext = createContext<IAudioCuesApi>(
   {} as IAudioCuesApi,
 )
 
-export function AudioCuesProvider({ children }: { children: ReactNode }) {
+export function AudioCuesProvider({ children }: PropsWithChildren) {
   const state = useAudioCues()
 
   return (
