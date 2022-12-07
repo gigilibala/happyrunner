@@ -1,6 +1,5 @@
-import { createContext, PropsWithChildren } from 'react'
 import Tts from 'react-native-tts'
-import usePrefs from '../../hooks/prefs'
+import usePrefs from './prefs'
 
 interface IAudioCuesApi {
   pref?: AudioCuesPreferences
@@ -16,7 +15,7 @@ export const defaultPref: AudioCuesPreferences = {
   enabled: true,
 }
 
-function useAudioCues(): IAudioCuesApi {
+export function useAudioCues(): IAudioCuesApi {
   const [pref, setPref] = usePrefs<AudioCuesPreferences>(
     '@audio_cues_preferences',
     defaultPref,
@@ -27,18 +26,4 @@ function useAudioCues(): IAudioCuesApi {
   }
 
   return { speak, pref, setPref }
-}
-
-export const AudioCuesContext = createContext<IAudioCuesApi>(
-  {} as IAudioCuesApi,
-)
-
-export function AudioCuesProvider({ children }: PropsWithChildren) {
-  const state = useAudioCues()
-
-  return (
-    <AudioCuesContext.Provider value={state}>
-      {children}
-    </AudioCuesContext.Provider>
-  )
 }
