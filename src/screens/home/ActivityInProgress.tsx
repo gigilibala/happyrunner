@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { ProgressInfoCard } from '../../components/cards/ProgressInfoCard'
+import HeartRateCard from '../../components/cards/HeartRateCard'
 import { IcoMoon } from '../../components/IcoMoon'
 import { useActivity } from '../../hooks/activity'
 import { useHeartRateMonitor } from '../../hooks/heartRateMonitor'
@@ -81,13 +81,7 @@ export default function ActivityInProgress({
   return (
     <SafeAreaView style={[styles.safeAreaView, styles.verticalContainer]}>
       <View style={styles.activityInfoView}>
-        <ProgressInfoCard
-          title={'Heart Rate'}
-          color={'red'}
-          unit={'BPM'}
-          value={heartRate || 'N/A'}
-          subValue1={{ value: heartRate || 'N/A', scope: 'Lap' }}
-        />
+        <HeartRateCard heartRate={heartRate} />
       </View>
 
       <View style={styles.activityButtonView}>
