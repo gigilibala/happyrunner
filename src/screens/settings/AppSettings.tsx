@@ -1,21 +1,26 @@
+import { Theme } from '@react-navigation/native'
 import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Alert } from 'react-native'
+import { Alert, StyleSheet } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import MatIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { DatabaseContext } from '../../components/providers/DatabaseProvider'
 import { PreferencesContext } from '../../components/providers/PreferencesProvider'
 import { SettingsList } from '../../components/SettingsList'
+import { useStyles } from '../../hooks/styles'
 import { SettingsScreenProps } from '../RootNavigator'
 
+const ICON_SIZE: number = 25
+
 export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
+  const styles = useStyles(createStyles)
+  const { t } = useTranslation()
+
   const [_, dbDispatch] = useContext(DatabaseContext)
 
   const { usePrefState } = useContext(PreferencesContext)
   const [audioCuesPref] = usePrefState('audioCues')
   const [{ distance, speed }, setUnits] = usePrefState('units')
-
-  const { t } = useTranslation()
 
   return SettingsList([
     {
@@ -26,10 +31,11 @@ export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
           title: t('heartRateMonitor'),
           onPress: () => navigation.navigate('HeartRateMonitorSettings'),
           icon: (
-            <Icon.Button
+            <Icon
               name={'bluetooth-b'}
               color={'blue'}
-              backgroundColor={'transparent'}
+              size={ICON_SIZE}
+              style={styles.icon}
             />
           ),
         },
@@ -39,10 +45,11 @@ export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
           value: audioCuesPref.enabled ? t('on') : t('off'),
           onPress: () => navigation.navigate('AudioCues'),
           icon: (
-            <Icon.Button
+            <Icon
               name={'headphones-alt'}
               color={'grey'}
-              backgroundColor={'transparent'}
+              size={ICON_SIZE}
+              style={styles.icon}
             />
           ),
         },
@@ -51,10 +58,11 @@ export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
           title: t('screens.about'),
           onPress: () => navigation.navigate('About'),
           icon: (
-            <Icon.Button
+            <Icon
               name={'info-circle'}
               color={'grey'}
-              backgroundColor={'transparent'}
+              size={ICON_SIZE}
+              style={styles.icon}
             />
           ),
         },
@@ -73,10 +81,11 @@ export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
             })),
           value: t(distance),
           icon: (
-            <MatIcon.Button
+            <MatIcon
               name={'map-marker-distance'}
               color={'grey'}
-              backgroundColor={'transparent'}
+              size={ICON_SIZE}
+              style={styles.icon}
             />
           ),
         },
@@ -90,10 +99,11 @@ export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
             })),
           value: t(speed),
           icon: (
-            <MatIcon.Button
+            <MatIcon
               name={'speedometer'}
               color={'grey'}
-              backgroundColor={'transparent'}
+              size={ICON_SIZE}
+              style={styles.icon}
             />
           ),
         },
@@ -121,10 +131,11 @@ export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
             )
           },
           icon: (
-            <Icon.Button
+            <Icon
               name={'database'}
               color={'grey'}
-              backgroundColor={'transparent'}
+              size={ICON_SIZE}
+              style={styles.icon}
             />
           ),
         },
@@ -132,3 +143,8 @@ export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
     },
   ])
 }
+
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    icon: { padding: 5 },
+  })
