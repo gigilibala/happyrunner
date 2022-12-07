@@ -59,7 +59,8 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
   const [heartRate, setHeartRate] = useState<number>()
 
   const { usePrefState } = useContext(PreferencesContext)
-  const [device, setDevice] = usePrefState('hrmDevice')
+  const [deviceOnStorage, setDeviceOnStorage] = usePrefState('hrmDevice')
+  const [device, setDevice] = useState<Device>(deviceOnStorage)
 
   const [state, dispatch] = useReducer(
     (state: State, action: Action): State => {
@@ -110,6 +111,10 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
       return () => dispatch({ type: 'disconnect' })
     }
   }, [state])
+
+  useEffect(() => {
+    setDeviceOnStorage(device)
+  }, [device])
 
   useEffect(() => {
     // TODO(gigilibala): Remove
@@ -248,11 +253,12 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
           reject('Trying to connect to a device that we have never found!')
           return
         }
+        console.log('setting device')
         setDevice({ id: d.id, name: d.name })
       } else {
-        id = device?.id
+        id = device.id
       }
-      if (id === undefined) {
+      if (!id) {
         reject('No device is available.')
         return
       }

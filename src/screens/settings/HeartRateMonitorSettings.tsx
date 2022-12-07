@@ -1,5 +1,5 @@
 import { Theme } from '@react-navigation/native'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   ActivityIndicator,
@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { PreferencesContext } from '../../components/providers/PreferencesProvider'
 import { useHeartRateMonitor } from '../../hooks/heartRateMonitor'
 import { useStyles } from '../../hooks/styles'
 import { SettingsScreenProps } from '../RootNavigator'
@@ -25,8 +26,11 @@ export function HeartRateMonitorSettings({
   const { t } = useTranslation()
   const [backgroundOpacity, setBackgroundOpacity] = useState<number>(1)
 
-  const { bluetoothEnabled, devices, device, heartRate, state, dispatch } =
+  const { bluetoothEnabled, devices, heartRate, state, dispatch } =
     useHeartRateMonitor()
+
+  const { usePrefState } = useContext(PreferencesContext)
+  const [device] = usePrefState('hrmDevice')
 
   useEffect(() => {
     navigation.setOptions({
