@@ -5,7 +5,7 @@ type HeartRateCardProps = {
   heartRate?: number
 }
 
-export default function HeartRateCard({ heartRate }: HeartRateCardProps) {
+export function HeartRateCard({ heartRate }: HeartRateCardProps) {
   return (
     <ProgressInfoCard
       title={'Heart Rate'}
