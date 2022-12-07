@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { ProgressInfoCard } from '../../components/cards/ProgressInfoCard'
 import { IcoMoon } from '../../components/IcoMoon'
-import { ProgressInfoCard } from '../../components/ProgressInfoCard'
 import { useActivity } from '../../hooks/activity'
 import { useHeartRateMonitor } from '../../hooks/heartRateMonitor'
 import { useLocation } from '../../hooks/location'
@@ -81,33 +81,6 @@ export default function ActivityInProgress({
   return (
     <SafeAreaView style={[styles.safeAreaView, styles.verticalContainer]}>
       <View style={styles.activityInfoView}>
-        <ProgressInfoCard
-          title={'Heart Rate'}
-          color={'red'}
-          unit={'BPM'}
-          value={heartRate || 'N/A'}
-        />
-        <ProgressInfoCard
-          title={'Heart Rate'}
-          color={'red'}
-          unit={'BPM'}
-          value={heartRate || 'N/A'}
-          subValue1={{ value: heartRate || 'N/A', scope: 'Lap' }}
-        />
-        <ProgressInfoCard
-          title={'Heart Rate'}
-          color={'red'}
-          unit={'BPM'}
-          value={heartRate || 'N/A'}
-          subValue1={{ value: heartRate || 'N/A', scope: 'Lap' }}
-          subValue2={{ value: heartRate || 'N/A', scope: 'Total' }}
-        />
-        <ProgressInfoCard
-          title={'Heart Rate'}
-          color={'red'}
-          unit={'BPM'}
-          value={heartRate || 'N/A'}
-        />
         <ProgressInfoCard
           title={'Heart Rate'}
           color={'red'}
