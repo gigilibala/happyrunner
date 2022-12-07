@@ -3,13 +3,16 @@ import { useTranslation } from 'react-i18next'
 import { Alert } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { DatabaseContext } from '../../components/providers/DatabaseProvider'
+import { PreferencesContext } from '../../components/providers/PreferencesProvider'
 import { SettingsList } from '../../components/SettingsList'
-import { useAudioCues } from '../../hooks/audioCues'
 import { SettingsScreenProps } from '../RootNavigator'
 
 export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
   const [_, dbDispatch] = useContext(DatabaseContext)
-  const { pref } = useAudioCues()
+
+  const { usePrefState } = useContext(PreferencesContext)
+  const [audioCuesPref] = usePrefState('audioCues')
+
   const { t } = useTranslation()
 
   return SettingsList([
@@ -31,7 +34,7 @@ export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
         {
           kind: 'navigation',
           title: t('audioCues'),
-          value: pref?.enabled ? t('on') : t('off'),
+          value: audioCuesPref.enabled ? t('on') : t('off'),
           onPress: () => navigation.navigate('AudioCues'),
           icon: (
             <Icon.Button

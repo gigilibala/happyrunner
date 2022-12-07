@@ -1,4 +1,4 @@
-import { Dispatch, useEffect, useReducer, useState } from 'react'
+import { Dispatch, useContext, useEffect, useReducer, useState } from 'react'
 import {
   EmitterSubscription,
   NativeEventEmitter,
@@ -12,12 +12,12 @@ import BleManager, {
   Peripheral,
   PeripheralInfo,
 } from 'react-native-ble-manager'
-import usePrefs from './prefs'
+import { PreferencesContext } from '../components/providers/PreferencesProvider'
 
 const HEART_RATE_GATT_SERVICE = '180d'
 const HEART_RATE_GATT_CHARACTERISTIC = '2a37'
 
-type Device = {
+export interface Device {
   id: string
   name?: string
 }
@@ -54,13 +54,12 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
   const [scanningSubscription, setScanningSubscription] =
     useState<EmitterSubscription>()
   const [devices, setDevices] = useState<Device[]>([])
-  const [device, setDevice] = usePrefs<Device>('@bluetooth_default_device', {
-    name: '',
-    id: '',
-  })
   const [valueSubscription, setValueSubscription] =
     useState<EmitterSubscription>()
   const [heartRate, setHeartRate] = useState<number>()
+
+  const { usePrefState } = useContext(PreferencesContext)
+  const [device, setDevice] = usePrefState('hrmDevice')
 
   const [state, dispatch] = useReducer(
     (state: State, action: Action): State => {
