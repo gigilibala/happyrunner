@@ -38,7 +38,7 @@ export function ProgressInfoCard(props: ProgressInfoCardProps) {
     <ProgressCard {...props}>
       <View style={styles.valuesView}>
         <View>
-          <Text style={[styles.text, styles.boldText, { fontSize: 50 }]}>
+          <Text style={[styles.largestText, styles.boldText]}>
             {props.value}
           </Text>
         </View>

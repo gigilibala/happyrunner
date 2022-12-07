@@ -5,6 +5,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { HeartRateCard } from '../../components/cards/HeartRateCard'
+import { SpeedInputCard } from '../../components/cards/SpeedInputCard'
 import { IcoMoon } from '../../components/IcoMoon'
 import { useActivity } from '../../hooks/activity'
 import { useHeartRateMonitor } from '../../hooks/heartRateMonitor'
@@ -82,6 +83,7 @@ export default function ActivityInProgress({
     <SafeAreaView style={[styles.safeAreaView, styles.verticalContainer]}>
       <View style={styles.activityInfoView}>
         <HeartRateCard heartRate={heartRate} />
+        <SpeedInputCard />
       </View>
 
       <View style={styles.activityButtonView}>
