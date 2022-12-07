@@ -21,10 +21,11 @@ export default function ActivityInProgress({
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
   const { heartRate } = useHeartRateMonitor()
-  const { position } = useLocation()
+  const [locationState, locationDispatch] = useLocation()
+
   const { state, dispatch, id } = useActivity({
     heartRate,
-    position,
+    position: locationState.position,
     params: route.params.activityParams,
   })
   const [notificationState, notificationDispatch] = useNotification()
@@ -33,6 +34,8 @@ export default function ActivityInProgress({
     navigation.setOptions({
       title: t(`activityType.${route.params.activityParams.type}`),
     })
+    if (route.params.activityParams.type !== 'treadmill')
+      locationDispatch({ type: 'start' })
   }, [])
 
   useEffect(() => {

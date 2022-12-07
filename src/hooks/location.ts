@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 import {
   Permission,
   PermissionsAndroid,
@@ -7,25 +7,51 @@ import {
 } from 'react-native'
 import Geolocation from 'react-native-geolocation-service'
 
-interface ILocationApi {
-  position?: Geolocation.GeoPosition
-}
+type Action =
+  | { type: 'start' | 'stop' }
+  | { type: 'success' }
+  | { type: 'failure'; error: Error }
+  | { type: 'position'; payload: Geolocation.GeoPosition }
+type State = { status: 'started' | 'idle'; position?: Geolocation.GeoPosition }
 
-export function useLocation(): ILocationApi {
-  const [position, setPosition] = useState<Geolocation.GeoPosition>()
+export function useLocation(): [State, React.Dispatch<Action>] {
   const [watchId, setWatchId] = useState<number>()
   const [serviceEnabled, setServiceEnabled] = useState<boolean>(true)
 
+  const [state, dispatch] = useReducer(
+    (state: State, action: Action): State => {
+      switch (action.type) {
+        case 'start':
+          if (state.status === 'started') return state
+          start()
+          return {
+            status: 'idle',
+          }
+        case 'stop':
+          if (state.status !== 'started') return state
+          Geolocation.stopObserving()
+          console.log('Stopped geolocation.')
+          return { status: 'idle' }
+        case 'success':
+          return { status: 'started' }
+        case 'failure':
+          return { status: 'idle' }
+        case 'position':
+          return { status: 'started', position: action.payload }
+      }
+    },
+    { status: 'idle' },
+  )
+
   useEffect(() => {
-    start()
-    return () => {
-      Geolocation.stopObserving()
-      console.log('Stopped geolocation.')
-    }
+    return () => dispatch({ type: 'stop' })
   }, [])
 
   useEffect(() => {
-    if (watchId !== undefined) return () => Geolocation.clearWatch(watchId)
+    if (watchId !== undefined) {
+      dispatch({ type: 'success' })
+      return () => Geolocation.clearWatch(watchId)
+    }
   }, [watchId])
 
   function start() {
@@ -36,7 +62,7 @@ export function useLocation(): ILocationApi {
         console.log('Location service authorized.')
         setWatchId(
           Geolocation.watchPosition(
-            (pos) => setPosition(pos),
+            (pos) => dispatch({ type: 'position', payload: pos }),
             (error) => console.log('Failed to watch position', error),
             {
               interval: 2000,
@@ -47,9 +73,10 @@ export function useLocation(): ILocationApi {
           ),
         )
       })
-      .catch((error) =>
-        console.log('Failed requesting location authorization: ', error),
-      )
+      .catch((error) => {
+        dispatch({ type: 'failure', error: error })
+        console.log('Failed requesting location authorization: ', error)
+      })
   }
 
   function requestPermission() {
@@ -97,5 +124,5 @@ export function useLocation(): ILocationApi {
     })
   }
 
-  return { position }
+  return [state, dispatch]
 }
