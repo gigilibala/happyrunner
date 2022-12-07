@@ -2,6 +2,7 @@ import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Alert } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import MatIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { DatabaseContext } from '../../components/providers/DatabaseProvider'
 import { PreferencesContext } from '../../components/providers/PreferencesProvider'
 import { SettingsList } from '../../components/SettingsList'
@@ -12,6 +13,7 @@ export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
 
   const { usePrefState } = useContext(PreferencesContext)
   const [audioCuesPref] = usePrefState('audioCues')
+  const [{ distance, speed }, setUnits] = usePrefState('units')
 
   const { t } = useTranslation()
 
@@ -51,6 +53,45 @@ export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
           icon: (
             <Icon.Button
               name={'info-circle'}
+              color={'grey'}
+              backgroundColor={'transparent'}
+            />
+          ),
+        },
+      ],
+    },
+    {
+      title: t('units'),
+      data: [
+        {
+          kind: 'button',
+          title: t('distance'),
+          onPress: () =>
+            setUnits((prev) => ({
+              ...prev,
+              distance: prev.distance === 'kilometers' ? 'miles' : 'kilometers',
+            })),
+          value: t(distance),
+          icon: (
+            <MatIcon.Button
+              name={'map-marker-distance'}
+              color={'grey'}
+              backgroundColor={'transparent'}
+            />
+          ),
+        },
+        {
+          kind: 'button',
+          title: t('speed'),
+          onPress: () =>
+            setUnits((prev) => ({
+              ...prev,
+              speed: prev.speed === 'pace' ? 'speed' : 'pace',
+            })),
+          value: t(speed),
+          icon: (
+            <MatIcon.Button
+              name={'speedometer'}
               color={'grey'}
               backgroundColor={'transparent'}
             />

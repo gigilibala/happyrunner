@@ -36,5 +36,11 @@
   "save": "Save",
   "delete": "Delete",
   "deleteActivity": "Deleting Activity",
-  "deleteActivityNotice": "This action deletes the activity and is not recoverable. Do you want to continue?"
+  "deleteActivityNotice": "This action deletes the activity and is not recoverable. Do you want to continue?",
+  "units": "Units",
+  "distance": "Distance",
+  "kilometers": "Kilometers",
+  "miles": "Miles",
+  "speed": "Speed",
+  "pace": "Pace"
 }
