@@ -13,7 +13,10 @@ import { PreferencesProvider } from './components/providers/PreferencesProvider'
 import './localization/i18n'
 import { RootNavigator } from './screens/RootNavigator'
 
-LogBox.ignoreLogs(['new NativeEventEmitter'])
+LogBox.ignoreLogs([
+  'new NativeEventEmitter',
+  'Called stopObserving with existing subscriptions',
+])
 
 BleManager.start().then(() => {
   console.log('Bluetooth module initialized.')
