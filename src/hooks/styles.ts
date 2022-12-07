@@ -79,7 +79,7 @@ const createGlobalStyles = (theme: Theme) =>
       },
       shadowOpacity: 0.25,
       shadowRadius: 0.5,
-      elevation: 10,
+      elevation: 4,
     },
     activityButtonView: {
       flexDirection: 'row',
