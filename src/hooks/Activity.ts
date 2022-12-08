@@ -157,9 +157,11 @@ export function useActivity({
           // database.
           timestamp: new Date().getTime(),
           activity_id: id.current,
-          heart_rate: heartRate,
-          latitude: position?.coords.latitude,
-          longitude: position?.coords.longitude,
+          ...(heartRate && { heart_rate: heartRate }),
+          ...(position && {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          }),
         },
       },
     })
