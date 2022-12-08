@@ -264,7 +264,7 @@ function useDatabase(): IDatabaseApi {
       VALUES (${Array(keys.length).fill('?').join(', ')})
     `
     db?.executeSql(query, Object.values(data))
-      .then(() => console.log('Added row to table: ', tableName, data))
+      .then(() => console.debug('Added row to table: ', tableName, data))
       .catch((error) =>
         console.log('Failed to add row to table: ', tableName, error, data),
       )
@@ -283,7 +283,7 @@ function useDatabase(): IDatabaseApi {
       WHERE ${primaryKeyName.toString()} = ${data[primaryKeyName]}
     `
     db?.executeSql(query, Object.values(partialData))
-      .then(() => console.log('Modified row in table: ', tableName, data))
+      .then(() => console.debug('Modified row in table: ', tableName, data))
       .catch((error) =>
         console.log('Failed to modify in table: ', tableName, error, data),
       )
@@ -316,9 +316,7 @@ function useDatabase(): IDatabaseApi {
         tx.executeSql(query).then(([tx, results]) => {
           resolve(results.rows.raw() as Details[])
         })
-      }).catch((error) =>
-        console.log('Failed to query activity details: ', error),
-      )
+      })
     })
   }
 
