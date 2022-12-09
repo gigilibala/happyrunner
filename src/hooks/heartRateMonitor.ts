@@ -117,22 +117,6 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
   }, [device])
 
   useEffect(() => {
-    // TODO(gigilibala): Remove
-    const handle = setInterval(
-      () => setHeartRate(Math.floor(Math.random() * 200)),
-      2000,
-    )
-    setDevices([
-      { name: 'amin', id: 'amin' },
-      { name: 'hassani', id: 'hassani' },
-    ])
-
-    return () => {
-      clearInterval(handle)
-    }
-  }, [])
-
-  useEffect(() => {
     watchBluetoothStateChange()
     BleManager.checkState()
     return () => {
