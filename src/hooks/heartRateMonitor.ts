@@ -81,9 +81,7 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
               console.log(error)
               dispatch({ type: 'failure', error: error })
             })
-          state = { ...state }
-          state.isLoading = true
-          return state
+          return { ...state, isLoading: true }
         case 'disconnect':
           if (state.status !== 'connected' || !state.isLoading) return state
           disconnect().finally(() => dispatch({ type: 'success' }))
