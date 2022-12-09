@@ -6,7 +6,7 @@ import { useStyles } from '../../hooks/styles'
 export type ProgressCardProps = {
   title: string
   color: string
-  unit: string
+  unit?: string
 }
 
 export function ProgressCard(props: PropsWithChildren<ProgressCardProps>) {
@@ -17,9 +17,11 @@ export function ProgressCard(props: PropsWithChildren<ProgressCardProps>) {
         <View>
           <Text style={styles.mediumText}>{props.title}</Text>
         </View>
-        <View>
-          <Text style={styles.text}>{props.unit}</Text>
-        </View>
+        {props.unit && (
+          <View>
+            <Text style={styles.text}>{props.unit}</Text>
+          </View>
+        )}
       </View>
       {props.children}
     </View>
