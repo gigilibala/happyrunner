@@ -1,4 +1,5 @@
 import { Theme } from '@react-navigation/native'
+import { useKeepAwake } from '@sayem314/react-native-keep-awake'
 import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
@@ -33,6 +34,8 @@ export default function ActivityInProgress({
     params: route.params.activityParams,
   })
   const [notificationState, notificationDispatch] = useNotification()
+
+  useKeepAwake()
 
   useEffect(() => {
     navigation.setOptions({
