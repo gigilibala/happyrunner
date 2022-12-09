@@ -79,10 +79,10 @@ export function useActivity({
   const id = useRef<IdType>(0)
   const [_, dbDispatch] = useContext(DatabaseContext)
   const [intervalTs, setIntervalTs] = useState<Date>(new Date())
-  const [lap, setLap] = useState<number>(1)
+  const [lap, setLap] = useState<number>(0)
 
-  const pausedTs = useRef<Date>()
-  const lapStartTs = useRef<Date>()
+  const [pausedTs, setPausedTs] = useState<Date>()
+  const [lapStartTs, setLapStartTs] = useState<Date>(new Date())
 
   const distanceProps: DistanceProps = {
     position: position,
@@ -93,32 +93,26 @@ export function useActivity({
 
   const [state, dispatch] = useReducer(
     (state: State, action: Action): State => {
-      const newState: State = {
-        ...state,
-        lapDistance: lapDistanceState.displayDistance,
-        totalDistance: totalDistanceState.displayDistance,
-      }
       switch (action.type) {
         case 'resume':
-          return { ...newState, status: 'in-progress' }
+          if (state.status === 'in-progress') return state
+          return { ...state, status: 'in-progress' }
         case 'pause':
-          return { ...newState, status: 'paused' }
+          if (state.status === 'paused') return state
+          return { ...state, status: 'paused' }
         case 'stop':
-          return { ...newState, status: 'stopped' }
+          if (state.status === 'stopped') return state
+          setLap((prevLap) => prevLap + 1)
+          return { ...state, status: 'stopped' }
         case 'nextLap':
           setLap((prevLap) => prevLap + 1)
-          lapDistanceDispatch({ type: 'reset' })
-          return newState
+          return state
         case 'nextInterval':
-          lapDistanceDispatch({
-            type: 'update',
-            payload: { timestamp: intervalTs },
-          })
-          totalDistanceDispatch({
-            type: 'update',
-            payload: { timestamp: intervalTs },
-          })
-          return newState
+          return {
+            ...state,
+            lapDistance: lapDistanceState.displayDistance,
+            totalDistance: totalDistanceState.displayDistance,
+          }
       }
     },
     {
@@ -143,44 +137,61 @@ export function useActivity({
     return () => {
       dispatch({ type: 'stop' })
       clearInterval(intervalHandle)
-
-      dbDispatch({
-        type: 'addActivityLap',
-        payload: {
-          data: {
-            id: randomId(),
-            activity_id: id.current,
-            number: 0,
-            start_time: id.current,
-            end_time: pausedTs.current
-              ? pausedTs.current.getTime()
-              : new Date().getTime(),
-          },
-        },
-      })
     }
   }, [])
 
   useEffect(() => {
-    if (state.status === 'in-progress') {
-      dbDispatch({
-        type: 'modifyActivity',
-        payload: { data: { id: id.current, status: 'in-progress' } },
-      })
-      pausedTs.current = undefined
-    } else {
-      dbDispatch({
-        type: 'modifyActivity',
-        payload: { data: { id: id.current, status: 'stopped' } },
-      })
-      pausedTs.current = new Date()
+    switch (state.status) {
+      case 'in-progress':
+        dbDispatch({
+          type: 'modifyActivity',
+          payload: { data: { id: id.current, status: 'in-progress' } },
+        })
+        setPausedTs(undefined)
+        break
+      case 'paused':
+        dbDispatch({
+          type: 'modifyActivity',
+          payload: { data: { id: id.current, status: 'stopped' } },
+        })
+        setPausedTs(new Date())
+        break
+      case 'stopped':
+        dbDispatch({
+          type: 'modifyActivity',
+          payload: { data: { id: id.current, status: 'stopped' } },
+        })
+        setPausedTs(new Date())
+        dbDispatch({
+          type: 'addActivityLap',
+          payload: {
+            data: {
+              id: randomId(),
+              activity_id: id.current,
+              number: 0,
+              start_time: id.current,
+              end_time: pausedTs ? pausedTs.getTime() : new Date().getTime(),
+            },
+          },
+        })
+        break
     }
-  }, [state])
+  }, [state.status])
 
   useEffect(() => {
-    if (intervalTs === undefined || state.status !== 'in-progress') return
+    if (state.status !== 'in-progress') return
 
-    dispatch({ type: 'nextInterval' })
+    const timestamp = new Date()
+
+    lapDistanceDispatch({
+      type: 'update',
+      payload: { timestamp },
+    })
+    totalDistanceDispatch({
+      type: 'update',
+      payload: { timestamp },
+    })
+
     dbDispatch({
       type: 'addActivityDatum',
       payload: {
@@ -188,7 +199,7 @@ export function useActivity({
           // Do not use intervalTs here because if the component re-mounts, the old
           // value is used again and will cause duplicate key be added to the
           // database.
-          timestamp: new Date().getTime(),
+          timestamp: timestamp.getTime(),
           activity_id: id.current,
           ...(heartRate && { heart_rate: heartRate }),
           ...(position && {
@@ -198,27 +209,33 @@ export function useActivity({
         },
       },
     })
+
+    dispatch({ type: 'nextInterval' })
   }, [intervalTs])
 
   useEffect(() => {
-    lapStartTs.current = new Date()
+    // We only want to add a lap at the end of the lap.
+    if (lap === 0) return
 
-    return () => {
-      const endTime = pausedTs.current ? pausedTs.current : new Date()
-      if (endTime < lapStartTs.current!) return
-      dbDispatch({
-        type: 'addActivityLap',
-        payload: {
-          data: {
-            id: randomId(),
-            activity_id: id.current,
-            number: lap,
-            start_time: lapStartTs.current!.getTime(),
-            end_time: endTime.getTime(),
-          },
+    lapDistanceDispatch({ type: 'reset' })
+
+    const endTime = pausedTs ? pausedTs : new Date()
+    // Protection against adding new laps when paused or stopped.
+    if (endTime < lapStartTs) return
+    dbDispatch({
+      type: 'addActivityLap',
+      payload: {
+        data: {
+          id: randomId(),
+          activity_id: id.current,
+          number: lap,
+          start_time: lapStartTs.getTime(),
+          end_time: endTime.getTime(),
         },
-      })
-    }
+      },
+    })
+
+    setLapStartTs(new Date())
   }, [lap])
 
   return { state, dispatch, id: id.current }
