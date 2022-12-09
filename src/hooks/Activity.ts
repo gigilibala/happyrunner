@@ -9,9 +9,14 @@ import {
 import { GeoPosition } from 'react-native-geolocation-service'
 import { ActivityType } from '../components/ActivityTypes'
 import { DatabaseContext } from '../components/providers/DatabaseProvider'
+import { DistanceProps, useDistance } from './distance'
 
-type Action = { type: 'pause' | 'stop' | 'resume' | 'nextLap' }
-type State = { status: 'in-progress' | 'paused' | 'stopped' }
+type Action = { type: 'pause' | 'stop' | 'resume' | 'nextLap' | 'nextInterval' }
+export type State = {
+  status: 'in-progress' | 'paused' | 'stopped'
+  lapDistance: number
+  totalDistance: number
+}
 
 const INTERVAL_MS = 3000
 
@@ -63,36 +68,63 @@ export interface IActivity {
 export function useActivity({
   heartRate,
   position,
+  speed,
   params,
 }: {
   heartRate?: number
   position?: GeoPosition
+  speed?: number
   params: ActivityParams
 }): IActivity {
   const id = useRef<IdType>(0)
   const [_, dbDispatch] = useContext(DatabaseContext)
-  const [intervalTs, setIntervalTs] = useState<Date>()
+  const [intervalTs, setIntervalTs] = useState<Date>(new Date())
   const [lap, setLap] = useState<number>(1)
 
   const pausedTs = useRef<Date>()
   const lapStartTs = useRef<Date>()
 
+  const distanceProps: DistanceProps = {
+    position: position,
+    speed: speed,
+  }
+  const [lapDistanceState, lapDistanceDispatch] = useDistance(distanceProps)
+  const [totalDistanceState, totalDistanceDispatch] = useDistance(distanceProps)
+
   const [state, dispatch] = useReducer(
     (state: State, action: Action): State => {
+      const newState: State = {
+        ...state,
+        lapDistance: lapDistanceState.displayDistance,
+        totalDistance: totalDistanceState.displayDistance,
+      }
       switch (action.type) {
         case 'resume':
-          return { status: 'in-progress' }
+          return { ...newState, status: 'in-progress' }
         case 'pause':
-          return { status: 'paused' }
+          return { ...newState, status: 'paused' }
         case 'stop':
-          return { status: 'stopped' }
+          return { ...newState, status: 'stopped' }
         case 'nextLap':
           setLap((prevLap) => prevLap + 1)
-          return state
+          lapDistanceDispatch({ type: 'reset' })
+          return newState
+        case 'nextInterval':
+          lapDistanceDispatch({
+            type: 'update',
+            payload: { timestamp: intervalTs },
+          })
+          totalDistanceDispatch({
+            type: 'update',
+            payload: { timestamp: intervalTs },
+          })
+          return newState
       }
     },
     {
       status: 'in-progress',
+      totalDistance: totalDistanceState.displayDistance,
+      lapDistance: lapDistanceState.displayDistance,
     },
   )
 
@@ -148,6 +180,7 @@ export function useActivity({
   useEffect(() => {
     if (intervalTs === undefined || state.status !== 'in-progress') return
 
+    dispatch({ type: 'nextInterval' })
     dbDispatch({
       type: 'addActivityDatum',
       payload: {

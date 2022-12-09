@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { DistanceCard } from '../../components/cards/DistanceCard'
 import { HeartRateCard } from '../../components/cards/HeartRateCard'
 import { SpeedInputCard } from '../../components/cards/SpeedInputCard'
 import { IcoMoon } from '../../components/IcoMoon'
@@ -11,6 +12,7 @@ import { useActivity } from '../../hooks/activity'
 import { useHeartRateMonitor } from '../../hooks/heartRateMonitor'
 import { useLocation } from '../../hooks/location'
 import { useNotification } from '../../hooks/notification'
+import { useSpeed } from '../../hooks/speed'
 import { BUTTON_SIZE, useStyles } from '../../hooks/styles'
 import { HomeScreenProps } from '../RootNavigator'
 
@@ -22,10 +24,12 @@ export default function ActivityInProgress({
   const { t } = useTranslation()
   const { heartRate } = useHeartRateMonitor()
   const [locationState, locationDispatch] = useLocation()
+  const [speedState, speedDispatch] = useSpeed()
 
   const { state, dispatch, id } = useActivity({
     heartRate,
     position: locationState.position,
+    speed: speedState.rawSpeed,
     params: route.params.activityParams,
   })
   const [notificationState, notificationDispatch] = useNotification()
@@ -86,7 +90,17 @@ export default function ActivityInProgress({
     <SafeAreaView style={[styles.safeAreaView, styles.verticalContainer]}>
       <View style={styles.activityInfoView}>
         <HeartRateCard heartRate={heartRate} />
-        <SpeedInputCard />
+        {route.params.activityParams.type === 'treadmill' && (
+          <SpeedInputCard
+            speed={speedState.displaySpeed}
+            onSpeedIncrease={() => speedDispatch({ type: 'increase' })}
+            onSpeedDecrease={() => speedDispatch({ type: 'decrease' })}
+          />
+        )}
+        <DistanceCard
+          lapDistance={state.lapDistance}
+          totalDistance={state.totalDistance}
+        />
       </View>
 
       <View style={styles.activityButtonView}>

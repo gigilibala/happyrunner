@@ -7,28 +7,42 @@ import { useStyles } from '../../hooks/styles'
 import { useUnits } from '../../hooks/units'
 import { ProgressCard } from './ProgressCard'
 
-export function SpeedInputCard() {
+type SpeedInputCardProps = {
+  speed: number
+  onSpeedIncrease: () => void
+  onSpeedDecrease: () => void
+}
+
+export function SpeedInputCard({
+  speed,
+  onSpeedDecrease,
+  onSpeedIncrease,
+}: SpeedInputCardProps) {
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
 
   const { units, speedUnitStr } = useUnits()
-  const [speedKh, setSpeedKh] = useState<number>(1)
+  const [pressInterval, setPressInterval] = useState<number>()
 
   return (
     <ProgressCard title={t(units.speed)} color={'cyan'} unit={speedUnitStr}>
       <View style={{ flexGrow: 1, justifyContent: 'space-between' }}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => setSpeedKh((prev) => prev + 1)}
+          onPress={() => onSpeedIncrease()}
+          onPressIn={() => setPressInterval(setInterval(onSpeedIncrease, 100))}
+          onPressOut={() => clearInterval(pressInterval!)}
         >
           <Icon name="plus" />
         </TouchableOpacity>
         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={[styles.largestText, styles.boldText]}>{speedKh}</Text>
+          <Text style={[styles.largestText, styles.boldText]}>{speed}</Text>
         </View>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => setSpeedKh((prev) => prev - 1)}
+          onPress={() => onSpeedDecrease()}
+          onPressIn={() => setPressInterval(setInterval(onSpeedDecrease, 100))}
+          onPressOut={() => clearInterval(pressInterval!)}
         >
           <Icon name="minus" />
         </TouchableOpacity>
