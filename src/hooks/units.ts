@@ -12,15 +12,15 @@ export interface Units {
 function speedUnit(units: Units): string {
   if (units.distance === 'kilometers') {
     if (units.speed === 'pace') {
-      return 'Min/K'
+      return 'min/k'
     } else {
-      return 'K/h'
+      return 'k/h'
     }
   } else {
     if (units.speed === 'pace') {
-      return 'Min/M'
+      return 'min/mile'
     } else {
-      return 'M/h'
+      return 'm/h'
     }
   }
 }
@@ -28,7 +28,7 @@ function speedUnit(units: Units): string {
 export function useUnits() {
   const { usePrefState } = useContext(PreferencesContext)
   const [units] = usePrefState('units')
-  const [speedUnitStr, setSpeedUnitStr] = useState<string>('Min/M')
+  const [speedUnitStr, setSpeedUnitStr] = useState<string>()
 
   useEffect(() => {
     setSpeedUnitStr(speedUnit(units))
