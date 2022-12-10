@@ -200,8 +200,6 @@ export function useActivity({
         },
       },
     })
-
-    dispatch({ type: 'nextInterval' })
   }, [intervalTs])
 
   useEffect(() => {
@@ -228,6 +226,10 @@ export function useActivity({
 
     setLapStartTs(new Date())
   }, [lap])
+
+  useEffect(() => {
+    dispatch({ type: 'nextInterval' })
+  }, [lapDistanceState, totalDistanceState])
 
   return [state, dispatch]
 }
