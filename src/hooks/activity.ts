@@ -162,6 +162,7 @@ export function useActivity({
               number: 0,
               start_time: id,
               end_time: pausedTs ? pausedTs.getTime() : new Date().getTime(),
+              distance: totalDistanceState.rawDistance,
             },
           },
         })
@@ -220,6 +221,7 @@ export function useActivity({
           number: lap,
           start_time: lapStartTs.getTime(),
           end_time: endTime.getTime(),
+          distance: lapDistanceState.rawDistance,
         },
       },
     })
