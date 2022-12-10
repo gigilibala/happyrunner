@@ -27,7 +27,7 @@ export default function ActivityInProgress({
   const [locationState, locationDispatch] = useLocation()
   const [speedState, speedDispatch] = useSpeed()
 
-  const { state, dispatch, id } = useActivity({
+  const [state, dispatch] = useActivity({
     heartRate,
     position: locationState.position,
     speed: speedState.rawSpeed,
@@ -58,7 +58,7 @@ export default function ActivityInProgress({
     if (state.status === 'stopped') {
       navigation.navigate('HistoryRoot', {
         screen: 'ActivityDetails',
-        params: { activityId: id, edit: true },
+        params: { activityId: state.id, edit: true },
         initial: false,
       })
       navigation.pop()

@@ -1,22 +1,8 @@
-import {
-  Dispatch,
-  useContext,
-  useEffect,
-  useReducer,
-  useRef,
-  useState,
-} from 'react'
+import { useContext, useEffect, useReducer, useState } from 'react'
 import { GeoPosition } from 'react-native-geolocation-service'
 import { ActivityType } from '../components/ActivityTypes'
 import { DatabaseContext } from '../components/providers/DatabaseProvider'
 import { DistanceProps, useDistance } from './distance'
-
-type Action = { type: 'pause' | 'stop' | 'resume' | 'nextLap' | 'nextInterval' }
-export type State = {
-  status: 'in-progress' | 'paused' | 'stopped'
-  lapDistance: number
-  totalDistance: number
-}
 
 const INTERVAL_MS = 3000
 
@@ -59,10 +45,12 @@ export type ActivityParams = {
   type: ActivityType
 }
 
-export interface IActivity {
+type Action = { type: 'pause' | 'stop' | 'resume' | 'nextLap' | 'nextInterval' }
+export type State = {
   id: IdType
-  state: State
-  dispatch: Dispatch<Action>
+  status: 'in-progress' | 'paused' | 'stopped'
+  lapDistance: number
+  totalDistance: number
 }
 
 export function useActivity({
@@ -75,12 +63,12 @@ export function useActivity({
   position?: GeoPosition
   speed?: number
   params: ActivityParams
-}): IActivity {
-  const id = useRef<IdType>(0)
+}): [State, React.Dispatch<Action>] {
+  const [id] = useState<IdType>(new Date().getTime())
   const [_, dbDispatch] = useContext(DatabaseContext)
-  const [intervalTs, setIntervalTs] = useState<Date>(new Date())
   const [lap, setLap] = useState<number>(0)
 
+  const [intervalTs, setIntervalTs] = useState<Date>(new Date())
   const [pausedTs, setPausedTs] = useState<Date>()
   const [lapStartTs, setLapStartTs] = useState<Date>(new Date())
 
@@ -116,6 +104,7 @@ export function useActivity({
       }
     },
     {
+      id,
       status: 'in-progress',
       totalDistance: totalDistanceState.displayDistance,
       lapDistance: lapDistanceState.displayDistance,
@@ -123,10 +112,9 @@ export function useActivity({
   )
 
   useEffect(() => {
-    id.current = new Date().getTime()
     dbDispatch({
       type: 'addActivity',
-      payload: { data: { id: id.current, type: params.type } },
+      payload: { data: { id, type: params.type } },
     })
 
     const intervalHandle = setInterval(
@@ -145,21 +133,21 @@ export function useActivity({
       case 'in-progress':
         dbDispatch({
           type: 'modifyActivity',
-          payload: { data: { id: id.current, status: 'in-progress' } },
+          payload: { data: { id, status: 'in-progress' } },
         })
         setPausedTs(undefined)
         break
       case 'paused':
         dbDispatch({
           type: 'modifyActivity',
-          payload: { data: { id: id.current, status: 'stopped' } },
+          payload: { data: { id, status: 'stopped' } },
         })
         setPausedTs(new Date())
         break
       case 'stopped':
         dbDispatch({
           type: 'modifyActivity',
-          payload: { data: { id: id.current, status: 'stopped' } },
+          payload: { data: { id, status: 'stopped' } },
         })
         setPausedTs(new Date())
         dbDispatch({
@@ -167,9 +155,9 @@ export function useActivity({
           payload: {
             data: {
               id: randomId(),
-              activity_id: id.current,
+              activity_id: id,
               number: 0,
-              start_time: id.current,
+              start_time: id,
               end_time: pausedTs ? pausedTs.getTime() : new Date().getTime(),
             },
           },
@@ -200,7 +188,7 @@ export function useActivity({
           // value is used again and will cause duplicate key be added to the
           // database.
           timestamp: timestamp.getTime(),
-          activity_id: id.current,
+          activity_id: id,
           ...(heartRate && { heart_rate: heartRate }),
           ...(position && {
             latitude: position.coords.latitude,
@@ -227,7 +215,7 @@ export function useActivity({
       payload: {
         data: {
           id: randomId(),
-          activity_id: id.current,
+          activity_id: id,
           number: lap,
           start_time: lapStartTs.getTime(),
           end_time: endTime.getTime(),
@@ -238,7 +226,7 @@ export function useActivity({
     setLapStartTs(new Date())
   }, [lap])
 
-  return { state, dispatch, id: id.current }
+  return [state, dispatch]
 }
 
 function randomId() {
