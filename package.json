@@ -9,7 +9,8 @@
     "start": "react-native start",
     "test": "jest",
     "lint:fix": "prettier --write .",
-    "lint:check": "prettier --check ."
+    "lint:check": "prettier --check .",
+    "syncTime": "adb -e shell su root date `date +\"%m%d%H%M%y\"`"
   },
   "dependencies": {
     "@notifee/react-native": "^7.1.0",
