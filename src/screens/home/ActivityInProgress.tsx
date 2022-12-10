@@ -63,7 +63,7 @@ export default function ActivityInProgress({
       })
       navigation.pop()
     }
-  }, [state])
+  }, [state.status])
 
   const resumeButton = (
     <TouchableOpacity onPress={() => dispatch({ type: 'resume' })}>
