@@ -131,6 +131,9 @@ export function useActivity({
   useEffect(() => {
     switch (state.status) {
       case 'in-progress':
+        const timestamp = new Date()
+        lapDistanceDispatch({ type: 'resumeBreak', payload: { timestamp } })
+        totalDistanceDispatch({ type: 'resumeBreak', payload: { timestamp } })
         dbDispatch({
           type: 'modifyActivity',
           payload: { data: { id, status: 'in-progress' } },

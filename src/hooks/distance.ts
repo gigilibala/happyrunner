@@ -9,7 +9,7 @@ export type DistanceProps = {
 
 type Action =
   | { type: 'reset' }
-  | { type: 'update'; payload: { timestamp: Date } }
+  | { type: 'update' | 'resumeBreak'; payload: { timestamp: Date } }
 export type State = {
   rawDistance: number
   displayDistance: number
@@ -29,6 +29,9 @@ export function useDistance({
         case 'reset':
           setRawDistance(0)
           return { rawDistance: 0, displayDistance: 0 }
+        case 'resumeBreak':
+          setLastTs(action.payload.timestamp)
+          return state
         case 'update':
           const { timestamp } = action.payload
           setLastTs(timestamp)
