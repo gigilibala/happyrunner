@@ -1,6 +1,6 @@
 import { useReducer, useState } from 'react'
 import Geolocation from 'react-native-geolocation-service'
-import { useUnits } from './units'
+import { Units, useUnits } from './units'
 
 export type DistanceProps = {
   speed?: number
@@ -39,14 +39,12 @@ export function useDistance({
             const timeDiff = timestamp.getTime() - lastTs.getTime()
             const newRawDistance = speed! * (timeDiff / 1000) + rawDistance
             setRawDistance(newRawDistance)
-            let newDisplayDistance =
-              newRawDistance *
-              (units.distance === 'kilometers' ? 0.001 : 0.000621)
-            newDisplayDistance =
-              Math.round((newDisplayDistance + Number.EPSILON) * 100) / 100
             return {
               rawDistance: newRawDistance,
-              displayDistance: newDisplayDistance,
+              displayDistance: rawDistanceToDisplayDistance(
+                newRawDistance,
+                units,
+              ),
             }
           }
         // TODO(gigilibala): Add logic based on position too.
@@ -57,4 +55,10 @@ export function useDistance({
   )
 
   return [state, dispatch]
+}
+
+export function rawDistanceToDisplayDistance(distance: number, units: Units) {
+  let displayDistance =
+    distance * (units.distance === 'kilometers' ? 0.001 : 0.000621)
+  return Math.round((displayDistance + Number.EPSILON) * 100) / 100
 }
