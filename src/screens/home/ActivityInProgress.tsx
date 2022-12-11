@@ -92,7 +92,14 @@ export default function ActivityInProgress({
   return (
     <SafeAreaView style={[styles.safeAreaView, styles.verticalContainer]}>
       <View style={styles.activityInfoView}>
-        <HeartRateCard heartRate={hrmState.heartRate} />
+        <HeartRateCard
+          heartRate={hrmState.heartRate}
+          onPressConnectDevice={() =>
+            navigation.navigate('SettingsRoot', {
+              screen: 'HeartRateMonitorSettings',
+            })
+          }
+        />
         {route.params.activityParams.type === 'treadmill' && (
           <SpeedInputCard
             speed={speedState.displaySpeed}
