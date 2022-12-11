@@ -106,8 +106,8 @@ export function useActivity({
     {
       id,
       status: 'in-progress',
-      totalDistance: totalDistanceState.displayDistance,
-      lapDistance: lapDistanceState.displayDistance,
+      totalDistance: 0,
+      lapDistance: 0,
     },
   )
 
