@@ -108,13 +108,13 @@ export default function ActivityInProgress({
             })
           }
         />
-        {route.params.activityParams.type === 'treadmill' && (
+        {route.params.activityParams.type === 'treadmill' ? (
           <SpeedInputCard
             speed={speedState.displaySpeed}
             onSpeedIncrease={() => speedDispatch({ type: 'increase' })}
             onSpeedDecrease={() => speedDispatch({ type: 'decrease' })}
           />
-        )}
+        ) : null}
         <DistanceCard
           lapDistance={state.lapDistance}
           totalDistance={state.totalDistance}

@@ -46,13 +46,13 @@ export function SettingsList(data: Settings) {
           <View style={styles.titleView}>
             <Text style={[styles.mediumText, styles.title]}>{title}</Text>
           </View>
-          {subTitle && (
+          {subTitle ? (
             <View style={styles.subTitleView}>
               <Text style={[styles.mediumText, styles.subTitle]}>
                 {subTitle}
               </Text>
             </View>
-          )}
+          ) : null}
         </View>
       )
     }
@@ -68,11 +68,11 @@ export function SettingsList(data: Settings) {
         <View style={styles.textView}>
           {renderText(props.title, props.subTitle)}
         </View>
-        {props.value && (
+        {props.value ? (
           <View style={styles.valueView}>
             <Text style={styles.text}>{props.value}</Text>
           </View>
-        )}
+        ) : null}
         <View>
           {props.kind === 'navigation' ? (
             <Icon
@@ -80,11 +80,9 @@ export function SettingsList(data: Settings) {
               color={'grey'}
               style={styles.navIcon}
             />
-          ) : (
-            props.kind === 'switch' && (
-              <Switch value={props.switchValue} onValueChange={props.onPress} />
-            )
-          )}
+          ) : props.kind === 'switch' ? (
+            <Switch value={props.switchValue} onValueChange={props.onPress} />
+          ) : null}
         </View>
       </TouchableOpacity>
     )

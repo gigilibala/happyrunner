@@ -17,11 +17,11 @@ export function ProgressCard(props: PropsWithChildren<ProgressCardProps>) {
         <View>
           <Text style={styles.mediumText}>{props.title}</Text>
         </View>
-        {props.unit && (
+        {props.unit ? (
           <View>
             <Text style={styles.text}>{props.unit}</Text>
           </View>
-        )}
+        ) : null}
       </View>
       {props.children}
     </View>

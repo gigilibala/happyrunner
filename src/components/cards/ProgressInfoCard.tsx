@@ -42,8 +42,8 @@ export function ProgressInfoCard(props: ProgressInfoCardProps) {
             {props.value}
           </Text>
         </View>
-        {props.subValue1 && <ScopedValue {...props.subValue1} />}
-        {props.subValue2 && <ScopedValue {...props.subValue2} />}
+        {props.subValue1 ? <ScopedValue {...props.subValue1} /> : null}
+        {props.subValue2 ? <ScopedValue {...props.subValue2} /> : null}
       </View>
     </ProgressCard>
   )

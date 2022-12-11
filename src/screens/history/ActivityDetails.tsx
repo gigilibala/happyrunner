@@ -130,12 +130,12 @@ export default function ActivityDetails({
           </View>
         )}
       </View>
-      {editing && (
+      {editing ? (
         <View>
           {saveButton}
           {discardButton}
         </View>
-      )}
+      ) : null}
     </SafeAreaView>
   )
 }
