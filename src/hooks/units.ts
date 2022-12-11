@@ -1,12 +1,9 @@
 import { useContext, useEffect, useState } from 'react'
 import { PreferencesContext } from '../components/providers/PreferencesProvider'
 
-type Distance = 'miles' | 'kilometers'
-type Speed = 'pace' | 'speed'
-
 export interface Units {
-  distance: Distance
-  speed: Speed
+  distance: 'miles' | 'kilometers'
+  speed: 'pace' | 'speed'
 }
 
 function speedUnit(units: Units): string {
