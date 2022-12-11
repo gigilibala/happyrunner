@@ -13,7 +13,7 @@ import {
 import { useTranslation } from 'react-i18next'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import IonIcon from 'react-native-vector-icons/Ionicons'
-import { ActivityParams } from '../hooks/activity'
+import { ActivityType } from '../components/ActivityTypes'
 import ActivityDetails from './history/ActivityDetails'
 import { History } from './history/History'
 import ActivityInProgress from './home/ActivityInProgress'
@@ -79,7 +79,7 @@ export function RootNavigator() {
 
 type HomeScreenParams = {
   Home: undefined
-  ActivityInProgress: { activityParams: ActivityParams }
+  ActivityInProgress: { type: ActivityType }
 }
 export type HomeScreenProps<T extends keyof HomeScreenParams> =
   CompositeScreenProps<

@@ -41,10 +41,6 @@ export type Lap = {
 
 export type Details = Info & Lap
 
-export type ActivityParams = {
-  type: ActivityType
-}
-
 type Action = {
   type: 'start' | 'pause' | 'stop' | 'resume' | 'nextLap' | 'nextInterval'
 }
@@ -59,12 +55,12 @@ export function useActivity({
   heartRate,
   position,
   speed,
-  params,
+  type,
 }: {
   heartRate?: number
   position?: GeoPosition
   speed?: number
-  params: ActivityParams
+  type: ActivityType
 }): [State, React.Dispatch<Action>] {
   const [started, setStarted] = useState<boolean>(false)
 
@@ -124,7 +120,7 @@ export function useActivity({
 
     dbDispatch({
       type: 'addActivity',
-      payload: { data: { id, type: params.type } },
+      payload: { data: { id, type } },
     })
 
     const intervalHandle = setInterval(

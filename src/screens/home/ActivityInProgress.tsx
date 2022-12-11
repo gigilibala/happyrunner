@@ -32,7 +32,7 @@ export default function ActivityInProgress({
     heartRate: hrmState.heartRate,
     position: locationState.position,
     speed: speedState.rawSpeed,
-    params: route.params.activityParams,
+    type: route.params.type,
   })
   const [notificationState, notificationDispatch] = useNotification()
 
@@ -40,10 +40,9 @@ export default function ActivityInProgress({
 
   useEffect(() => {
     navigation.setOptions({
-      title: t(`activityType.${route.params.activityParams.type}`),
+      title: t(`activityType.${route.params.type}`),
     })
-    if (route.params.activityParams.type !== 'treadmill')
-      locationDispatch({ type: 'start' })
+    if (route.params.type !== 'treadmill') locationDispatch({ type: 'start' })
   }, [])
 
   useEffect(() => {
@@ -109,7 +108,7 @@ export default function ActivityInProgress({
             })
           }
         />
-        {route.params.activityParams.type === 'treadmill' ? (
+        {route.params.type === 'treadmill' ? (
           <SpeedInputCard
             speed={speedState.displaySpeed}
             onSpeedIncrease={() => speedDispatch({ type: 'increase' })}

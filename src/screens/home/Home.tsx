@@ -49,7 +49,7 @@ export default function Home({ navigation }: HomeScreenProps<'Home'>) {
           style={styles.button}
           onPress={() => {
             navigation.navigate('ActivityInProgress', {
-              activityParams: { type: activityType },
+              type: activityType,
             })
           }}
         >
