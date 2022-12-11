@@ -28,7 +28,7 @@ export default function ActivityInProgress({
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
 
-  const [hrmState] = useHeartRateMonitor()
+  const [hrmState, hrmDispatch] = useHeartRateMonitor()
   const [locationState, locationDispatch] = useLocation()
   const [speedState, speedDispatch] = useSpeed()
 
@@ -69,6 +69,18 @@ export default function ActivityInProgress({
       navigation.pop()
     }
   }, [state.status])
+
+  useEffect(() => {
+    if (hrmState.device === undefined) return
+
+    hrmDispatch({ type: 'initialize' })
+  }, [hrmState.device])
+
+  useEffect(() => {
+    if (!hrmState.enabled || hrmState.device === undefined) return
+
+    hrmDispatch({ type: 'connect', payload: { device: hrmState.device } })
+  }, [hrmState.enabled])
 
   const startButton = (
     <TouchableOpacity onPress={() => dispatch({ type: 'start' })}>
