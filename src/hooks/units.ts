@@ -33,3 +33,8 @@ export function useUnits() {
 
   return { units, speedUnitStr }
 }
+
+export type Milliseconds = number
+export function duration(d: Milliseconds): string {
+  return new Date(d).toISOString().substring(14, 19)
+}

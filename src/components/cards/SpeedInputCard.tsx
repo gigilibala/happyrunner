@@ -3,12 +3,13 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { DisplaySpeed } from '../../hooks/speed'
 import { useStyles } from '../../hooks/styles'
 import { useUnits } from '../../hooks/units'
 import { ProgressCard } from './ProgressCard'
 
 type SpeedInputCardProps = {
-  speed: number
+  speed: DisplaySpeed
   onSpeedIncrease: () => void
   onSpeedDecrease: () => void
 }
@@ -29,7 +30,6 @@ export function SpeedInputCard({
       <View style={{ flexGrow: 1, justifyContent: 'space-between' }}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => onSpeedIncrease()}
           onPressIn={() => setPressInterval(setInterval(onSpeedIncrease, 100))}
           onPressOut={() => clearInterval(pressInterval!)}
         >
@@ -40,7 +40,6 @@ export function SpeedInputCard({
         </View>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => onSpeedDecrease()}
           onPressIn={() => setPressInterval(setInterval(onSpeedDecrease, 100))}
           onPressOut={() => clearInterval(pressInterval!)}
         >
