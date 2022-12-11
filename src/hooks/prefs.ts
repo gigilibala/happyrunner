@@ -1,14 +1,14 @@
 import { useAsyncStorage } from '@react-native-async-storage/async-storage'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
-function usePrefs<T>(
+export function usePrefs<T>(
   key: string,
 ): [T | undefined, Dispatch<SetStateAction<T | undefined>>]
-function usePrefs<T>(
+export function usePrefs<T>(
   key: string,
   defaultPrefs: T,
 ): [T, Dispatch<SetStateAction<T>>]
-function usePrefs<T>(
+export function usePrefs<T>(
   key: string,
   defaultPrefs?: T,
 ): [T | undefined, Dispatch<SetStateAction<T | undefined>>] {
@@ -45,5 +45,3 @@ function usePrefs<T>(
 
   return [prefs, setPrefs]
 }
-
-export default usePrefs

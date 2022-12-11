@@ -1,7 +1,7 @@
 import React, { createContext, PropsWithChildren } from 'react'
 import { AudioCuesPreferences } from '../../hooks/audioCues'
 import { Device } from '../../hooks/heartRateMonitor'
-import usePrefs from '../../hooks/prefs'
+import { usePrefs } from '../../hooks/prefs'
 import { Units } from '../../hooks/units'
 
 type IPreferencesApi = ReturnType<typeof usePreferences>
@@ -13,10 +13,7 @@ function usePreferences() {
     '@audio_cues_preferences',
     { enabled: true },
   )
-  const hrmDeviceState = usePrefs<Device>('@hrm_device_preferences', {
-    id: '',
-    name: '',
-  })
+  const hrmDeviceState = usePrefs<Device>('@hrm_device_preferences')
   const unitsState = usePrefs<Units>('@units_preferences', {
     distance: 'miles',
     speed: 'pace',
