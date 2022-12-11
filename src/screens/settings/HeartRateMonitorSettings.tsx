@@ -1,5 +1,5 @@
-import { Theme } from '@react-navigation/native'
-import { useContext, useEffect, useState } from 'react'
+import { Theme, useFocusEffect } from '@react-navigation/native'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   ActivityIndicator,
@@ -30,6 +30,12 @@ export function HeartRateMonitorSettings({
 
   const { usePrefState } = useContext(PreferencesContext)
   const [device] = usePrefState('hrmDevice')
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => navigation.pop()
+    }, []),
+  )
 
   useEffect(() => {
     dispatch({ type: 'initialize' })

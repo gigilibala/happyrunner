@@ -69,7 +69,6 @@ export function RootNavigator() {
           tabBarIcon: ({ color, size }) => (
             <IonIcon name={'settings'} color={color} size={size} />
           ),
-          unmountOnBlur: true,
           freezeOnBlur: true,
         }}
       />
