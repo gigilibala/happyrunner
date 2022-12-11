@@ -26,7 +26,7 @@ export function HeartRateMonitorSettings({
   const { t } = useTranslation()
   const [backgroundOpacity, setBackgroundOpacity] = useState<number>(1)
 
-  const { devices, heartRate, state, dispatch } = useHeartRateMonitor()
+  const { heartRate, state, dispatch } = useHeartRateMonitor()
 
   const { usePrefState } = useContext(PreferencesContext)
   const [device] = usePrefState('hrmDevice')
@@ -113,7 +113,7 @@ export function HeartRateMonitorSettings({
             <Text style={styles.mediumText}>{t('scanning')}</Text>
           </View>
           <ScrollView>
-            {devices.map((device) => (
+            {state.devices.map((device) => (
               <TouchableOpacity
                 key={device.id}
                 onPress={() => {

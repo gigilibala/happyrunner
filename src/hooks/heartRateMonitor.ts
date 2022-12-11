@@ -23,7 +23,6 @@ export interface Device {
 }
 
 interface IHeartRateMonitorApi {
-  devices: Device[]
   heartRate?: number
   state: State
   dispatch: Dispatch<Action>
@@ -31,6 +30,7 @@ interface IHeartRateMonitorApi {
 
 type Action =
   | { type: 'initialize' | 'scan' | 'stopScan' | 'disconnect' }
+  | { type: 'addDevice'; payload: { device: Device } }
   | { type: 'connect'; payload: { device: Device } }
   | { type: 'success' }
   | { type: 'enable'; payload: boolean }
@@ -42,6 +42,7 @@ type State = {
   // Means we got both permission and bluetooth is ON.
   enabled: boolean
   device?: Device
+  devices: Device[]
 }
 
 export function useHeartRateMonitor(): IHeartRateMonitorApi {
@@ -52,7 +53,6 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
     useState<EmitterSubscription>()
   const [scanningSubscription, setScanningSubscription] =
     useState<EmitterSubscription>()
-  const [devices, setDevices] = useState<Device[]>([])
   const [valueSubscription, setValueSubscription] =
     useState<EmitterSubscription>()
   const [heartRate, setHeartRate] = useState<number>()
@@ -80,7 +80,19 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
         case 'stopScan':
           if (!state.enabled || state.status !== 'scanning') return state
           stopScan()
-          return { ...state, status: 'idle', isLoading: false }
+          return { ...state, status: 'idle', isLoading: false, devices: [] }
+        case 'addDevice':
+          if (
+            state.devices.find(
+              (device) => device.id === action.payload.device.id,
+            )
+          )
+            return state
+          console.log('Discovered new device: ', action.payload.device)
+          return {
+            ...state,
+            devices: [...state.devices, action.payload.device],
+          }
         case 'connect':
           if (!state.enabled || state.status === 'connected' || state.isLoading)
             return state
@@ -112,6 +124,7 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
       isLoading: false,
       enabled: false,
       device: deviceOnStorage,
+      devices: [],
     },
   )
 
@@ -225,13 +238,7 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
                   HEART_RATE_GATT_SERVICE,
                 )
               ) {
-                setDevices((prev: Device[]): Device[] => {
-                  if (prev.some((d) => d.id === device.id)) {
-                    return prev
-                  }
-                  console.log('Discovered new device: ', device)
-                  return [...prev, device]
-                })
+                dispatch({ type: 'addDevice', payload: { device } })
               }
             },
           ),
@@ -249,7 +256,6 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
         console.log('Failed to stop scanning for BLE devices: ', error),
       )
       .finally(() => {
-        setDevices([])
         scanningSubscription?.remove()
       })
   }
@@ -336,7 +342,6 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
   }
 
   return {
-    devices,
     heartRate,
     state,
     dispatch,
