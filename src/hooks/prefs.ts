@@ -1,10 +1,17 @@
 import { useAsyncStorage } from '@react-native-async-storage/async-storage'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
-export default function usePrefs<T>(
+function usePrefs<T>(
+  key: string,
+): [T | undefined, Dispatch<SetStateAction<T | undefined>>]
+function usePrefs<T>(
   key: string,
   defaultPrefs: T,
-): [T, Dispatch<SetStateAction<T>>] {
+): [T, Dispatch<SetStateAction<T>>]
+function usePrefs<T>(
+  key: string,
+  defaultPrefs?: T,
+): [T | undefined, Dispatch<SetStateAction<T | undefined>>] {
   const { getItem, setItem } = useAsyncStorage(key)
   const [prefs, setPrefs] = useState<T>()
   const [initialRead, setInitialRead] = useState<boolean>(false)
@@ -14,7 +21,7 @@ export default function usePrefs<T>(
       getItem()
         .then((value) => {
           if (value === null) {
-            setPrefs(defaultPrefs)
+            if (defaultPrefs !== undefined) setPrefs(defaultPrefs)
           } else {
             setInitialRead(true)
             setPrefs(JSON.parse(value) as T)
@@ -36,5 +43,7 @@ export default function usePrefs<T>(
     }
   }, [prefs])
 
-  return [prefs!, setPrefs as Dispatch<SetStateAction<T>>]
+  return [prefs, setPrefs]
 }
+
+export default usePrefs
