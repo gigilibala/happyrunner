@@ -105,6 +105,7 @@ export default function ActivityInProgress({
           onPressConnectDevice={() =>
             navigation.navigate('SettingsRoot', {
               screen: 'HeartRateMonitorSettings',
+              initial: false,
             })
           }
         />

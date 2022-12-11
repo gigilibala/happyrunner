@@ -1,7 +1,7 @@
 import { Theme } from '@react-navigation/native'
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { useTranslation } from 'react-i18next'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useStyles } from '../../hooks/styles'
 import { ProgressCard } from './ProgressCard'
 import { ProgressInfoCard } from './ProgressInfoCard'
@@ -16,6 +16,7 @@ export function HeartRateCard({
   onPressConnectDevice,
 }: HeartRateCardProps) {
   const styles = useStyles(createStyles)
+  const { t } = useTranslation()
 
   return heartRate ? (
     <ProgressInfoCard
@@ -32,7 +33,7 @@ export function HeartRateCard({
           style={styles.button}
           onPress={() => onPressConnectDevice()}
         >
-          <Text style={styles.buttonText}>Connect Device</Text>
+          <Text style={styles.buttonText}>{t('addSensor')}</Text>
         </TouchableOpacity>
       </View>
     </ProgressCard>

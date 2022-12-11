@@ -12,6 +12,7 @@
   "heartRateMonitor": "Heart Rate Monitor",
   "audioCues": "Audio Cues",
   "enabled": "Enabled",
+  "addSensor": "Add Sensor",
   "connect": "Connect",
   "disconnect": "Disconnect",
   "connecting": "Connecting",
