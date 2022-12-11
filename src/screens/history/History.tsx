@@ -40,15 +40,6 @@ export function History({ navigation }: HistoryScreenProps<'History'>) {
   }, [dbState])
 
   function ActivityItem({ detail }: { detail: Details }) {
-    const date = new Date(detail.start_time).toLocaleString('en-us', {
-      weekday: 'short',
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-
     return (
       <TouchableOpacity
         style={[
@@ -70,16 +61,25 @@ export function History({ navigation }: HistoryScreenProps<'History'>) {
         <ActivityIcon type={detail.type} size={30} />
         <View style={styles.activityDetailsView}>
           <View>
-            <Text style={styles.text}>{date}</Text>
+            <Text style={styles.text}>
+              {new Date(detail.start_time).toLocaleString('en-us', {
+                weekday: 'short',
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </Text>
           </View>
-          {detail.distance && (
+          {detail.distance ? (
             <View>
               <Text style={[styles.text, { color: 'olive' }]}>
                 {rawDistanceToDisplayDistance(detail.distance, units)}{' '}
                 {t(units.distance)}
               </Text>
             </View>
-          )}
+          ) : null}
         </View>
         <Icon name={'chevron-right'} color={'grey'} />
       </TouchableOpacity>
