@@ -1,4 +1,4 @@
-import { Dispatch, useContext, useEffect, useReducer, useState } from 'react'
+import { useContext, useEffect, useReducer, useState } from 'react'
 import {
   EmitterSubscription,
   NativeEventEmitter,
@@ -22,11 +22,6 @@ export interface Device {
   name?: string
 }
 
-interface IHeartRateMonitorApi {
-  state: State
-  dispatch: Dispatch<Action>
-}
-
 type Action =
   | { type: 'initialize' | 'scan' | 'stopScan' | 'disconnect' }
   | { type: 'addDevice'; payload: { device: Device } }
@@ -46,7 +41,7 @@ type State = {
   heartRate?: number
 }
 
-export function useHeartRateMonitor(): IHeartRateMonitorApi {
+export function useHeartRateMonitor(): [State, React.Dispatch<Action>] {
   const [bleManagerEmitter, setBleManagerEmitter] =
     useState<NativeEventEmitter>()
 
@@ -343,8 +338,5 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
     dispatch({ type: 'heartRate', payload: { heartRate: details.heartRate } })
   }
 
-  return {
-    state,
-    dispatch,
-  }
+  return [state, dispatch]
 }

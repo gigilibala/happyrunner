@@ -26,7 +26,7 @@ export function HeartRateMonitorSettings({
   const { t } = useTranslation()
   const [backgroundOpacity, setBackgroundOpacity] = useState<number>(1)
 
-  const { state, dispatch } = useHeartRateMonitor()
+  const [state, dispatch] = useHeartRateMonitor()
 
   const { usePrefState } = useContext(PreferencesContext)
   const [device] = usePrefState('hrmDevice')

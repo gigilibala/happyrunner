@@ -23,7 +23,7 @@ export default function ActivityInProgress({
 }: HomeScreenProps<'ActivityInProgress'>) {
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
-  const { state: hrmState } = useHeartRateMonitor()
+  const [hrmState] = useHeartRateMonitor()
   const [locationState, locationDispatch] = useLocation()
   const [speedState, speedDispatch] = useSpeed()
 
