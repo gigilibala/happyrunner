@@ -45,10 +45,12 @@ export type ActivityParams = {
   type: ActivityType
 }
 
-type Action = { type: 'pause' | 'stop' | 'resume' | 'nextLap' | 'nextInterval' }
+type Action = {
+  type: 'start' | 'pause' | 'stop' | 'resume' | 'nextLap' | 'nextInterval'
+}
 export type State = {
   id: IdType
-  status: 'in-progress' | 'paused' | 'stopped'
+  status: 'idle' | 'in-progress' | 'paused' | 'stopped'
   lapDistance: number
   totalDistance: number
 }
@@ -64,6 +66,8 @@ export function useActivity({
   speed?: number
   params: ActivityParams
 }): [State, React.Dispatch<Action>] {
+  const [started, setStarted] = useState<boolean>(false)
+
   const [id] = useState<IdType>(new Date().getTime())
   const [_, dbDispatch] = useContext(DatabaseContext)
   const [lap, setLap] = useState<number>(0)
@@ -82,6 +86,10 @@ export function useActivity({
   const [state, dispatch] = useReducer(
     (state: State, action: Action): State => {
       switch (action.type) {
+        case 'start':
+          if (state.status !== 'idle') return state
+          setStarted(true)
+          return { ...state, status: 'in-progress' }
         case 'resume':
           if (state.status === 'in-progress') return state
           return { ...state, status: 'in-progress' }
@@ -105,13 +113,15 @@ export function useActivity({
     },
     {
       id,
-      status: 'in-progress',
+      status: 'idle',
       totalDistance: 0,
       lapDistance: 0,
     },
   )
 
   useEffect(() => {
+    if (!started) return
+
     dbDispatch({
       type: 'addActivity',
       payload: { data: { id, type: params.type } },
@@ -126,10 +136,12 @@ export function useActivity({
       dispatch({ type: 'stop' })
       clearInterval(intervalHandle)
     }
-  }, [])
+  }, [started])
 
   useEffect(() => {
     switch (state.status) {
+      case 'idle':
+        break
       case 'in-progress':
         const timestamp = new Date()
         lapDistanceDispatch({ type: 'resumeBreak', payload: { timestamp } })

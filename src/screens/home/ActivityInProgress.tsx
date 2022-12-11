@@ -23,6 +23,7 @@ export default function ActivityInProgress({
 }: HomeScreenProps<'ActivityInProgress'>) {
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
+
   const [hrmState] = useHeartRateMonitor()
   const [locationState, locationDispatch] = useLocation()
   const [speedState, speedDispatch] = useSpeed()
@@ -48,11 +49,12 @@ export default function ActivityInProgress({
   useEffect(() => {
     // Add this so when the back button is pressed, we don't exit suddenly and
     // force the user to either pause or stop.
-    navigation.addListener('beforeRemove', (event) => {
-      if (state.status === 'stopped') navigation.dispatch(event.data.action)
+    return navigation.addListener('beforeRemove', (event) => {
+      if (state.status === 'idle' || state.status === 'stopped')
+        navigation.dispatch(event.data.action)
       else event.preventDefault()
     })
-  }, [navigation, state])
+  }, [navigation, state.status])
 
   useEffect(() => {
     if (state.status === 'stopped') {
@@ -64,6 +66,12 @@ export default function ActivityInProgress({
       navigation.pop()
     }
   }, [state.status])
+
+  const startButton = (
+    <TouchableOpacity onPress={() => dispatch({ type: 'start' })}>
+      <Icon name={'play-circle'} size={BUTTON_SIZE} color={'green'} />
+    </TouchableOpacity>
+  )
 
   const resumeButton = (
     <TouchableOpacity onPress={() => dispatch({ type: 'resume' })}>
@@ -113,12 +121,18 @@ export default function ActivityInProgress({
         />
       </View>
 
-      <View style={styles.activityButtonView}>
-        <View>{state.status === 'in-progress' ? lapButton : stopButton}</View>
-        <View>
-          {state.status === 'in-progress' ? pauseButton : resumeButton}
+      {state.status === 'idle' ? (
+        <View style={[styles.activityButtonView, { justifyContent: 'center' }]}>
+          {startButton}
         </View>
-      </View>
+      ) : (
+        <View style={styles.activityButtonView}>
+          <View>{state.status === 'in-progress' ? lapButton : stopButton}</View>
+          <View>
+            {state.status === 'in-progress' ? pauseButton : resumeButton}
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   )
 }
