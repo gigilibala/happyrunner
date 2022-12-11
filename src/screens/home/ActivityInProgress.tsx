@@ -23,12 +23,12 @@ export default function ActivityInProgress({
 }: HomeScreenProps<'ActivityInProgress'>) {
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
-  const { heartRate } = useHeartRateMonitor()
+  const { state: hrmState } = useHeartRateMonitor()
   const [locationState, locationDispatch] = useLocation()
   const [speedState, speedDispatch] = useSpeed()
 
   const [state, dispatch] = useActivity({
-    heartRate,
+    heartRate: hrmState.heartRate,
     position: locationState.position,
     speed: speedState.rawSpeed,
     params: route.params.activityParams,
@@ -92,7 +92,7 @@ export default function ActivityInProgress({
   return (
     <SafeAreaView style={[styles.safeAreaView, styles.verticalContainer]}>
       <View style={styles.activityInfoView}>
-        <HeartRateCard heartRate={heartRate} />
+        <HeartRateCard heartRate={hrmState.heartRate} />
         {route.params.activityParams.type === 'treadmill' && (
           <SpeedInputCard
             speed={speedState.displaySpeed}

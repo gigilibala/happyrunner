@@ -23,7 +23,6 @@ export interface Device {
 }
 
 interface IHeartRateMonitorApi {
-  heartRate?: number
   state: State
   dispatch: Dispatch<Action>
 }
@@ -35,6 +34,7 @@ type Action =
   | { type: 'success' }
   | { type: 'enable'; payload: boolean }
   | { type: 'failure'; error: Error }
+  | { type: 'heartRate'; payload: { heartRate: number } }
 type State = {
   status: 'idle' | 'scanning' | 'connected'
   isLoading: boolean
@@ -43,6 +43,7 @@ type State = {
   enabled: boolean
   device?: Device
   devices: Device[]
+  heartRate?: number
 }
 
 export function useHeartRateMonitor(): IHeartRateMonitorApi {
@@ -55,7 +56,6 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
     useState<EmitterSubscription>()
   const [valueSubscription, setValueSubscription] =
     useState<EmitterSubscription>()
-  const [heartRate, setHeartRate] = useState<number>()
 
   const { usePrefState } = useContext(PreferencesContext)
   const [deviceOnStorage, setDeviceOnStorage] = usePrefState('hrmDevice')
@@ -117,6 +117,8 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
             status: 'idle',
             isLoading: false,
           }
+        case 'heartRate':
+          return { ...state, heartRate: action.payload.heartRate }
       }
     },
     {
@@ -338,11 +340,10 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
 
     // const moreDetails = { ...details, rrIntervals }
     // setHeartRate(JSON.stringify(moreDetails, null, 2))
-    setHeartRate(details.heartRate)
+    dispatch({ type: 'heartRate', payload: { heartRate: details.heartRate } })
   }
 
   return {
-    heartRate,
     state,
     dispatch,
   }
