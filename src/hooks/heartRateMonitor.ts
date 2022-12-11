@@ -23,7 +23,6 @@ export interface Device {
 }
 
 interface IHeartRateMonitorApi {
-  bluetoothEnabled: boolean
   devices: Device[]
   device?: Device
   heartRate?: number
@@ -35,11 +34,14 @@ type Action =
   | { type: 'initialize' | 'scan' | 'stopScan' | 'disconnect' }
   | { type: 'connect'; payload?: { device: Device } }
   | { type: 'success' }
+  | { type: 'enable'; payload: boolean }
   | { type: 'failure'; error: Error }
 type State = {
   status: 'idle' | 'scanning' | 'connected'
   isLoading: boolean
   error?: Error
+  // Means we got both permission and bluetooth is ON.
+  enabled: boolean
 }
 
 export function useHeartRateMonitor(): IHeartRateMonitorApi {
@@ -48,8 +50,6 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
 
   const [stateSubscription, setStateSubscription] =
     useState<EmitterSubscription>()
-  // Means we got both permission and bluetooth is ON.
-  const [bluetoothEnabled, setBluetoothEnabled] = useState<boolean>(false)
   const [scanningSubscription, setScanningSubscription] =
     useState<EmitterSubscription>()
   const [devices, setDevices] = useState<Device[]>([])
@@ -63,27 +63,28 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
 
   const [state, dispatch] = useReducer(
     (state: State, action: Action): State => {
-      if (action.type !== 'initialize' && !bluetoothEnabled)
-        return { status: 'idle', isLoading: false }
       switch (action.type) {
         case 'initialize':
-          if (!bluetoothEnabled && !bleManagerEmitter) {
+          if (!state.enabled && !bleManagerEmitter) {
             console.log('Initializing Bluetooth.')
             setBleManagerEmitter(
               new NativeEventEmitter(NativeModules.BleManager),
             )
           }
           return state
+        case 'enable':
+          return { ...state, enabled: action.payload }
         case 'scan':
-          if (state.status === 'scanning') return state
+          if (!state.enabled || state.status === 'scanning') return state
           startScan()
-          return { status: 'scanning', isLoading: false }
+          return { ...state, status: 'scanning', isLoading: false }
         case 'stopScan':
-          if (state.status !== 'scanning') return state
+          if (!state.enabled || state.status !== 'scanning') return state
           stopScan()
-          return { status: 'idle', isLoading: false }
+          return { ...state, status: 'idle', isLoading: false }
         case 'connect':
-          if (state.status === 'connected' || state.isLoading) return state
+          if (!state.enabled || state.status === 'connected' || state.isLoading)
+            return state
           connect(action.payload?.device.id)
             .then(() => dispatch({ type: 'success' }))
             .catch((error) => {
@@ -92,22 +93,29 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
             })
           return { ...state, isLoading: true }
         case 'disconnect':
-          if (state.status !== 'connected' || !state.isLoading) return state
+          if (
+            !state.enabled ||
+            state.status !== 'connected' ||
+            !state.isLoading
+          )
+            return state
           disconnect().finally(() => dispatch({ type: 'success' }))
           return state
         case 'success':
           return {
+            ...state,
             status: state.isLoading ? 'connected' : 'idle',
             isLoading: false,
           }
         case 'failure':
           return {
+            ...state,
             status: 'idle',
             isLoading: false,
           }
       }
     },
-    { status: 'idle', isLoading: false },
+    { status: 'idle', isLoading: false, enabled: false },
   )
 
   useEffect(() => {
@@ -134,7 +142,7 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
       })
       .catch((error) => {
         console.log('Failed to request for permission: ', error)
-        setBluetoothEnabled(false)
+        dispatch({ type: 'enable', payload: false })
       })
   }, [bleManagerEmitter])
 
@@ -157,12 +165,12 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
               console.log('Bluetooth is Off')
               BleManager.enableBluetooth().catch((error) => {
                 console.log('Failed to enable Bluetooth: ', error)
-                setBluetoothEnabled(false)
+                dispatch({ type: 'enable', payload: false })
               })
               break
             case 'on':
               console.log('Bluetooth is On')
-              setBluetoothEnabled(true)
+              dispatch({ type: 'enable', payload: true })
               break
             default:
               break
@@ -350,7 +358,6 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
   }
 
   return {
-    bluetoothEnabled,
     devices,
     device,
     heartRate,

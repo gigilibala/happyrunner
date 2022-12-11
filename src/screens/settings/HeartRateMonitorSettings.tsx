@@ -26,8 +26,7 @@ export function HeartRateMonitorSettings({
   const { t } = useTranslation()
   const [backgroundOpacity, setBackgroundOpacity] = useState<number>(1)
 
-  const { bluetoothEnabled, devices, heartRate, state, dispatch } =
-    useHeartRateMonitor()
+  const { devices, heartRate, state, dispatch } = useHeartRateMonitor()
 
   const { usePrefState } = useContext(PreferencesContext)
   const [device] = usePrefState('hrmDevice')
@@ -41,18 +40,18 @@ export function HeartRateMonitorSettings({
       headerRight: () => (
         <TouchableOpacity
           onPress={() => dispatch({ type: 'scan' })}
-          disabled={!bluetoothEnabled}
+          disabled={!state.enabled}
         >
           <Icon
             name={'search'}
             size={ICON_SIZE}
-            color={bluetoothEnabled ? 'blue' : 'grey'}
+            color={state.enabled ? 'blue' : 'grey'}
             style={[styles.icon, { opacity: backgroundOpacity }]}
           />
         </TouchableOpacity>
       ),
     })
-  }, [bluetoothEnabled])
+  }, [state.enabled])
 
   useEffect(() => {
     setBackgroundOpacity(state.status === 'scanning' ? 0.25 : 1.0)
@@ -155,7 +154,7 @@ export function HeartRateMonitorSettings({
     <TouchableOpacity
       style={styles.button}
       onPress={() => dispatch({ type: 'connect' })}
-      disabled={!bluetoothEnabled || state.isLoading}
+      disabled={!state.enabled || state.isLoading}
     >
       <Text style={styles.buttonText}>{connectButtonTitle()}</Text>
     </TouchableOpacity>
