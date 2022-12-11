@@ -24,7 +24,6 @@ export interface Device {
 
 interface IHeartRateMonitorApi {
   devices: Device[]
-  device?: Device
   heartRate?: number
   state: State
   dispatch: Dispatch<Action>
@@ -32,7 +31,7 @@ interface IHeartRateMonitorApi {
 
 type Action =
   | { type: 'initialize' | 'scan' | 'stopScan' | 'disconnect' }
-  | { type: 'connect'; payload?: { device: Device } }
+  | { type: 'connect'; payload: { device: Device } }
   | { type: 'success' }
   | { type: 'enable'; payload: boolean }
   | { type: 'failure'; error: Error }
@@ -42,6 +41,7 @@ type State = {
   error?: Error
   // Means we got both permission and bluetooth is ON.
   enabled: boolean
+  device?: Device
 }
 
 export function useHeartRateMonitor(): IHeartRateMonitorApi {
@@ -59,7 +59,6 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
 
   const { usePrefState } = useContext(PreferencesContext)
   const [deviceOnStorage, setDeviceOnStorage] = usePrefState('hrmDevice')
-  const [device, setDevice] = useState<Device>(deviceOnStorage)
 
   const [state, dispatch] = useReducer(
     (state: State, action: Action): State => {
@@ -85,21 +84,13 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
         case 'connect':
           if (!state.enabled || state.status === 'connected' || state.isLoading)
             return state
-          connect(action.payload?.device.id)
+          connect(action.payload.device)
             .then(() => dispatch({ type: 'success' }))
-            .catch((error) => {
-              console.log(error)
-              dispatch({ type: 'failure', error: error })
-            })
-          return { ...state, isLoading: true }
+            .catch((error) => dispatch({ type: 'failure', error: error }))
+          return { ...state, isLoading: true, device: action.payload.device }
         case 'disconnect':
-          if (
-            !state.enabled ||
-            state.status !== 'connected' ||
-            !state.isLoading
-          )
-            return state
-          disconnect().finally(() => dispatch({ type: 'success' }))
+          if (state.enabled && state.status === 'connected' && state.isLoading)
+            disconnect().finally(() => dispatch({ type: 'success' }))
           return state
         case 'success':
           return {
@@ -108,6 +99,7 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
             isLoading: false,
           }
         case 'failure':
+          console.log(action.error)
           return {
             ...state,
             status: 'idle',
@@ -115,7 +107,12 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
           }
       }
     },
-    { status: 'idle', isLoading: false, enabled: false },
+    {
+      status: 'idle',
+      isLoading: false,
+      enabled: false,
+      device: deviceOnStorage,
+    },
   )
 
   useEffect(() => {
@@ -128,8 +125,10 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
   }, [state.status])
 
   useEffect(() => {
-    setDeviceOnStorage(device)
-  }, [device])
+    if (state.device !== undefined) {
+      setDeviceOnStorage(state.device)
+    }
+  }, [state.device])
 
   useEffect(() => {
     if (bleManagerEmitter === undefined) return
@@ -255,45 +254,24 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
       })
   }
 
-  function connect(id?: string) {
-    return new Promise<void>((resolve, reject) => {
-      if (id !== undefined) {
-        const d = devices.find((p) => p.id === id)
-        if (d === undefined) {
-          reject('Trying to connect to a device that we have never found!')
-          return
-        }
-        console.log('setting device')
-        setDevice({ id: d.id, name: d.name })
-      } else {
-        id = device.id
-      }
-      if (!id) {
-        reject('No device is available.')
-        return
-      }
-      BleManager.connect(id)
-        .then(() => {
-          console.log('Connected to device: ', id)
-          return BleManager.retrieveServices(id!)
-        })
-        .then((info) => startReadingData(info))
-        .then(() => resolve())
-        .catch((error) => {
-          reject(`Failed to connect to device: ${id}, ${error}`)
-        })
-    })
+  function connect(device: Device) {
+    return BleManager.connect(device.id)
+      .then(() => {
+        console.log('Connected to device: ', device.id)
+        return BleManager.retrieveServices(device.id)
+      })
+      .then((info) => startReadingData(info))
   }
 
   function disconnect() {
     return new Promise<void>((resolve, reject) => {
-      if (device === undefined) {
+      if (state.device === undefined) {
         resolve()
         return
       }
-      BleManager.disconnect(device.id)
+      BleManager.disconnect(state.device.id)
         .then(() => {
-          console.log('Disconnected from device: ', device)
+          console.log('Disconnected from device: ', state.device)
         })
         .catch((error) =>
           console.log(
@@ -359,7 +337,6 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
 
   return {
     devices,
-    device,
     heartRate,
     state,
     dispatch,

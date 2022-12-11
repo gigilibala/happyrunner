@@ -153,7 +153,9 @@ export function HeartRateMonitorSettings({
   const connectButton = (
     <TouchableOpacity
       style={styles.button}
-      onPress={() => dispatch({ type: 'connect' })}
+      onPress={() =>
+        dispatch({ type: 'connect', payload: { device: state.device! } })
+      }
       disabled={!state.enabled || state.isLoading}
     >
       <Text style={styles.buttonText}>{connectButtonTitle()}</Text>
