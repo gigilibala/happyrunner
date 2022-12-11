@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
+import { activityFeatures } from '../../components/ActivityTypes'
 import { DistanceCard } from '../../components/cards/DistanceCard'
 import { HeartRateCard } from '../../components/cards/HeartRateCard'
 import { SpeedInputCard } from '../../components/cards/SpeedInputCard'
@@ -21,6 +22,9 @@ export default function ActivityInProgress({
   navigation,
   route,
 }: HomeScreenProps<'ActivityInProgress'>) {
+  const { type } = route.params
+  const features = activityFeatures(type)
+
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
 
@@ -32,7 +36,7 @@ export default function ActivityInProgress({
     heartRate: hrmState.heartRate,
     position: locationState.position,
     speed: speedState.rawSpeed,
-    type: route.params.type,
+    type,
   })
   const [notificationState, notificationDispatch] = useNotification()
 
@@ -40,9 +44,9 @@ export default function ActivityInProgress({
 
   useEffect(() => {
     navigation.setOptions({
-      title: t(`activityType.${route.params.type}`),
+      title: t(`activityType.${type}`),
     })
-    if (route.params.type !== 'treadmill') locationDispatch({ type: 'start' })
+    if (features.needsLocation) locationDispatch({ type: 'start' })
   }, [])
 
   useEffect(() => {
@@ -108,7 +112,7 @@ export default function ActivityInProgress({
             })
           }
         />
-        {route.params.type === 'treadmill' ? (
+        {features.needsSpeedInput ? (
           <SpeedInputCard
             speed={speedState.displaySpeed}
             onSpeedIncrease={() => speedDispatch({ type: 'increase' })}

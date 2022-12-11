@@ -23,3 +23,19 @@ export function ActivityIcon({
       return <Icon name={'question'} color={'blue'} size={size} />
   }
 }
+
+export type ActivityFeatures = {
+  needsLocation: boolean
+  needsSpeedInput: boolean
+}
+
+export function activityFeatures(type: ActivityType): ActivityFeatures {
+  switch (type) {
+    case 'running':
+      return { needsLocation: true, needsSpeedInput: false }
+    case 'swimming':
+      return { needsLocation: true, needsSpeedInput: false }
+    case 'treadmill':
+      return { needsLocation: false, needsSpeedInput: true }
+  }
+}
