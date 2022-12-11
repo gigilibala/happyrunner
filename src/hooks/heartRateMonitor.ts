@@ -32,7 +32,7 @@ interface IHeartRateMonitorApi {
 }
 
 type Action =
-  | { type: 'scan' | 'stopScan' | 'disconnect' }
+  | { type: 'initialize' | 'scan' | 'stopScan' | 'disconnect' }
   | { type: 'connect'; payload?: { device: Device } }
   | { type: 'success' }
   | { type: 'failure'; error: Error }
@@ -44,13 +44,12 @@ type State = {
 
 export function useHeartRateMonitor(): IHeartRateMonitorApi {
   const [bleManagerEmitter, setBleManagerEmitter] =
-    useState<NativeEventEmitter>(
-      new NativeEventEmitter(NativeModules.BleManager),
-    )
+    useState<NativeEventEmitter>()
 
   const [stateSubscription, setStateSubscription] =
     useState<EmitterSubscription>()
-  const [bluetoothEnabled, setBluetoothEnabled] = useState<boolean>(true)
+  // Means we got both permission and bluetooth is ON.
+  const [bluetoothEnabled, setBluetoothEnabled] = useState<boolean>(false)
   const [scanningSubscription, setScanningSubscription] =
     useState<EmitterSubscription>()
   const [devices, setDevices] = useState<Device[]>([])
@@ -64,7 +63,17 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
 
   const [state, dispatch] = useReducer(
     (state: State, action: Action): State => {
+      if (action.type !== 'initialize' && !bluetoothEnabled)
+        return { status: 'idle', isLoading: false }
       switch (action.type) {
+        case 'initialize':
+          if (!bluetoothEnabled && !bleManagerEmitter) {
+            console.log('Initializing Bluetooth.')
+            setBleManagerEmitter(
+              new NativeEventEmitter(NativeModules.BleManager),
+            )
+          }
+          return state
         case 'scan':
           if (state.status === 'scanning') return state
           startScan()
@@ -108,43 +117,52 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
     if (state.status === 'connected') {
       return () => dispatch({ type: 'disconnect' })
     }
-  }, [state])
+  }, [state.status])
 
   useEffect(() => {
     setDeviceOnStorage(device)
   }, [device])
 
   useEffect(() => {
-    watchBluetoothStateChange()
-    BleManager.checkState()
-    return () => {
-      console.log('Unsubscribing to bluetooth state changes.')
-      stateSubscription?.remove()
-    }
+    if (bleManagerEmitter === undefined) return
+
+    requestPermission()
+      .then(() => {
+        console.log('User authorized Bluetooth permissions.')
+        watchBluetoothStateChange()
+        BleManager.checkState()
+      })
+      .catch((error) => {
+        console.log('Failed to request for permission: ', error)
+        setBluetoothEnabled(false)
+      })
   }, [bleManagerEmitter])
 
+  useEffect(() => {
+    if (stateSubscription)
+      return () => {
+        console.log('Unsubscribing to Bluetooth state changes.')
+        stateSubscription.remove()
+      }
+  }, [stateSubscription])
+
   function watchBluetoothStateChange() {
-    console.log('Subscribing to bluetooth state changes.')
+    console.log('Subscribing to Bluetooth state changes.')
     setStateSubscription(
       bleManagerEmitter?.addListener(
         'BleManagerDidUpdateState',
         ({ state }: { state: string }) => {
           switch (state) {
             case 'off':
+              console.log('Bluetooth is Off')
               BleManager.enableBluetooth().catch((error) => {
-                console.log('Failed to enable bluetooth: ', error)
+                console.log('Failed to enable Bluetooth: ', error)
                 setBluetoothEnabled(false)
               })
               break
             case 'on':
-              requestPermission()
-                .then(() => {
-                  setBluetoothEnabled(true)
-                })
-                .catch((error) => {
-                  console.log('Failed to request for permission: ', error)
-                  setBluetoothEnabled(false)
-                })
+              console.log('Bluetooth is On')
+              setBluetoothEnabled(true)
               break
             default:
               break
@@ -219,12 +237,14 @@ export function useHeartRateMonitor(): IHeartRateMonitorApi {
     BleManager?.stopScan()
       .then(() => {
         console.log('Stopped scanning for BLE devices.')
-        setDevices([])
       })
       .catch((error) =>
         console.log('Failed to stop scanning for BLE devices: ', error),
       )
-      .finally(() => scanningSubscription?.remove())
+      .finally(() => {
+        setDevices([])
+        scanningSubscription?.remove()
+      })
   }
 
   function connect(id?: string) {

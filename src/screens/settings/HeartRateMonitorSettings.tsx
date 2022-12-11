@@ -33,6 +33,10 @@ export function HeartRateMonitorSettings({
   const [device] = usePrefState('hrmDevice')
 
   useEffect(() => {
+    dispatch({ type: 'initialize' })
+  }, [])
+
+  useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity
