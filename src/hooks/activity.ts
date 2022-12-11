@@ -51,17 +51,19 @@ export type State = {
   totalDistance: number
 }
 
+type ActivityProps = {
+  heartRate?: number
+  position?: GeoPosition
+  speed?: number
+  type: ActivityType
+}
+
 export function useActivity({
   heartRate,
   position,
   speed,
   type,
-}: {
-  heartRate?: number
-  position?: GeoPosition
-  speed?: number
-  type: ActivityType
-}): [State, React.Dispatch<Action>] {
+}: ActivityProps): [State, React.Dispatch<Action>] {
   const [started, setStarted] = useState<boolean>(false)
 
   const [id] = useState<IdType>(new Date().getTime())
