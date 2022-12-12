@@ -17,26 +17,28 @@ type State = {
   min: number
 }
 
-function defaultState(): State {
+function defaultState(defaultValue?: number): State {
   return {
-    value: 0,
+    value: defaultValue || 0,
     timestamp: new Date(),
-    count: 0,
+    count: defaultValue ? 1 : 0,
 
-    sum: 0,
-    avg: 0,
+    sum: defaultValue || 0,
+    avg: defaultValue || 0,
 
-    sumTs: 0,
-    avgTs: 0,
+    sumTs: defaultValue || 0,
+    avgTs: defaultValue || 0,
 
     duration: 0,
 
-    max: -Infinity,
-    min: Infinity,
+    max: defaultValue || -1000000,
+    min: defaultValue || 1000000,
   }
 }
 
-export function useDataSink(): [State, React.Dispatch<Action>] {
+export function useDataSink(
+  defaultValue?: number,
+): [State, React.Dispatch<Action>] {
   const [state, dispatch] = useReducer(
     (state: State, action: Action): State => {
       switch (action.type) {
@@ -62,12 +64,12 @@ export function useDataSink(): [State, React.Dispatch<Action>] {
           }
 
         case 'reset':
-          return defaultState()
+          return defaultState(defaultValue)
         case 'resume':
           return { ...state, timestamp: new Date() }
       }
     },
-    undefined,
+    defaultValue,
     defaultState,
   )
 

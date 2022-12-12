@@ -82,8 +82,8 @@ export function useActivity({
   const [lapStartTs, setLapStartTs] = useState<Date>(new Date())
 
   const { calculateDisplaySpeed, calculateDistance } = useUnits()
-  const [lapSpeedState, lapSpeedDispatch] = useDataSink()
-  const [totalSpeedState, totalSpeedDispatch] = useDataSink()
+  const [lapSpeedState, lapSpeedDispatch] = useDataSink(speed)
+  const [totalSpeedState, totalSpeedDispatch] = useDataSink(speed)
 
   const [state, dispatch] = useReducer(
     (state: State, action: Action): State => {
