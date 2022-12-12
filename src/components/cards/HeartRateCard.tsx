@@ -8,11 +8,15 @@ import { ProgressInfoCard } from './ProgressInfoCard'
 
 type HeartRateCardProps = {
   heartRate?: number
+  lapHeartRate?: number
+  totalHeartRate?: number
   onPressConnectDevice: () => void
 }
 
 export function HeartRateCard({
   heartRate,
+  lapHeartRate,
+  totalHeartRate,
   onPressConnectDevice,
 }: HeartRateCardProps) {
   const styles = useStyles(createStyles)
@@ -20,14 +24,15 @@ export function HeartRateCard({
 
   return heartRate ? (
     <ProgressInfoCard
-      title={'Heart Rate'}
+      title={t('heartRate')}
       color={'red'}
       unit={'BPM'}
       value={heartRate || 'N/A'}
-      subValue1={{ value: heartRate || 'N/A', scope: 'Lap' }}
+      subValue1={{ value: lapHeartRate || 'N/A', scope: t('lap') }}
+      subValue2={{ value: totalHeartRate || 'N/A', scope: t('total') }}
     />
   ) : (
-    <ProgressCard title={'Heart Rate'} color={'red'} unit={'BPM'}>
+    <ProgressCard title={t('heartRate')} color={'red'} unit={'BPM'}>
       <View style={{ justifyContent: 'center', flexGrow: 1 }}>
         <TouchableOpacity
           style={styles.button}

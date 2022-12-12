@@ -2,6 +2,8 @@ import { useReducer } from 'react'
 
 type Action = { type: 'reset' | 'resume' } | { type: 'update'; payload: number }
 type State = {
+  updated: boolean
+
   value: number
   count: number
   sum: number
@@ -19,6 +21,8 @@ type State = {
 
 function defaultState(defaultValue?: number): State {
   return {
+    updated: false,
+
     value: defaultValue || 0,
     timestamp: new Date(),
     count: defaultValue ? 1 : 0,
@@ -51,6 +55,7 @@ export function useDataSink(
           const sumTs = state.sumTs + action.payload * timeDiff
 
           return {
+            updated: true,
             value: action.payload,
             timestamp,
             duration,

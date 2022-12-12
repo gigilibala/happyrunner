@@ -32,6 +32,7 @@ export type Lap = {
   number: number
   start_time: number
   end_time: number
+  min_heart_rate?: number
   avg_heart_rate?: number
   max_heart_rate?: number
   total_steps?: number
@@ -56,6 +57,19 @@ export type State = {
   totalDistance: number
   lapSpeed: string
   totalSpeed: string
+  lapHr?: number
+  totalHr?: number
+}
+
+function defaultState(id: IdType): State {
+  return {
+    id,
+    status: 'idle',
+    totalDistance: 0,
+    lapDistance: 0,
+    lapSpeed: 'N/A',
+    totalSpeed: 'N/A',
+  }
 }
 
 type ActivityProps = {
@@ -84,6 +98,9 @@ export function useActivity({
   const { calculateDisplaySpeed, calculateDistance } = useUnits()
   const [lapSpeedState, lapSpeedDispatch] = useDataSink(speed)
   const [totalSpeedState, totalSpeedDispatch] = useDataSink(speed)
+
+  const [lapHrState, lapHrDispatch] = useDataSink(heartRate)
+  const [totalHrState, totalHrDispatch] = useDataSink(heartRate)
 
   const [state, dispatch] = useReducer(
     (state: State, action: Action): State => {
@@ -114,17 +131,13 @@ export function useActivity({
             ),
             lapSpeed: calculateDisplaySpeed(lapSpeedState.avgTs),
             totalSpeed: calculateDisplaySpeed(totalSpeedState.avgTs),
+            lapHr: Math.round(lapHrState.avgTs),
+            totalHr: Math.round(totalHrState.avgTs),
           }
       }
     },
-    {
-      id,
-      status: 'idle',
-      totalDistance: 0,
-      lapDistance: 0,
-      lapSpeed: 'N/A',
-      totalSpeed: 'N/A',
-    },
+    id,
+    defaultState,
   )
 
   useEffect(() => {
@@ -185,6 +198,15 @@ export function useActivity({
               min_speed: totalSpeedState.min,
               avg_speed: totalSpeedState.avgTs,
               max_speed: totalSpeedState.max,
+              ...(totalHrState.updated && {
+                min_heart_rate: Math.round(totalHrState.min),
+              }),
+              ...(totalHrState.updated && {
+                avg_heart_rate: Math.round(totalHrState.avgTs),
+              }),
+              ...(totalHrState.updated && {
+                max_heart_rate: Math.round(totalHrState.max),
+              }),
             },
           },
         })
@@ -226,6 +248,7 @@ export function useActivity({
     if (lap === 0) return
 
     lapSpeedDispatch({ type: 'reset' })
+    lapHrDispatch({ type: 'reset' })
 
     const endTime = pausedTs ? pausedTs : new Date()
     // Protection against adding new laps when paused or stopped.
@@ -243,6 +266,15 @@ export function useActivity({
           min_speed: lapSpeedState.min,
           avg_speed: lapSpeedState.avgTs,
           max_speed: lapSpeedState.max,
+          ...(lapHrState.updated && {
+            min_heart_rate: Math.round(lapHrState.min),
+          }),
+          ...(lapHrState.updated && {
+            avg_heart_rate: Math.round(lapHrState.avgTs),
+          }),
+          ...(lapHrState.updated && {
+            max_heart_rate: Math.round(lapHrState.max),
+          }),
         },
       },
     })
@@ -252,7 +284,14 @@ export function useActivity({
 
   useEffect(() => {
     dispatch({ type: 'nextInterval' })
-  }, [lapSpeedState, totalSpeedState])
+  }, [lapSpeedState, totalSpeedState, lapHrState, totalHrState])
+
+  useEffect(() => {
+    if (heartRate === undefined) return
+
+    lapHrDispatch({ type: 'update', payload: heartRate })
+    totalHrDispatch({ type: 'update', payload: heartRate })
+  }, [heartRate])
 
   return [state, dispatch]
 }

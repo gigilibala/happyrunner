@@ -118,6 +118,8 @@ export default function ActivityInProgress({
       <View style={styles.activityInfoView}>
         <HeartRateCard
           heartRate={hrmState.heartRate}
+          lapHeartRate={state.lapHr}
+          totalHeartRate={state.totalHr}
           onPressConnectDevice={() =>
             navigation.navigate('SettingsRoot', {
               screen: 'HeartRateMonitorSettings',
