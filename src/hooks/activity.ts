@@ -47,28 +47,25 @@ export type Lap = {
 
 export type Details = Info & Lap
 
+type Cumulative<T> = { lap: T; total: T }
+
 type Action = {
   type: 'start' | 'pause' | 'stop' | 'resume' | 'nextLap' | 'nextInterval'
 }
 export type State = {
   id: IdType
   status: 'idle' | 'in-progress' | 'paused' | 'stopped'
-  lapDistance: number
-  totalDistance: number
-  lapSpeed: string
-  totalSpeed: string
-  lapHr?: number
-  totalHr?: number
+  distance: Cumulative<number>
+  speed: Cumulative<string>
+  heartRate?: Cumulative<number>
 }
 
 function defaultState(id: IdType): State {
   return {
     id,
     status: 'idle',
-    totalDistance: 0,
-    lapDistance: 0,
-    lapSpeed: 'N/A',
-    totalSpeed: 'N/A',
+    distance: { lap: 0, total: 0 },
+    speed: { lap: 'N/A', total: 'N/A' },
   }
 }
 
@@ -125,14 +122,18 @@ export function useActivity({
         case 'nextInterval':
           return {
             ...state,
-            lapDistance: calculateDistance(lapSpeedState.sumTs / MS_IN_SECOND),
-            totalDistance: calculateDistance(
-              totalSpeedState.sumTs / MS_IN_SECOND,
-            ),
-            lapSpeed: calculateDisplaySpeed(lapSpeedState.avgTs),
-            totalSpeed: calculateDisplaySpeed(totalSpeedState.avgTs),
-            lapHr: Math.round(lapHrState.avgTs),
-            totalHr: Math.round(totalHrState.avgTs),
+            distance: {
+              lap: calculateDistance(lapSpeedState.sumTs / MS_IN_SECOND),
+              total: calculateDistance(totalSpeedState.sumTs / MS_IN_SECOND),
+            },
+            speed: {
+              lap: calculateDisplaySpeed(lapSpeedState.avgTs),
+              total: calculateDisplaySpeed(totalSpeedState.avgTs),
+            },
+            heartRate: {
+              lap: Math.round(lapHrState.avgTs),
+              total: Math.round(totalHrState.avgTs),
+            },
           }
       }
     },

@@ -118,8 +118,8 @@ export default function ActivityInProgress({
       <View style={styles.activityInfoView}>
         <HeartRateCard
           heartRate={hrmState.heartRate}
-          lapHeartRate={state.lapHr}
-          totalHeartRate={state.totalHr}
+          lapHeartRate={state.heartRate?.lap}
+          totalHeartRate={state.heartRate?.total}
           onPressConnectDevice={() =>
             navigation.navigate('SettingsRoot', {
               screen: 'HeartRateMonitorSettings',
@@ -135,13 +135,13 @@ export default function ActivityInProgress({
           />
         ) : null}
         <DistanceCard
-          lapDistance={state.lapDistance}
-          totalDistance={state.totalDistance}
+          lapDistance={state.distance.lap}
+          totalDistance={state.distance.total}
         />
         <SpeedCard
           speed={speedState.displaySpeed}
-          lapSpeed={state.lapSpeed}
-          totalSpeed={state.totalSpeed}
+          lapSpeed={state.speed.lap}
+          totalSpeed={state.speed.total}
         />
       </View>
 
