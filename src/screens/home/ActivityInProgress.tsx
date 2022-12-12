@@ -7,6 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { activityFeatures } from '../../components/ActivityTypes'
 import { DistanceCard } from '../../components/cards/DistanceCard'
+import { DurationCard } from '../../components/cards/DurationCard'
 import { HeartRateCard } from '../../components/cards/HeartRateCard'
 import { SpeedCard } from '../../components/cards/SpeedCard'
 import { SpeedInputCard } from '../../components/cards/SpeedInputCard'
@@ -143,6 +144,7 @@ export default function ActivityInProgress({
           lapSpeed={state.speed.lap}
           totalSpeed={state.speed.total}
         />
+        <DurationCard lap={state.duration.lap} total={state.duration.total} />
       </View>
 
       {state.status === 'idle' ? (

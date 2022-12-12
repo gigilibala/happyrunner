@@ -3,7 +3,7 @@ import { GeoPosition } from 'react-native-geolocation-service'
 import { ActivityType } from '../components/ActivityTypes'
 import { DatabaseContext } from '../components/providers/DatabaseProvider'
 import { useDataSink } from './dataSink'
-import { useUnits } from './units'
+import { durationHours, useUnits } from './units'
 
 const INTERVAL_MS = 3000
 const MS_IN_SECOND = 1000
@@ -58,6 +58,7 @@ export type State = {
   distance: Cumulative<number>
   speed: Cumulative<string>
   heartRate?: Cumulative<number>
+  duration: Cumulative<string>
 }
 
 function defaultState(id: IdType): State {
@@ -66,6 +67,7 @@ function defaultState(id: IdType): State {
     status: 'idle',
     distance: { lap: 0, total: 0 },
     speed: { lap: 'N/A', total: 'N/A' },
+    duration: { lap: '00:00:00', total: '00:00:00' },
   }
 }
 
@@ -134,6 +136,10 @@ export function useActivity({
               lap: Math.round(lapHrState.avgTs),
               total: Math.round(totalHrState.avgTs),
             },
+            duration: {
+              lap: durationHours(lapSpeedState.duration),
+              total: durationHours(totalSpeedState.duration),
+            },
           }
       }
     },
@@ -196,6 +202,7 @@ export function useActivity({
               start_time: id,
               end_time: pausedTs ? pausedTs.getTime() : new Date().getTime(),
               distance: totalSpeedState.sumTs / MS_IN_SECOND,
+              active_duration: totalSpeedState.duration,
               min_speed: totalSpeedState.min,
               avg_speed: totalSpeedState.avgTs,
               max_speed: totalSpeedState.max,
@@ -264,6 +271,7 @@ export function useActivity({
           start_time: lapStartTs.getTime(),
           end_time: endTime.getTime(),
           distance: lapSpeedState.sumTs / MS_IN_SECOND,
+          active_duration: lapSpeedState.duration,
           min_speed: lapSpeedState.min,
           avg_speed: lapSpeedState.avgTs,
           max_speed: lapSpeedState.max,

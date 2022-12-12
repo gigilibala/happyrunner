@@ -3,26 +3,23 @@ import { useTranslation } from 'react-i18next'
 import { useUnits } from '../../hooks/units'
 import { ProgressInfoCard } from './ProgressInfoCard'
 
-type DistanceCardProps = {
-  lapDistance: number
-  totalDistance: number
+type DurationCardProps = {
+  lap: string
+  total: string
 }
 
-export function DistanceCard({
-  lapDistance,
-  totalDistance,
-}: DistanceCardProps) {
+export function DurationCard({ lap, total }: DurationCardProps) {
   const { t } = useTranslation()
   const { units } = useUnits()
 
   return (
     <ProgressInfoCard
-      title={t('distance')}
-      color={'green'}
-      unit={t(units.distance)}
-      value={totalDistance}
+      title={t('duration')}
+      color={'darkorange'}
+      unit={t('hours')}
+      value={total}
       subValue1={{
-        value: lapDistance,
+        value: lap,
         scope: t('lap'),
       }}
     />
