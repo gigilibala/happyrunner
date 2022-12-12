@@ -22,6 +22,7 @@ export type Datum = {
   timestamp: number
   activity_id: IdType
   heart_rate?: number
+  speed?: number
   latitude?: number
   longitude?: number
 }
@@ -242,6 +243,7 @@ export function useActivity({
           timestamp: timestamp.getTime(),
           activity_id: id,
           ...(heartRate && { heart_rate: heartRate }),
+          ...(speed && { speed: speed }),
           ...(position && {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,

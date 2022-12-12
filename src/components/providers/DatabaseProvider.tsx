@@ -34,6 +34,7 @@ const activityDataTableColumns: DatabaseColumns<Datum> = {
   timestamp: 'timestamp',
   activity_id: 'activity_id',
   heart_rate: 'heart_rate',
+  speed: 'speed',
   latitude: 'latitude',
   longitude: 'longitude',
 }
@@ -70,6 +71,7 @@ CREATE TABLE IF NOT EXISTS ${activityDataTableName}(
   ${activityDataTableColumns.timestamp} INTEGER PRIMARY KEY NOT NULL,
   ${activityDataTableColumns.activity_id} INTEGER NOT NULL,
   ${activityDataTableColumns.heart_rate} INTEGER,
+  ${activityDataTableColumns.speed} INTEGER,
   ${activityDataTableColumns.latitude} REAL,
   ${activityDataTableColumns.longitude} REAL,
   FOREIGN KEY(${activityDataTableColumns.activity_id}) REFERENCES ${activityInfoTableName}(${activityInfoTableColumns.id})
