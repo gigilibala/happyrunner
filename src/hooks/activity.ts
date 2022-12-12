@@ -37,7 +37,7 @@ export type Lap = {
   max_heart_rate?: number
   total_steps?: number
   cadence?: number
-  active_duration?: number
+  duration?: number
   distance?: number
   min_speed?: number
   avg_speed?: number
@@ -202,7 +202,7 @@ export function useActivity({
               start_time: id,
               end_time: pausedTs ? pausedTs.getTime() : new Date().getTime(),
               distance: totalSpeedState.sumTs / MS_IN_SECOND,
-              active_duration: totalSpeedState.duration,
+              duration: totalSpeedState.duration,
               min_speed: totalSpeedState.min,
               avg_speed: totalSpeedState.avgTs,
               max_speed: totalSpeedState.max,
@@ -271,7 +271,7 @@ export function useActivity({
           start_time: lapStartTs.getTime(),
           end_time: endTime.getTime(),
           distance: lapSpeedState.sumTs / MS_IN_SECOND,
-          active_duration: lapSpeedState.duration,
+          duration: lapSpeedState.duration,
           min_speed: lapSpeedState.min,
           avg_speed: lapSpeedState.avgTs,
           max_speed: lapSpeedState.max,
