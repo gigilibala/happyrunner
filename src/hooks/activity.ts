@@ -2,9 +2,11 @@ import { useContext, useEffect, useReducer, useState } from 'react'
 import { GeoPosition } from 'react-native-geolocation-service'
 import { ActivityType } from '../components/ActivityTypes'
 import { DatabaseContext } from '../components/providers/DatabaseProvider'
-import { DistanceProps, useDistance } from './distance'
+import { useDataSink } from './dataSink'
+import { useUnits } from './units'
 
 const INTERVAL_MS = 3000
+const MS_IN_SECOND = 1000
 
 export type IdType = number
 
@@ -49,6 +51,8 @@ export type State = {
   status: 'idle' | 'in-progress' | 'paused' | 'stopped'
   lapDistance: number
   totalDistance: number
+  lapSpeed: string
+  totalSpeed: string
 }
 
 type ActivityProps = {
@@ -74,12 +78,9 @@ export function useActivity({
   const [pausedTs, setPausedTs] = useState<Date>()
   const [lapStartTs, setLapStartTs] = useState<Date>(new Date())
 
-  const distanceProps: DistanceProps = {
-    position: position,
-    speed: speed,
-  }
-  const [lapDistanceState, lapDistanceDispatch] = useDistance(distanceProps)
-  const [totalDistanceState, totalDistanceDispatch] = useDistance(distanceProps)
+  const { calculateDisplaySpeed, calculateDistance } = useUnits()
+  const [lapSpeedState, lapSpeedDispatch] = useDataSink()
+  const [totalSpeedState, totalSpeedDispatch] = useDataSink()
 
   const [state, dispatch] = useReducer(
     (state: State, action: Action): State => {
@@ -104,8 +105,12 @@ export function useActivity({
         case 'nextInterval':
           return {
             ...state,
-            lapDistance: lapDistanceState.displayDistance,
-            totalDistance: totalDistanceState.displayDistance,
+            lapDistance: calculateDistance(lapSpeedState.sumTs / MS_IN_SECOND),
+            totalDistance: calculateDistance(
+              totalSpeedState.sumTs / MS_IN_SECOND,
+            ),
+            lapSpeed: calculateDisplaySpeed(lapSpeedState.avgTs),
+            totalSpeed: calculateDisplaySpeed(totalSpeedState.avgTs),
           }
       }
     },
@@ -114,6 +119,8 @@ export function useActivity({
       status: 'idle',
       totalDistance: 0,
       lapDistance: 0,
+      lapSpeed: 'N/A',
+      totalSpeed: 'N/A',
     },
   )
 
@@ -141,9 +148,8 @@ export function useActivity({
       case 'idle':
         break
       case 'in-progress':
-        const timestamp = new Date()
-        lapDistanceDispatch({ type: 'resumeBreak', payload: { timestamp } })
-        totalDistanceDispatch({ type: 'resumeBreak', payload: { timestamp } })
+        lapSpeedDispatch({ type: 'resume' })
+        totalSpeedDispatch({ type: 'resume' })
         dbDispatch({
           type: 'modifyActivity',
           payload: { data: { id, status: 'in-progress' } },
@@ -172,7 +178,7 @@ export function useActivity({
               number: 0,
               start_time: id,
               end_time: pausedTs ? pausedTs.getTime() : new Date().getTime(),
-              distance: totalDistanceState.rawDistance,
+              distance: totalSpeedState.sumTs / MS_IN_SECOND,
             },
           },
         })
@@ -185,14 +191,10 @@ export function useActivity({
 
     const timestamp = new Date()
 
-    lapDistanceDispatch({
-      type: 'update',
-      payload: { timestamp },
-    })
-    totalDistanceDispatch({
-      type: 'update',
-      payload: { timestamp },
-    })
+    if (speed !== undefined) {
+      lapSpeedDispatch({ type: 'update', payload: speed })
+      totalSpeedDispatch({ type: 'update', payload: speed })
+    }
 
     dbDispatch({
       type: 'addActivityDatum',
@@ -217,7 +219,7 @@ export function useActivity({
     // We only want to add a lap at the end of the lap.
     if (lap === 0) return
 
-    lapDistanceDispatch({ type: 'reset' })
+    lapSpeedDispatch({ type: 'reset' })
 
     const endTime = pausedTs ? pausedTs : new Date()
     // Protection against adding new laps when paused or stopped.
@@ -231,7 +233,7 @@ export function useActivity({
           number: lap,
           start_time: lapStartTs.getTime(),
           end_time: endTime.getTime(),
-          distance: lapDistanceState.rawDistance,
+          distance: lapSpeedState.sumTs / MS_IN_SECOND,
         },
       },
     })
@@ -241,7 +243,7 @@ export function useActivity({
 
   useEffect(() => {
     dispatch({ type: 'nextInterval' })
-  }, [lapDistanceState, totalDistanceState])
+  }, [lapSpeedState, totalSpeedState])
 
   return [state, dispatch]
 }

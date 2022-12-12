@@ -13,7 +13,6 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import { ActivityIcon } from '../../components/ActivityTypes'
 import { DatabaseContext } from '../../components/providers/DatabaseProvider'
 import { Details } from '../../hooks/activity'
-import { rawDistanceToDisplayDistance } from '../../hooks/distance'
 import { useStyles } from '../../hooks/styles'
 import { useUnits } from '../../hooks/units'
 import { HistoryScreenProps } from '../RootNavigator'
@@ -23,7 +22,7 @@ export function History({ navigation }: HistoryScreenProps<'History'>) {
   const styles = useStyles(createStyles)
   const [dbState, dbDispatch] = useContext(DatabaseContext)
   const [activityList, setActivityList] = useState<Details[]>()
-  const { units } = useUnits()
+  const { units, calculateDistance } = useUnits()
 
   useFocusEffect(
     useCallback(() => {
@@ -75,8 +74,7 @@ export function History({ navigation }: HistoryScreenProps<'History'>) {
           {detail.distance ? (
             <View>
               <Text style={[styles.text, { color: 'olive' }]}>
-                {rawDistanceToDisplayDistance(detail.distance, units)}{' '}
-                {t(units.distance)}
+                {calculateDistance(detail.distance)} {t(units.distance)}
               </Text>
             </View>
           ) : null}

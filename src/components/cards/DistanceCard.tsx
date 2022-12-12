@@ -23,7 +23,7 @@ export function DistanceCard({
       value={totalDistance}
       subValue1={{
         value: lapDistance,
-        scope: 'Lap',
+        scope: t('lap'),
       }}
     />
   )

@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import { activityFeatures } from '../../components/ActivityTypes'
 import { DistanceCard } from '../../components/cards/DistanceCard'
 import { HeartRateCard } from '../../components/cards/HeartRateCard'
+import { SpeedCard } from '../../components/cards/SpeedCard'
 import { SpeedInputCard } from '../../components/cards/SpeedInputCard'
 import { IcoMoon } from '../../components/IcoMoon'
 import { useActivity } from '../../hooks/activity'
@@ -134,6 +135,11 @@ export default function ActivityInProgress({
         <DistanceCard
           lapDistance={state.lapDistance}
           totalDistance={state.totalDistance}
+        />
+        <SpeedCard
+          speed={speedState.displaySpeed}
+          lapSpeed={state.lapSpeed}
+          totalSpeed={state.totalSpeed}
         />
       </View>
 

@@ -43,5 +43,7 @@
   "kilometers": "Kilometers",
   "miles": "Miles",
   "speed": "Speed",
-  "pace": "Pace"
+  "pace": "Pace",
+  "lap": "Lap",
+  "total": "Total"
 }
