@@ -12,6 +12,9 @@ type State = {
   avgTs: number
 
   duration: number
+
+  max: number
+  min: number
 }
 
 function defaultState(): State {
@@ -27,6 +30,9 @@ function defaultState(): State {
     avgTs: 0,
 
     duration: 0,
+
+    max: -Infinity,
+    min: Infinity,
   }
 }
 
@@ -40,9 +46,7 @@ export function useDataSink(): [State, React.Dispatch<Action>] {
           const duration = state.duration + timeDiff
           const count = state.count + 1
           const sum = state.sum + action.payload
-          const avg = sum / count
           const sumTs = state.sumTs + action.payload * timeDiff
-          const avgTs = duration > 0 ? sumTs / duration : 0
 
           return {
             value: action.payload,
@@ -50,9 +54,11 @@ export function useDataSink(): [State, React.Dispatch<Action>] {
             duration,
             count,
             sum,
-            avg,
+            avg: sum / count,
             sumTs,
-            avgTs,
+            avgTs: duration > 0 ? sumTs / duration : 0,
+            max: Math.max(action.payload, state.max),
+            min: Math.min(action.payload, state.min),
           }
 
         case 'reset':

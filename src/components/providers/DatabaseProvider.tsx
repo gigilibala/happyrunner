@@ -50,6 +50,9 @@ const activityLapsTableColumns: DatabaseColumns<Lap> = {
   cadence: 'cadence',
   active_duration: 'active_duration',
   distance: 'distance',
+  min_speed: 'min_speed',
+  avg_speed: 'avg_speed',
+  max_speed: 'max_speed',
 }
 
 const createInfoTableScript = `
@@ -85,6 +88,9 @@ CREATE TABLE IF NOT EXISTS ${activityLapsTableName}(
   ${activityLapsTableColumns.cadence} INTEGER,
   ${activityLapsTableColumns.active_duration} INTEGER,
   ${activityLapsTableColumns.distance} INTEGER,
+  ${activityLapsTableColumns.min_speed} INTEGER,
+  ${activityLapsTableColumns.avg_speed} INTEGER,
+  ${activityLapsTableColumns.max_speed} INTEGER,
   FOREIGN KEY(${activityLapsTableColumns.activity_id}) REFERENCES ${activityInfoTableName}(${activityInfoTableColumns.id})
 );
 `
