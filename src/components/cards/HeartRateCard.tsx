@@ -8,8 +8,8 @@ import { ProgressInfoCard } from './ProgressInfoCard'
 
 type HeartRateCardProps = {
   heartRate?: number
-  lapHeartRate?: number
-  totalHeartRate?: number
+  lapHeartRate?: string
+  totalHeartRate?: string
   onPressConnectDevice: () => void
 }
 

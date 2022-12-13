@@ -56,9 +56,9 @@ type Action = {
 export type State = {
   id: IdType
   status: 'idle' | 'in-progress' | 'paused' | 'stopped'
-  distance: Cumulative<number>
+  distance: Cumulative<string>
   speed: Cumulative<string>
-  heartRate?: Cumulative<number>
+  heartRate?: Cumulative<string>
   duration: Cumulative<string>
 }
 
@@ -66,9 +66,9 @@ function defaultState(id: IdType): State {
   return {
     id,
     status: 'idle',
-    distance: { lap: 0, total: 0 },
+    distance: { lap: 'N/A', total: 'N/A' },
     speed: { lap: 'N/A', total: 'N/A' },
-    duration: { lap: '00:00:00', total: '00:00:00' },
+    duration: { lap: 'N/A', total: 'N/A' },
   }
 }
 
@@ -134,8 +134,8 @@ export function useActivity({
               total: calculateDisplaySpeed(totalSpeedState.avgTs),
             },
             heartRate: {
-              lap: Math.round(lapHrState.avgTs),
-              total: Math.round(totalHrState.avgTs),
+              lap: Math.round(lapHrState.avgTs).toString(),
+              total: Math.round(totalHrState.avgTs).toString(),
             },
             duration: {
               lap: durationHours(lapSpeedState.duration),

@@ -66,10 +66,12 @@ export function useUnits() {
     }
   }
 
-  function calculateDistance(value: number): number {
+  function calculateDistance(value: number): string {
     const distanceInUnit =
       value / (units.distance === 'kilometers' ? 1000 : 1609)
-    return Math.round((distanceInUnit + Number.EPSILON) * 100) / 100
+    return (Math.round((distanceInUnit + Number.EPSILON) * 100) / 100).toFixed(
+      2,
+    )
   }
 
   return {

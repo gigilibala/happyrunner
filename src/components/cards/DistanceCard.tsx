@@ -4,8 +4,8 @@ import { useUnits } from '../../hooks/units'
 import { ProgressInfoCard } from './ProgressInfoCard'
 
 type DistanceCardProps = {
-  lapDistance: number
-  totalDistance: number
+  lapDistance: string
+  totalDistance: string
 }
 
 export function DistanceCard({
