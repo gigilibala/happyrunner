@@ -174,6 +174,8 @@ export function useActivity({
       case 'in-progress':
         lapSpeedDispatch({ type: 'resume' })
         totalSpeedDispatch({ type: 'resume' })
+        lapHrDispatch({ type: 'resume' })
+        totalSpeedDispatch({ type: 'resume' })
         dbDispatch({
           type: 'modifyActivity',
           payload: { data: { id, status: 'in-progress' } },
