@@ -95,7 +95,7 @@ export function useActivity({
   const [pausedTs, setPausedTs] = useState<Date>()
   const [lapStartTs, setLapStartTs] = useState<Date>(new Date())
 
-  const { calculateDisplaySpeed, calculateDistance } = useUnits()
+  const { units, calculateDisplaySpeed, calculateDistance } = useUnits()
   const [lapSpeedState, lapSpeedDispatch] = useDataSink(speed)
   const [totalSpeedState, totalSpeedDispatch] = useDataSink(speed)
 
@@ -295,7 +295,7 @@ export function useActivity({
 
   useEffect(() => {
     dispatch({ type: 'nextInterval' })
-  }, [lapSpeedState, totalSpeedState, lapHrState, totalHrState])
+  }, [units, lapSpeedState, totalSpeedState, lapHrState, totalHrState])
 
   useEffect(() => {
     if (heartRate === undefined) return
