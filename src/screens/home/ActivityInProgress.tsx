@@ -128,13 +128,11 @@ export default function ActivityInProgress({
             })
           }
         />
-        {features.needsSpeedInput ? (
-          <SpeedInputCard
-            speed={speedState.displaySpeed}
-            onSpeedIncrease={() => speedDispatch({ type: 'increase' })}
-            onSpeedDecrease={() => speedDispatch({ type: 'decrease' })}
-          />
-        ) : null}
+        <SpeedInputCard
+          speed={speedState.displaySpeed}
+          onSpeedIncrease={() => speedDispatch({ type: 'increase' })}
+          onSpeedDecrease={() => speedDispatch({ type: 'decrease' })}
+        />
         <DistanceCard
           lapDistance={state.distance.lap}
           totalDistance={state.distance.total}
