@@ -27,19 +27,29 @@ export function SpeedInputCard({
 
   return (
     <ProgressCard title={t(units.speed)} color={'cyan'} unit={speedUnitStr}>
-      <View style={{ flexGrow: 1, justifyContent: 'space-between' }}>
+      <View style={{ justifyContent: 'space-around', flex: 1, flexGrow: 1 }}>
         <TouchableOpacity
-          style={styles.button}
+          style={[styles.button, { height: '20%' }]}
           onPressIn={() => setPressInterval(setInterval(onSpeedIncrease, 100))}
           onPressOut={() => clearInterval(pressInterval!)}
         >
           <Icon name="plus" />
         </TouchableOpacity>
-        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={[styles.largestText, styles.boldText]}>{speed}</Text>
+        <View style={[styles.textView, { height: '60%' }]}>
+          <Text
+            style={[
+              styles.largestText,
+              styles.boldText,
+              { includeFontPadding: false },
+            ]}
+            numberOfLines={1}
+            adjustsFontSizeToFit={true}
+          >
+            {speed}
+          </Text>
         </View>
         <TouchableOpacity
-          style={styles.button}
+          style={[styles.button, { height: '20%' }]}
           onPressIn={() => setPressInterval(setInterval(onSpeedDecrease, 100))}
           onPressOut={() => clearInterval(pressInterval!)}
         >
@@ -50,4 +60,10 @@ export function SpeedInputCard({
   )
 }
 
-const createStyles = (theme: Theme) => StyleSheet.create({})
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    textView: {
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  })

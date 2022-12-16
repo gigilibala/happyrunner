@@ -169,7 +169,6 @@ const createStyles = (theme: Theme) =>
       justifyContent: 'space-evenly',
       alignContent: 'stretch',
       flexWrap: 'wrap',
-      flexBasis: 'auto',
-      flexGrow: 1,
+      flex: 1,
     },
   })

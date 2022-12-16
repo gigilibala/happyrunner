@@ -56,7 +56,7 @@ const createGlobalStyles = (theme: Theme) =>
     },
     largestText: {
       color: theme.colors.text,
-      fontSize: 45,
+      fontSize: 100,
     },
     boldText: {
       fontWeight: 'bold',
