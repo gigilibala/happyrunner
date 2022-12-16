@@ -3,8 +3,12 @@ import { useReducer } from 'react'
 type Action = { type: 'reset' | 'resume' } | { type: 'update'; payload: number }
 type State = {
   updated: boolean
-
   value: number
+  lap: IntervalState
+  total: IntervalState
+}
+
+type IntervalState = {
   count: number
   sum: number
   avg: number
@@ -20,10 +24,7 @@ type State = {
 }
 
 function defaultState(defaultValue?: number): State {
-  return {
-    updated: false,
-
-    value: defaultValue || 0,
+  const initial: IntervalState = {
     timestamp: new Date(),
     count: defaultValue ? 1 : 0,
 
@@ -38,6 +39,12 @@ function defaultState(defaultValue?: number): State {
     max: defaultValue || -1000000,
     min: defaultValue || 1000000,
   }
+  return {
+    updated: false,
+    value: defaultValue || 0,
+    lap: initial,
+    total: initial,
+  }
 }
 
 export function useDataSink(
@@ -48,35 +55,46 @@ export function useDataSink(
       switch (action.type) {
         case 'update':
           const timestamp = new Date()
-          const timeDiff = timestamp.getTime() - state.timestamp.getTime()
-          const duration = state.duration + timeDiff
-          const count = state.count + 1
-          const sum = state.sum + action.payload
-          const sumTs = state.sumTs + action.payload * timeDiff
-
           return {
-            updated: true,
             value: action.payload,
-            timestamp,
-            duration,
-            count,
-            sum,
-            avg: sum / count,
-            sumTs,
-            avgTs: duration > 0 ? sumTs / duration : 0,
-            max: Math.max(action.payload, state.max),
-            min: Math.min(action.payload, state.min),
+            updated: true,
+            lap: updateInterval(timestamp, action.payload, state.lap),
+            total: updateInterval(timestamp, action.payload, state.total),
           }
 
         case 'reset':
           return defaultState(defaultValue)
         case 'resume':
-          return { ...state, timestamp: new Date() }
+          return { ...state, lap: { ...state.lap, timestamp: new Date() } }
       }
     },
     defaultValue,
     defaultState,
   )
+
+  function updateInterval(
+    timestamp: Date,
+    value: number,
+    state: IntervalState,
+  ): IntervalState {
+    const timeDiff = timestamp.getTime() - state.timestamp.getTime()
+    const duration = state.duration + timeDiff
+    const count = state.count + 1
+    const sum = state.sum + value
+    const sumTs = state.sumTs + value * timeDiff
+
+    return {
+      timestamp,
+      duration,
+      count,
+      sum,
+      avg: sum / count,
+      sumTs,
+      avgTs: duration > 0 ? sumTs / duration : 0,
+      max: Math.max(value, state.max),
+      min: Math.min(value, state.min),
+    }
+  }
 
   return [state, dispatch]
 }

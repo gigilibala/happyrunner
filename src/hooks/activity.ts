@@ -48,6 +48,8 @@ export type Lap = {
 
 export type Details = Info & Lap
 
+type PeriodType = 'lap' | 'total'
+
 type Cumulative<T> = { lap: T; total: T }
 
 type Action = {
@@ -96,11 +98,8 @@ export function useActivity({
   const [lapStartTs, setLapStartTs] = useState<Date>(new Date())
 
   const { units, calculateDisplaySpeed, calculateDistance } = useUnits()
-  const [lapSpeedState, lapSpeedDispatch] = useDataSink(speed)
-  const [totalSpeedState, totalSpeedDispatch] = useDataSink(speed)
-
-  const [lapHrState, lapHrDispatch] = useDataSink(heartRate)
-  const [totalHrState, totalHrDispatch] = useDataSink(heartRate)
+  const [speedState, speedDispatch] = useDataSink(speed)
+  const [hrState, hrDispatch] = useDataSink(heartRate)
 
   const [state, dispatch] = useReducer(
     (state: State, action: Action): State => {
@@ -126,20 +125,20 @@ export function useActivity({
           return {
             ...state,
             distance: {
-              lap: calculateDistance(lapSpeedState.sumTs / MS_IN_SECOND),
-              total: calculateDistance(totalSpeedState.sumTs / MS_IN_SECOND),
+              lap: calculateDistance(speedState.lap.sumTs / MS_IN_SECOND),
+              total: calculateDistance(speedState.total.sumTs / MS_IN_SECOND),
             },
             speed: {
-              lap: calculateDisplaySpeed(lapSpeedState.avgTs),
-              total: calculateDisplaySpeed(totalSpeedState.avgTs),
+              lap: calculateDisplaySpeed(speedState.lap.avgTs),
+              total: calculateDisplaySpeed(speedState.total.avgTs),
             },
             heartRate: {
-              lap: Math.round(lapHrState.avgTs).toString(),
-              total: Math.round(totalHrState.avgTs).toString(),
+              lap: Math.round(hrState.lap.avgTs).toString(),
+              total: Math.round(hrState.total.avgTs).toString(),
             },
             duration: {
-              lap: durationHours(lapSpeedState.duration),
-              total: durationHours(totalSpeedState.duration),
+              lap: durationHours(speedState.lap.duration),
+              total: durationHours(speedState.total.duration),
             },
           }
       }
@@ -172,10 +171,8 @@ export function useActivity({
       case 'idle':
         break
       case 'in-progress':
-        lapSpeedDispatch({ type: 'resume' })
-        totalSpeedDispatch({ type: 'resume' })
-        lapHrDispatch({ type: 'resume' })
-        totalSpeedDispatch({ type: 'resume' })
+        speedDispatch({ type: 'resume' })
+        hrDispatch({ type: 'resume' })
         dbDispatch({
           type: 'modifyActivity',
           payload: { data: { id, status: 'in-progress' } },
@@ -195,32 +192,7 @@ export function useActivity({
           payload: { data: { id, status: 'stopped' } },
         })
         setPausedTs(new Date())
-        dbDispatch({
-          type: 'addActivityLap',
-          payload: {
-            data: {
-              id: randomId(),
-              activity_id: id,
-              number: 0,
-              start_time: id,
-              end_time: pausedTs ? pausedTs.getTime() : new Date().getTime(),
-              distance: totalSpeedState.sumTs / MS_IN_SECOND,
-              duration: totalSpeedState.duration,
-              min_speed: totalSpeedState.min,
-              avg_speed: totalSpeedState.avgTs,
-              max_speed: totalSpeedState.max,
-              ...(totalHrState.updated && {
-                min_heart_rate: Math.round(totalHrState.min),
-              }),
-              ...(totalHrState.updated && {
-                avg_heart_rate: Math.round(totalHrState.avgTs),
-              }),
-              ...(totalHrState.updated && {
-                max_heart_rate: Math.round(totalHrState.max),
-              }),
-            },
-          },
-        })
+        addActivityPeriodInfo('total')
         break
     }
   }, [state.status])
@@ -231,8 +203,7 @@ export function useActivity({
     const timestamp = new Date()
 
     if (speed !== undefined) {
-      lapSpeedDispatch({ type: 'update', payload: speed })
-      totalSpeedDispatch({ type: 'update', payload: speed })
+      speedDispatch({ type: 'update', payload: speed })
     }
 
     dbDispatch({
@@ -259,52 +230,51 @@ export function useActivity({
     // We only want to add a lap at the end of the lap.
     if (lap === 0) return
 
-    lapSpeedDispatch({ type: 'reset' })
-    lapHrDispatch({ type: 'reset' })
+    speedDispatch({ type: 'reset' })
+    hrDispatch({ type: 'reset' })
 
     const endTime = pausedTs ? pausedTs : new Date()
     // Protection against adding new laps when paused or stopped.
     if (endTime < lapStartTs) return
-    dbDispatch({
-      type: 'addActivityLap',
-      payload: {
-        data: {
-          id: randomId(),
-          activity_id: id,
-          number: lap,
-          start_time: lapStartTs.getTime(),
-          end_time: endTime.getTime(),
-          distance: lapSpeedState.sumTs / MS_IN_SECOND,
-          duration: lapSpeedState.duration,
-          min_speed: lapSpeedState.min,
-          avg_speed: lapSpeedState.avgTs,
-          max_speed: lapSpeedState.max,
-          ...(lapHrState.updated && {
-            min_heart_rate: Math.round(lapHrState.min),
-          }),
-          ...(lapHrState.updated && {
-            avg_heart_rate: Math.round(lapHrState.avgTs),
-          }),
-          ...(lapHrState.updated && {
-            max_heart_rate: Math.round(lapHrState.max),
-          }),
-        },
-      },
-    })
+    addActivityPeriodInfo('lap')
 
     setLapStartTs(new Date())
   }, [lap])
 
   useEffect(() => {
     dispatch({ type: 'nextInterval' })
-  }, [units, lapSpeedState, totalSpeedState, lapHrState, totalHrState])
+  }, [units, speedState, hrState])
 
   useEffect(() => {
     if (heartRate === undefined) return
 
-    lapHrDispatch({ type: 'update', payload: heartRate })
-    totalHrDispatch({ type: 'update', payload: heartRate })
+    hrDispatch({ type: 'update', payload: heartRate })
   }, [heartRate])
+
+  function addActivityPeriodInfo(periodType: PeriodType): void {
+    dbDispatch({
+      type: 'addActivityLap',
+      payload: {
+        data: {
+          id: randomId(),
+          activity_id: id,
+          number: periodType === 'lap' ? lap : 0,
+          start_time: periodType === 'lap' ? lapStartTs.getTime() : id,
+          end_time: pausedTs ? pausedTs.getTime() : new Date().getTime(),
+          distance: speedState[periodType].sumTs / MS_IN_SECOND,
+          duration: speedState[periodType].duration,
+          min_speed: speedState[periodType].min,
+          avg_speed: speedState[periodType].avgTs,
+          max_speed: speedState[periodType].max,
+          ...(hrState.updated && {
+            min_heart_rate: Math.round(hrState[periodType].min),
+            avg_heart_rate: Math.round(hrState[periodType].avgTs),
+            max_heart_rate: Math.round(hrState[periodType].max),
+          }),
+        },
+      },
+    })
+  }
 
   return [state, dispatch]
 }
