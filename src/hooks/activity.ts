@@ -10,44 +10,6 @@ const MS_IN_SECOND = 1000
 
 export type IdType = number
 
-// Keep in sync with database table.
-export type Info = {
-  id: IdType
-  status?: 'in-progress' | 'stopped'
-  type?: ActivityType
-  notes?: string
-}
-
-export type Datum = {
-  timestamp: number
-  activity_id: IdType
-  heart_rate?: number
-  speed?: number
-  latitude?: number
-  longitude?: number
-}
-
-export type Lap = {
-  id: IdType
-  activity_id: IdType
-  number: number
-  start_time: number
-  end_time: number
-  min_heart_rate?: number
-  avg_heart_rate?: number
-  max_heart_rate?: number
-  total_steps?: number
-  cadence?: number
-  duration?: number
-  distance?: number
-  min_speed?: number
-  avg_speed?: number
-  max_speed?: number
-  // Maybe add temperature also.
-}
-
-export type Details = Info & Lap
-
 type PeriodType = 'lap' | 'total'
 
 type Cumulative<T> = { lap: T; total: T }

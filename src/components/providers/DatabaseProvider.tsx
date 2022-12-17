@@ -12,7 +12,8 @@ import {
   SQLiteDatabase,
   Transaction,
 } from 'react-native-sqlite-storage'
-import { Datum, Details, IdType, Info, Lap } from '../../hooks/activity'
+import { IdType } from '../../hooks/activity'
+import { ActivityType } from '../ActivityTypes'
 
 const databaseName = 'user-data.db'
 const activityInfoTableName = 'activity_info'
@@ -23,11 +24,37 @@ type DatabaseColumns<Type> = {
   [Property in keyof Type]-?: string
 }
 
+// Keep in sync with database table.
+export type Info = {
+  id: IdType
+  type?: ActivityType
+  status?: 'in-progress' | 'stopped'
+  notes?: string
+}
+
 const activityInfoTableColumns: DatabaseColumns<Info> = {
   id: 'id',
   type: 'type',
   status: 'status',
   notes: 'notes',
+}
+
+const createInfoTableScript = `
+CREATE TABLE IF NOT EXISTS ${activityInfoTableName}(
+  ${activityInfoTableColumns.id} INTEGER PRIMARY KEY NOT NULL,
+  ${activityInfoTableColumns.type} TEXT NOT NULL,
+  ${activityInfoTableColumns.status} TEXT,
+  ${activityInfoTableColumns.notes} TEXT
+);
+`
+
+export type Datum = {
+  timestamp: number
+  activity_id: IdType
+  heart_rate?: number
+  speed?: number
+  latitude?: number
+  longitude?: number
 }
 
 const activityDataTableColumns: DatabaseColumns<Datum> = {
@@ -37,6 +64,37 @@ const activityDataTableColumns: DatabaseColumns<Datum> = {
   speed: 'speed',
   latitude: 'latitude',
   longitude: 'longitude',
+}
+
+const createDataTableScript = `
+CREATE TABLE IF NOT EXISTS ${activityDataTableName}(
+  ${activityDataTableColumns.timestamp} INTEGER PRIMARY KEY NOT NULL,
+  ${activityDataTableColumns.activity_id} INTEGER NOT NULL,
+  ${activityDataTableColumns.heart_rate} INTEGER,
+  ${activityDataTableColumns.speed} INTEGER,
+  ${activityDataTableColumns.latitude} REAL,
+  ${activityDataTableColumns.longitude} REAL,
+  FOREIGN KEY(${activityDataTableColumns.activity_id}) REFERENCES ${activityInfoTableName}(${activityInfoTableColumns.id})
+);
+`
+
+export type Lap = {
+  id: IdType
+  activity_id: IdType
+  number: number
+  start_time: number
+  end_time: number
+  min_heart_rate?: number
+  avg_heart_rate?: number
+  max_heart_rate?: number
+  total_steps?: number
+  cadence?: number
+  duration?: number
+  distance?: number
+  min_speed?: number
+  avg_speed?: number
+  max_speed?: number
+  // Maybe add temperature also.
 }
 
 const activityLapsTableColumns: DatabaseColumns<Lap> = {
@@ -56,27 +114,6 @@ const activityLapsTableColumns: DatabaseColumns<Lap> = {
   avg_speed: 'avg_speed',
   max_speed: 'max_speed',
 }
-
-const createInfoTableScript = `
-CREATE TABLE IF NOT EXISTS ${activityInfoTableName}(
-  ${activityInfoTableColumns.id} INTEGER PRIMARY KEY NOT NULL,
-  ${activityInfoTableColumns.type} TEXT NOT NULL,
-  ${activityInfoTableColumns.status} TEXT,
-  ${activityInfoTableColumns.notes} TEXT
-);
-`
-
-const createDataTableScript = `
-CREATE TABLE IF NOT EXISTS ${activityDataTableName}(
-  ${activityDataTableColumns.timestamp} INTEGER PRIMARY KEY NOT NULL,
-  ${activityDataTableColumns.activity_id} INTEGER NOT NULL,
-  ${activityDataTableColumns.heart_rate} INTEGER,
-  ${activityDataTableColumns.speed} INTEGER,
-  ${activityDataTableColumns.latitude} REAL,
-  ${activityDataTableColumns.longitude} REAL,
-  FOREIGN KEY(${activityDataTableColumns.activity_id}) REFERENCES ${activityInfoTableName}(${activityInfoTableColumns.id})
-);
-`
 
 const createLapsTableScript = `
 CREATE TABLE IF NOT EXISTS ${activityLapsTableName}(
@@ -98,6 +135,9 @@ CREATE TABLE IF NOT EXISTS ${activityLapsTableName}(
   FOREIGN KEY(${activityLapsTableColumns.activity_id}) REFERENCES ${activityInfoTableName}(${activityInfoTableColumns.id})
 );
 `
+
+export type Details = Info & Lap
+
 type ActionType = 'getActivityLaps' | 'getActivityDetailsList'
 type Action =
   | { type: 'clearDatabase' }
