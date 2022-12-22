@@ -11,8 +11,10 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { ActivityIcon } from '../../components/ActivityTypes'
-import { DatabaseContext } from '../../components/providers/DatabaseProvider'
-import { Details } from '../../hooks/activity'
+import {
+  DatabaseContext,
+  Details,
+} from '../../components/providers/DatabaseProvider'
 import { useStyles } from '../../hooks/styles'
 import { useUnits } from '../../hooks/units'
 import { HistoryScreenProps } from '../RootNavigator'
