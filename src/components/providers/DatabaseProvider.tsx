@@ -85,6 +85,8 @@ export type Lap = {
   minHr?: number
   avgHr?: number
   maxHr?: number
+  totalSteps?: number
+  cadence?: number
   duration?: number
   distance?: number
   minSpeed?: number
@@ -104,6 +106,8 @@ const activityLapsTable: Table<Lap, Info> = {
     minHr: { name: 'min_heart_rate', sqlType: 'INTEGER' },
     avgHr: { name: 'avg_heart_rate', sqlType: 'INTEGER' },
     maxHr: { name: 'max_heart_rate', sqlType: 'INTEGER' },
+    totalSteps: { name: 'total_steps', sqlType: 'INTEGER' },
+    cadence: { name: 'cadence', sqlType: 'INTEGER' },
     duration: { name: 'duration', sqlType: 'INTEGER' },
     distance: { name: 'distance', sqlType: 'INTEGER' },
     minSpeed: { name: 'min_speed', sqlType: 'INTEGER' },
