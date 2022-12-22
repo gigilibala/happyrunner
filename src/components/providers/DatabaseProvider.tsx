@@ -52,8 +52,8 @@ const activityInfoTable: Table<Info> = {
 
 export type Datum = {
   timestamp: number
-  activityId: IdType
-  heartRate?: number
+  activity_id: IdType
+  heart_rate?: number
   speed?: number
   latitude?: number
   longitude?: number
@@ -63,14 +63,14 @@ const activityDataTable: Table<Datum, Info> = {
   name: 'activity_data',
   columns: {
     timestamp: { name: 'timestamp', sqlType: 'INTEGER PRIMARY KEY NOT NULL' },
-    activityId: { name: 'activity_id', sqlType: 'INTEGER NOT NULL' },
-    heartRate: { name: 'heart_rate', sqlType: 'INTEGER' },
+    activity_id: { name: 'activity_id', sqlType: 'INTEGER NOT NULL' },
+    heart_rate: { name: 'heart_rate', sqlType: 'INTEGER' },
     speed: { name: 'speed', sqlType: 'INTEGER' },
     latitude: { name: 'latitude', sqlType: 'REAL' },
     longitude: { name: 'longitude', sqlType: 'REAL' },
   },
   foreignKey: {
-    localKey: 'activityId',
+    localKey: 'activity_id',
     remoteTable: activityInfoTable,
     remoteKey: 'id',
   },
@@ -78,20 +78,20 @@ const activityDataTable: Table<Datum, Info> = {
 
 export type Lap = {
   id: IdType
-  activityId: IdType
+  activity_id: IdType
   number: number
   start_time: number
   end_time: number
-  minHr?: number
-  avgHr?: number
-  maxHr?: number
-  totalSteps?: number
+  min_heart_rate?: number
+  avg_heart_rate?: number
+  max_heart_rate?: number
+  total_steps?: number
   cadence?: number
   duration?: number
   distance?: number
-  minSpeed?: number
-  avgSpeed?: number
-  maxSpeed?: number
+  min_speed?: number
+  avg_speed?: number
+  max_speed?: number
   // Maybe add temperature also.
 }
 
@@ -99,23 +99,23 @@ const activityLapsTable: Table<Lap, Info> = {
   name: 'activity_laps',
   columns: {
     id: { name: 'id', sqlType: 'INTEGER PRIMARY KEY NOT NULL' },
-    activityId: { name: 'activity_id', sqlType: 'INTEGER NOT NULL' },
+    activity_id: { name: 'activity_id', sqlType: 'INTEGER NOT NULL' },
     number: { name: 'number', sqlType: 'INTEGER NOT NULL' },
     start_time: { name: 'start_time', sqlType: 'INTEGER NOT NULL' },
     end_time: { name: 'end_time', sqlType: 'INTEGER NOT NULL' },
-    minHr: { name: 'min_heart_rate', sqlType: 'INTEGER' },
-    avgHr: { name: 'avg_heart_rate', sqlType: 'INTEGER' },
-    maxHr: { name: 'max_heart_rate', sqlType: 'INTEGER' },
-    totalSteps: { name: 'total_steps', sqlType: 'INTEGER' },
+    min_heart_rate: { name: 'min_heart_rate', sqlType: 'INTEGER' },
+    avg_heart_rate: { name: 'avg_heart_rate', sqlType: 'INTEGER' },
+    max_heart_rate: { name: 'max_heart_rate', sqlType: 'INTEGER' },
+    total_steps: { name: 'total_steps', sqlType: 'INTEGER' },
     cadence: { name: 'cadence', sqlType: 'INTEGER' },
     duration: { name: 'duration', sqlType: 'INTEGER' },
     distance: { name: 'distance', sqlType: 'INTEGER' },
-    minSpeed: { name: 'min_speed', sqlType: 'INTEGER' },
-    avgSpeed: { name: 'avg_speed', sqlType: 'INTEGER' },
-    maxSpeed: { name: 'max_speed', sqlType: 'INTEGER' },
+    min_speed: { name: 'min_speed', sqlType: 'INTEGER' },
+    avg_speed: { name: 'avg_speed', sqlType: 'INTEGER' },
+    max_speed: { name: 'max_speed', sqlType: 'INTEGER' },
   },
   foreignKey: {
-    localKey: 'activityId',
+    localKey: 'activity_id',
     remoteTable: activityInfoTable,
     remoteKey: 'id',
   },
@@ -269,12 +269,12 @@ function useDatabase(): IDatabaseApi {
       deleteRows(
         tx,
         activityDataTable.name,
-        activityDataTable.columns.activityId.name,
+        activityDataTable.columns.activity_id.name,
       )
       deleteRows(
         tx,
         activityLapsTable.name,
-        activityLapsTable.columns.activityId.name,
+        activityLapsTable.columns.activity_id.name,
       )
       deleteRows(tx, activityInfoTable.name, activityInfoTable.columns.id.name)
     })
@@ -328,7 +328,7 @@ function useDatabase(): IDatabaseApi {
     return new Promise<Lap[]>((resolve) => {
       const query = `SELECT *
       FROM ${activityLapsTable.name}
-      WHERE ${activityLapsTable.columns.activityId.name} = ?
+      WHERE ${activityLapsTable.columns.activity_id.name} = ?
       ORDER BY ${activityLapsTable.columns.number.name}
       `
       db?.readTransaction((tx) => {
@@ -343,7 +343,7 @@ function useDatabase(): IDatabaseApi {
     return new Promise<Details[]>((resolve) => {
       const query = `SELECT *
       FROM ${activityInfoTable.name} INNER JOIN ${activityLapsTable.name}
-      ON ${activityInfoTable.name}.${activityInfoTable.columns.id.name} = ${activityLapsTable.name}.${activityLapsTable.columns.activityId.name}
+      ON ${activityInfoTable.name}.${activityInfoTable.columns.id.name} = ${activityLapsTable.name}.${activityLapsTable.columns.activity_id.name}
       AND ${activityLapsTable.name}.${activityLapsTable.columns.number.name} = 0
       ORDER BY ${activityLapsTable.columns.start_time.name} DESC
       `

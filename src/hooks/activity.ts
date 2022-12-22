@@ -176,9 +176,9 @@ export function useActivity({
           // value is used again and will cause duplicate key be added to the
           // database.
           timestamp: timestamp.getTime(),
-          activityId: id,
-          ...(heartRate && { heartRate }),
-          ...(speed && { speed }),
+          activity_id: id,
+          ...(heartRate && { heart_rate: heartRate }),
+          ...(speed && { speed: speed }),
           ...(position && {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
@@ -219,19 +219,19 @@ export function useActivity({
       payload: {
         data: {
           id: randomId(),
-          activityId: id,
+          activity_id: id,
           number: periodType === 'lap' ? lap : 0,
           start_time: periodType === 'lap' ? lapStartTs.getTime() : id,
           end_time: pausedTs ? pausedTs.getTime() : new Date().getTime(),
           distance: speedState[periodType].sumTs / MS_IN_SECOND,
           duration: speedState[periodType].duration,
-          minSpeed: speedState[periodType].min,
-          avgSpeed: speedState[periodType].avgTs,
-          maxSpeed: speedState[periodType].max,
+          min_speed: speedState[periodType].min,
+          avg_speed: speedState[periodType].avgTs,
+          max_speed: speedState[periodType].max,
           ...(hrState.updated && {
-            minHr: Math.round(hrState[periodType].min),
-            avgHr: Math.round(hrState[periodType].avgTs),
-            maxHr: Math.round(hrState[periodType].max),
+            min_heart_rate: Math.round(hrState[periodType].min),
+            avg_heart_rate: Math.round(hrState[periodType].avgTs),
+            max_heart_rate: Math.round(hrState[periodType].max),
           }),
         },
       },
