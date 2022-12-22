@@ -28,14 +28,14 @@ export function History({ navigation }: HistoryScreenProps<'History'>) {
 
   useFocusEffect(
     useCallback(() => {
-      dbDispatch({ type: 'getActivityDetailsList' })
+      dbDispatch({ type: 'getActivityList' })
     }, []),
   )
 
   useEffect(() => {
     if (
       dbState.status === 'success' &&
-      dbState.actionType === 'getActivityDetailsList'
+      dbState.payload.type === 'getActivityList'
     )
       setActivityList(dbState.payload.details)
   }, [dbState])

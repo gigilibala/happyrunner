@@ -123,7 +123,23 @@ const activityLapsTable: Table<Lap, Info> = {
 
 export type Details = Info & Lap
 
-type ActionType = 'getActivityLaps' | 'getActivityDetailsList'
+type ActionType = 'getActivityData' | 'getActivityList'
+type SuccessPayload =
+  | {
+      type: 'getActivityData'
+      laps: Lap[]
+      data: Datum[]
+    }
+  | {
+      type: 'getActivityList'
+      details: Details[]
+    }
+
+type FailurePayload = {
+  type: 'getActivityData' | 'getActivityList'
+  error: Error
+}
+
 type Action =
   | { type: 'clearDatabase' }
   | { type: 'addActivity'; payload: { data: Info } }
@@ -131,16 +147,16 @@ type Action =
   | { type: 'deleteActivity'; payload: { activityId: IdType } }
   | { type: 'addActivityDatum'; payload: { data: Datum } }
   | { type: 'addActivityLap'; payload: { data: Lap } }
-  | { type: 'getActivityLaps'; payload: { activityId: IdType } }
-  | { type: 'getActivityDetailsList' }
-  | { type: 'success'; actionType: ActionType; payload: StatePayload }
-  | { type: 'failure'; actionType: ActionType; error: Error }
+  | { type: 'getActivityData'; payload: { activityId: IdType } }
+  | { type: 'getActivityList' }
+  | { type: 'success'; payload: SuccessPayload }
+  | { type: 'failure'; payload: FailurePayload }
 
-type StatePayload = { laps?: Lap[]; details?: Details[] }
+type StatePayload = { laps?: Lap[]; details?: Details[]; Data?: Datum[] }
 type State =
   | { status: 'idle' }
-  | { status: 'success'; actionType: ActionType; payload: StatePayload }
-  | { status: 'failure'; actionType: ActionType; error: Error }
+  | { status: 'success'; payload: SuccessPayload }
+  | { status: 'failure'; payload: FailurePayload }
 
 type IDatabaseApi = [State, React.Dispatch<Action>]
 
@@ -169,51 +185,49 @@ function useDatabase(): IDatabaseApi {
         case 'addActivityLap':
           addActivityLap(action.payload.data)
           return { status: 'idle' }
-        case 'getActivityLaps':
-          getActivityLaps(action.payload.activityId)
-            .then((laps) =>
+        case 'getActivityData':
+          getActivityData(action.payload.activityId)
+            .then((lapsAndData) =>
               dispatch({
                 type: 'success',
-                actionType: action.type,
-                payload: { laps: laps },
+                payload: {
+                  type: action.type,
+                  laps: lapsAndData[0],
+                  data: lapsAndData[1],
+                },
               }),
             )
             .catch((error) =>
               dispatch({
                 type: 'failure',
-                actionType: action.type,
-                error: error,
+                payload: { type: action.type, error },
               }),
             )
           return { status: 'idle' }
-        case 'getActivityDetailsList':
-          getActivityDetailsList()
+        case 'getActivityList':
+          getActivityList()
             .then((details) =>
               dispatch({
                 type: 'success',
-                actionType: action.type,
-                payload: { details: details },
+                payload: { type: action.type, details },
               }),
             )
             .catch((error) =>
               dispatch({
                 type: 'failure',
-                actionType: action.type,
-                error: error,
+                payload: { type: action.type, error },
               }),
             )
           return { status: 'idle' }
         case 'success':
           return {
             status: 'success',
-            actionType: action.actionType,
             payload: action.payload,
           }
         case 'failure':
           return {
             status: 'failure',
-            actionType: action.actionType,
-            error: action.error,
+            payload: action.payload,
           }
       }
     },
@@ -324,8 +338,8 @@ function useDatabase(): IDatabaseApi {
       )
   }
 
-  function getActivityLaps(activity_id: IdType): Promise<Lap[]> {
-    return new Promise<Lap[]>((resolve) => {
+  function getActivityData(activity_id: IdType): Promise<[Lap[], Datum[]]> {
+    const laps = new Promise<Lap[]>((resolve) => {
       const query = `SELECT *
       FROM ${activityLapsTable.name}
       WHERE ${activityLapsTable.columns.activity_id.name} = ?
@@ -337,9 +351,24 @@ function useDatabase(): IDatabaseApi {
         })
       })
     })
+
+    const data = new Promise<Datum[]>((resolve) => {
+      const query = `SELECT *
+      FROM ${activityDataTable.name}
+      WHERE ${activityDataTable.columns.activity_id.name} = ?
+      ORDER BY ${activityDataTable.columns.timestamp.name}
+      `
+      db?.readTransaction((tx) => {
+        tx.executeSql(query, [activity_id]).then(([tx, results]) => {
+          resolve(results.rows.raw() as Datum[])
+        })
+      })
+    })
+
+    return Promise.all([laps, data])
   }
 
-  function getActivityDetailsList(): Promise<Details[]> {
+  function getActivityList(): Promise<Details[]> {
     return new Promise<Details[]>((resolve) => {
       const query = `SELECT *
       FROM ${activityInfoTable.name} INNER JOIN ${activityLapsTable.name}

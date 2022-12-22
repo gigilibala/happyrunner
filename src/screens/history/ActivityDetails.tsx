@@ -17,7 +17,11 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu'
 import MatIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { DatabaseContext } from '../../components/providers/DatabaseProvider'
+import {
+  DatabaseContext,
+  Datum,
+  Lap,
+} from '../../components/providers/DatabaseProvider'
 import { useStyles } from '../../hooks/styles'
 import { HistoryScreenProps } from '../RootNavigator'
 
@@ -27,10 +31,13 @@ export default function ActivityDetails({
 }: HistoryScreenProps<'ActivityDetails'>) {
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
-  const { activityId } = route.params
-  const [_, dbDispatch] = useContext(DatabaseContext)
+  const { edit, activityId } = route.params
+  const [dbState, dbDispatch] = useContext(DatabaseContext)
+  const [laps, setLaps] = useState<Lap[]>([])
+  const [data, setData] = useState<Datum[]>([])
+
   const [notes, setNotes] = useState<string>('')
-  const [editing, setEditing] = useState<boolean>(route.params.edit)
+  const [editing, setEditing] = useState<boolean>(edit)
 
   const saveButton = (
     <TouchableOpacity
@@ -85,7 +92,19 @@ export default function ActivityDetails({
 
   useEffect(() => {
     navigation.setOptions({ headerRight: (props) => menu })
+
+    dbDispatch({ type: 'getActivityData', payload: { activityId: activityId } })
   }, [])
+
+  useEffect(() => {
+    if (
+      dbState.status === 'success' &&
+      dbState.payload.type === 'getActivityData'
+    ) {
+      setLaps(dbState.payload.laps)
+      setData(dbState.payload.data)
+    }
+  }, [dbState])
 
   function deleteActivity() {
     Alert.alert(
