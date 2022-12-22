@@ -16,12 +16,20 @@ import { IdType } from '../../hooks/activity'
 import { ActivityType } from '../ActivityTypes'
 
 const databaseName = 'user-data.db'
-const activityInfoTableName = 'activity_info'
-const activityDataTableName = 'activity_data'
-const activityLapsTableName = 'activity_laps'
 
-type DatabaseColumns<Type> = {
-  [Property in keyof Type]-?: string
+type Column = { name: string; sqlType: string }
+type DatabaseColumns<T> = {
+  [Property in keyof T]-?: Column
+}
+
+type Table<T, F = {}> = {
+  name: string
+  columns: DatabaseColumns<T>
+  foreignKey?: {
+    localKey: keyof DatabaseColumns<T>
+    remoteTable: Table<F>
+    remoteKey: keyof DatabaseColumns<F>
+  }
 }
 
 // Keep in sync with database table.
@@ -32,21 +40,15 @@ export type Info = {
   notes?: string
 }
 
-const activityInfoTableColumns: DatabaseColumns<Info> = {
-  id: 'id',
-  type: 'type',
-  status: 'status',
-  notes: 'notes',
+const activityInfoTable: Table<Info> = {
+  name: 'activity_info',
+  columns: {
+    id: { name: 'id', sqlType: 'INTEGER PRIMARY KEY NOT NULL' },
+    type: { name: 'type', sqlType: 'TEXT NOT NULL' },
+    status: { name: 'status', sqlType: 'TEXT' },
+    notes: { name: 'notes', sqlType: 'TEXT' },
+  },
 }
-
-const createInfoTableScript = `
-CREATE TABLE IF NOT EXISTS ${activityInfoTableName}(
-  ${activityInfoTableColumns.id} INTEGER PRIMARY KEY NOT NULL,
-  ${activityInfoTableColumns.type} TEXT NOT NULL,
-  ${activityInfoTableColumns.status} TEXT,
-  ${activityInfoTableColumns.notes} TEXT
-);
-`
 
 export type Datum = {
   timestamp: number
@@ -57,26 +59,22 @@ export type Datum = {
   longitude?: number
 }
 
-const activityDataTableColumns: DatabaseColumns<Datum> = {
-  timestamp: 'timestamp',
-  activity_id: 'activity_id',
-  heart_rate: 'heart_rate',
-  speed: 'speed',
-  latitude: 'latitude',
-  longitude: 'longitude',
+const activityDataTable: Table<Datum, Info> = {
+  name: 'activity_data',
+  columns: {
+    timestamp: { name: 'timestamp', sqlType: 'INTEGER PRIMARY KEY NOT NULL' },
+    activity_id: { name: 'activity_id', sqlType: 'INTEGER NOT NULL' },
+    heart_rate: { name: 'heart_rate', sqlType: 'INTEGER' },
+    speed: { name: 'speed', sqlType: 'INTEGER' },
+    latitude: { name: 'latitude', sqlType: 'REAL' },
+    longitude: { name: 'longitude', sqlType: 'REAL' },
+  },
+  foreignKey: {
+    localKey: 'activity_id',
+    remoteTable: activityInfoTable,
+    remoteKey: 'id',
+  },
 }
-
-const createDataTableScript = `
-CREATE TABLE IF NOT EXISTS ${activityDataTableName}(
-  ${activityDataTableColumns.timestamp} INTEGER PRIMARY KEY NOT NULL,
-  ${activityDataTableColumns.activity_id} INTEGER NOT NULL,
-  ${activityDataTableColumns.heart_rate} INTEGER,
-  ${activityDataTableColumns.speed} INTEGER,
-  ${activityDataTableColumns.latitude} REAL,
-  ${activityDataTableColumns.longitude} REAL,
-  FOREIGN KEY(${activityDataTableColumns.activity_id}) REFERENCES ${activityInfoTableName}(${activityInfoTableColumns.id})
-);
-`
 
 export type Lap = {
   id: IdType
@@ -97,44 +95,31 @@ export type Lap = {
   // Maybe add temperature also.
 }
 
-const activityLapsTableColumns: DatabaseColumns<Lap> = {
-  id: 'id',
-  activity_id: 'activity_id',
-  number: 'number',
-  start_time: 'start_time',
-  end_time: 'end_time',
-  min_heart_rate: 'min_heart_rate',
-  avg_heart_rate: 'avg_heart_rate',
-  max_heart_rate: 'max_heart_rate',
-  total_steps: 'total_steps',
-  cadence: 'cadence',
-  duration: 'duration',
-  distance: 'distance',
-  min_speed: 'min_speed',
-  avg_speed: 'avg_speed',
-  max_speed: 'max_speed',
+const activityLapsTable: Table<Lap, Info> = {
+  name: 'activity_laps',
+  columns: {
+    id: { name: 'id', sqlType: 'INTEGER PRIMARY KEY NOT NULL' },
+    activity_id: { name: 'activity_id', sqlType: 'INTEGER NOT NULL' },
+    number: { name: 'number', sqlType: 'INTEGER NOT NULL' },
+    start_time: { name: 'start_time', sqlType: 'INTEGER NOT NULL' },
+    end_time: { name: 'end_time', sqlType: 'INTEGER NOT NULL' },
+    min_heart_rate: { name: 'min_heart_rate', sqlType: 'INTEGER' },
+    avg_heart_rate: { name: 'avg_heart_rate', sqlType: 'INTEGER' },
+    max_heart_rate: { name: 'max_heart_rate', sqlType: 'INTEGER' },
+    total_steps: { name: 'total_steps', sqlType: 'INTEGER' },
+    cadence: { name: 'cadence', sqlType: 'INTEGER' },
+    duration: { name: 'duration', sqlType: 'INTEGER' },
+    distance: { name: 'distance', sqlType: 'INTEGER' },
+    min_speed: { name: 'min_speed', sqlType: 'INTEGER' },
+    avg_speed: { name: 'avg_speed', sqlType: 'INTEGER' },
+    max_speed: { name: 'max_speed', sqlType: 'INTEGER' },
+  },
+  foreignKey: {
+    localKey: 'activity_id',
+    remoteTable: activityInfoTable,
+    remoteKey: 'id',
+  },
 }
-
-const createLapsTableScript = `
-CREATE TABLE IF NOT EXISTS ${activityLapsTableName}(
-  ${activityLapsTableColumns.id} INTEGER PRIMARY KEY NOT NULL,
-  ${activityLapsTableColumns.activity_id} INTEGER NOT NULL,
-  ${activityLapsTableColumns.number} INTEGER NOT NULL,
-  ${activityLapsTableColumns.start_time} INTEGER NOT NULL,
-  ${activityLapsTableColumns.end_time} INTEGER NOT NULL,
-  ${activityLapsTableColumns.min_heart_rate} INTEGER,
-  ${activityLapsTableColumns.avg_heart_rate} INTEGER,
-  ${activityLapsTableColumns.max_heart_rate} INTEGER,
-  ${activityLapsTableColumns.total_steps} INTEGER,
-  ${activityLapsTableColumns.cadence} INTEGER,
-  ${activityLapsTableColumns.duration} INTEGER,
-  ${activityLapsTableColumns.distance} INTEGER,
-  ${activityLapsTableColumns.min_speed} INTEGER,
-  ${activityLapsTableColumns.avg_speed} INTEGER,
-  ${activityLapsTableColumns.max_speed} INTEGER,
-  FOREIGN KEY(${activityLapsTableColumns.activity_id}) REFERENCES ${activityInfoTableName}(${activityInfoTableColumns.id})
-);
-`
 
 export type Details = Info & Lap
 
@@ -242,9 +227,9 @@ function useDatabase(): IDatabaseApi {
 
   function createTables() {
     db?.transaction((tx) => {
-      tx.executeSql(createInfoTableScript)
-      tx.executeSql(createDataTableScript)
-      tx.executeSql(createLapsTableScript)
+      tx.executeSql(createTableStatement(activityInfoTable))
+      tx.executeSql(createTableStatement(activityDataTable))
+      tx.executeSql(createTableStatement(activityLapsTable))
     })
       .then(() => console.log('Tables created.'))
       .catch((error) => console.log('Failed to create tables: ', error))
@@ -260,7 +245,7 @@ function useDatabase(): IDatabaseApi {
   }
 
   function addActivity(value: Info): void {
-    addRow(value, activityInfoTableName)
+    addRow(value, activityInfoTable.name)
   }
 
   function deleteActivity(activityId: IdType) {
@@ -283,28 +268,28 @@ function useDatabase(): IDatabaseApi {
     db?.transaction((tx) => {
       deleteRows(
         tx,
-        activityDataTableName,
-        activityDataTableColumns.activity_id,
+        activityDataTable.name,
+        activityDataTable.columns.activity_id.name,
       )
       deleteRows(
         tx,
-        activityLapsTableName,
-        activityLapsTableColumns.activity_id,
+        activityLapsTable.name,
+        activityLapsTable.columns.activity_id.name,
       )
-      deleteRows(tx, activityInfoTableName, activityInfoTableColumns.id)
+      deleteRows(tx, activityInfoTable.name, activityInfoTable.columns.id.name)
     })
   }
 
   function modifyActivity(value: Info): void {
-    modifyRow(value, activityInfoTableName, 'id')
+    modifyRow(value, activityInfoTable.name, 'id')
   }
 
   function addActivityDatum(value: Datum): void {
-    addRow(value, activityDataTableName)
+    addRow(value, activityDataTable.name)
   }
 
   function addActivityLap(value: Lap): void {
-    addRow(value, activityLapsTableName)
+    addRow(value, activityLapsTable.name)
   }
 
   function addRow<T extends object>(data: T, tableName: string): void {
@@ -342,9 +327,9 @@ function useDatabase(): IDatabaseApi {
   function getActivityLaps(activity_id: IdType): Promise<Lap[]> {
     return new Promise<Lap[]>((resolve) => {
       const query = `SELECT *
-      FROM ${activityLapsTableName}
-      WHERE ${activityLapsTableColumns.activity_id} = ?
-      ORDER BY ${activityLapsTableColumns.number}
+      FROM ${activityLapsTable.name}
+      WHERE ${activityLapsTable.columns.activity_id.name} = ?
+      ORDER BY ${activityLapsTable.columns.number.name}
       `
       db?.readTransaction((tx) => {
         tx.executeSql(query, [activity_id]).then(([tx, results]) => {
@@ -357,10 +342,10 @@ function useDatabase(): IDatabaseApi {
   function getActivityDetailsList(): Promise<Details[]> {
     return new Promise<Details[]>((resolve) => {
       const query = `SELECT *
-      FROM ${activityInfoTableName} INNER JOIN ${activityLapsTableName}
-      ON ${activityInfoTableName}.${activityInfoTableColumns.id} = ${activityLapsTableName}.${activityLapsTableColumns.activity_id}
-      AND ${activityLapsTableName}.${activityLapsTableColumns.number} = 0
-      ORDER BY ${activityLapsTableColumns.start_time} DESC
+      FROM ${activityInfoTable.name} INNER JOIN ${activityLapsTable.name}
+      ON ${activityInfoTable.name}.${activityInfoTable.columns.id.name} = ${activityLapsTable.name}.${activityLapsTable.columns.activity_id.name}
+      AND ${activityLapsTable.name}.${activityLapsTable.columns.number.name} = 0
+      ORDER BY ${activityLapsTable.columns.start_time.name} DESC
       `
       db?.transaction((tx) => {
         tx.executeSql(query).then(([tx, results]) => {
@@ -371,6 +356,19 @@ function useDatabase(): IDatabaseApi {
   }
 
   return [state, dispatch]
+}
+
+function createTableStatement(table: Table<any, any>): string {
+  const columnsStatements = Object.values(table.columns).map(
+    ({ name, sqlType }) => name + ' ' + sqlType,
+  )
+  const foreignKeyStatement = table.foreignKey
+    ? `, FOREIGN KEY(${String(table.foreignKey.localKey)}) REFERENCES ${
+        table.foreignKey.remoteTable.name
+      }(${String(table.foreignKey.remoteKey)})`
+    : ''
+  return `CREATE TABLE IF NOT EXISTS ${table.name}(
+    ${columnsStatements.join(', ')}${foreignKeyStatement})`
 }
 
 export const DatabaseContext = createContext<IDatabaseApi>({} as IDatabaseApi)
