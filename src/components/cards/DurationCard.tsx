@@ -16,7 +16,6 @@ export function DurationCard({ lap, total }: DurationCardProps) {
     <ProgressInfoCard
       title={t('duration')}
       color={'darkorange'}
-      unit={t('hours')}
       value={total}
       subValue1={{
         value: lap,
