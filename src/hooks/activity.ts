@@ -99,8 +99,8 @@ export function useActivity({
               total: Math.round(hrState.total.avgTs).toString(),
             },
             duration: {
-              lap: durationHours(speedState.lap.duration),
-              total: durationHours(speedState.total.duration),
+              lap: durationHours(speedState.lap.duration)[0],
+              total: durationHours(speedState.total.duration)[0],
             },
           }
       }

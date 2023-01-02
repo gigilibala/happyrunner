@@ -48,5 +48,7 @@
   "lap": "Lap",
   "total": "Total",
   "duration": "Duration",
-  "hours": "Hours"
+  "hours": "Hours",
+  "minutes": "Minutes",
+  "seconds": "Seconds"
 }

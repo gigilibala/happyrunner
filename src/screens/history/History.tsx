@@ -16,7 +16,7 @@ import {
   Details,
 } from '../../components/providers/DatabaseProvider'
 import { useStyles } from '../../hooks/styles'
-import { useUnits } from '../../hooks/units'
+import { durationHours, useUnits } from '../../hooks/units'
 import { HistoryScreenProps } from '../RootNavigator'
 
 export function History({ navigation }: HistoryScreenProps<'History'>) {
@@ -41,17 +41,13 @@ export function History({ navigation }: HistoryScreenProps<'History'>) {
   }, [dbState])
 
   function ActivityItem({ detail }: { detail: Details }) {
+    const duration = detail.duration ? durationHours(detail.duration) : null
+    const durationStr = duration
+      ? duration[0] + ' ' + (duration[1] ? t('hours') : t('minutes'))
+      : null
     return (
       <TouchableOpacity
-        style={[
-          styles.card,
-          {
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            height: 60,
-          },
-        ]}
+        style={[styles.card, styles.item]}
         onPress={() =>
           navigation.navigate('ActivityDetails', {
             activityId: detail.activity_id,
@@ -73,13 +69,18 @@ export function History({ navigation }: HistoryScreenProps<'History'>) {
               })}
             </Text>
           </View>
-          {detail.distance ? (
-            <View>
+          <View style={styles.detailsText}>
+            {detail.distance ? (
               <Text style={[styles.text, { color: 'olive' }]}>
                 {calculateDistance(detail.distance)} {t(units.distance)}
               </Text>
-            </View>
-          ) : null}
+            ) : null}
+            {detail.duration ? (
+              <Text style={[styles.text, { color: 'cyan' }]}>
+                {durationStr}
+              </Text>
+            ) : null}
+          </View>
         </View>
         <Icon name={'chevron-right'} color={'grey'} />
       </TouchableOpacity>
@@ -99,9 +100,23 @@ export function History({ navigation }: HistoryScreenProps<'History'>) {
 
 const createStyles = (theme: Theme) =>
   StyleSheet.create({
+    item: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      height: 60,
+    },
     activityDetailsView: {
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
+      flexGrow: 1,
+      flex: 1,
+    },
+    detailsText: {
+      flexDirection: 'row',
+      justifyContent: 'space-evenly',
+      alignItems: 'center',
+      width: '90%',
     },
   })

@@ -44,7 +44,7 @@ export function useUnits() {
       })
     } else {
       // First make it to milliseconds.
-      return durationHours(Math.round(revertPace(speed) * 60000))
+      return durationHours(Math.round(revertPace(speed) * 60000))[0]
     }
   }
 
@@ -86,8 +86,9 @@ export function useUnits() {
 
 export type Milliseconds = number
 
-export function durationHours(d: Milliseconds): string {
+export function durationHours(d: Milliseconds): [string, boolean] {
   const date = new Date(d)
-  const index = date.getUTCHours() > 0 ? 11 : 14
-  return date.toISOString().substring(index, 19)
+  const hasHours = date.getUTCHours() > 0
+  const index = hasHours ? 11 : 14
+  return [date.toISOString().substring(index, 19), hasHours]
 }
