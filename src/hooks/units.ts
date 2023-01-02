@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { PreferencesContext } from '../components/providers/PreferencesProvider'
 import { RawSpeed } from './speed'
 
+export const MS_IN_SECOND = 1000
+
 export interface Units {
   distance: 'miles' | 'kilometers'
   speed: 'pace' | 'speed'

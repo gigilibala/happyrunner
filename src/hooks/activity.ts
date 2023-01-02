@@ -3,10 +3,9 @@ import { GeoPosition } from 'react-native-geolocation-service'
 import { ActivityType } from '../components/ActivityTypes'
 import { DatabaseContext } from '../components/providers/DatabaseProvider'
 import { useDataSink } from './dataSink'
-import { durationHours, useUnits } from './units'
+import { durationHours, MS_IN_SECOND, useUnits } from './units'
 
-const INTERVAL_MS = 3000
-const MS_IN_SECOND = 1000
+const INTERVAL_MS = 1000
 
 export type IdType = number
 
