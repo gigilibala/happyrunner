@@ -8,6 +8,16 @@ type State = {
   total: IntervalState
 }
 
+function defaultState(defaultValue?: number): State {
+  const initial: IntervalState = defaultInterval(defaultValue)
+  return {
+    updated: false,
+    value: defaultValue || 0,
+    lap: initial,
+    total: initial,
+  }
+}
+
 type IntervalState = {
   count: number
   sum: number
@@ -23,8 +33,8 @@ type IntervalState = {
   min: number
 }
 
-function defaultState(defaultValue?: number): State {
-  const initial: IntervalState = {
+function defaultInterval(defaultValue?: number): IntervalState {
+  return {
     timestamp: new Date(),
     count: defaultValue ? 1 : 0,
 
@@ -38,12 +48,6 @@ function defaultState(defaultValue?: number): State {
 
     max: defaultValue || -1000000,
     min: defaultValue || 1000000,
-  }
-  return {
-    updated: false,
-    value: defaultValue || 0,
-    lap: initial,
-    total: initial,
   }
 }
 
@@ -63,7 +67,7 @@ export function useDataSink(
           }
 
         case 'reset':
-          return defaultState(defaultValue)
+          return { ...state, lap: defaultInterval(defaultValue) }
         case 'resume':
           return { ...state, lap: { ...state.lap, timestamp: new Date() } }
       }
