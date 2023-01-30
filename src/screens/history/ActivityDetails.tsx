@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
+import { LineChart } from 'react-native-charts-wrapper'
 import {
   Menu,
   MenuOption,
@@ -17,13 +18,11 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu'
 import MatIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import {
-  DatabaseContext,
-  Datum,
-  Lap,
-} from '../../components/providers/DatabaseProvider'
+import { DatabaseContext } from '../../components/providers/DatabaseProvider'
 import { useStyles } from '../../hooks/styles'
 import { HistoryScreenProps } from '../RootNavigator'
+
+type Point = { x: number; y: number }
 
 export default function ActivityDetails({
   route,
@@ -33,8 +32,8 @@ export default function ActivityDetails({
   const { t } = useTranslation()
   const { edit, activityId } = route.params
   const [dbState, dbDispatch] = useContext(DatabaseContext)
-  const [laps, setLaps] = useState<Lap[]>([])
-  const [data, setData] = useState<Datum[]>([])
+  const [speedData, setSpeedData] = useState<Point[]>()
+  const [hrData, setHrData] = useState<Point[]>()
 
   const [notes, setNotes] = useState<string>('')
   const [editing, setEditing] = useState<boolean>(edit)
@@ -101,8 +100,19 @@ export default function ActivityDetails({
       dbState.status === 'success' &&
       dbState.payload.type === 'getActivityData'
     ) {
-      setLaps(dbState.payload.laps)
-      setData(dbState.payload.data)
+      const firstTime = dbState.payload.data[0].timestamp
+      setSpeedData(
+        dbState.payload.data.map((value) => ({
+          x: (value.timestamp - firstTime) / 1000,
+          y: value.speed!,
+        })),
+      )
+      setHrData(
+        dbState.payload.data.map((value) => ({
+          x: (value.timestamp - firstTime) / 1000,
+          y: value.heart_rate || 0,
+        })),
+      )
     }
   }, [dbState])
 
@@ -130,8 +140,30 @@ export default function ActivityDetails({
 
   return (
     <SafeAreaView
-      style={[styles.safeAreaView, { justifyContent: 'space-between' }]}
+      style={[styles.safeAreaView, { justifyContent: 'flex-start' }]}
     >
+      <View style={{ height: 400 }}>
+        {speedData ? (
+          <LineChart
+            style={{ flex: 1 }}
+            data={{
+              dataSets: [{ label: 'Speed', values: speedData }],
+            }}
+            marker={{ enabled: false }}
+          />
+        ) : null}
+      </View>
+      <View style={{ height: 400 }}>
+        {hrData ? (
+          <LineChart
+            style={{ flex: 1 }}
+            data={{
+              dataSets: [{ label: 'Heart Rate', values: hrData }],
+            }}
+            marker={{ enabled: false }}
+          />
+        ) : null}
+      </View>
       <View>
         <Text style={[styles.largeText]}>{t('notes')}</Text>
         {editing ? (
