@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
-import { PreferencesContext } from '../../components/providers/PreferencesProvider'
 import { SettingsList } from '../../components/SettingsList'
+import { PreferencesContext } from '../../components/providers/PreferencesProvider'
 import { AudioCuesPreferences } from '../../hooks/audioCues'
 import { SettingsScreenProps } from '../RootNavigator'
 

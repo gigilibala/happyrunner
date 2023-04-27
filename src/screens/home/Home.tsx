@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { ActivityType, ACTIVITY_TYPES } from '../../components/ActivityTypes'
+import { ACTIVITY_TYPES, ActivityType } from '../../components/ActivityTypes'
 import { useStyles } from '../../hooks/styles'
 import { HomeScreenProps } from '../RootNavigator'
 

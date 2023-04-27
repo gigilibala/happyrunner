@@ -3,7 +3,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import { IcoMoon } from './IcoMoon'
 
 export const ACTIVITY_TYPES = ['running', 'swimming', 'treadmill'] as const
-export type ActivityType = typeof ACTIVITY_TYPES[number]
+export type ActivityType = (typeof ACTIVITY_TYPES)[number]
 
 export function ActivityIcon({
   type,

@@ -3,7 +3,7 @@ import { GeoPosition } from 'react-native-geolocation-service'
 import { ActivityType } from '../components/ActivityTypes'
 import { DatabaseContext } from '../components/providers/DatabaseProvider'
 import { useDataSink } from './dataSink'
-import { durationHours, MS_IN_SECOND, useUnits } from './units'
+import { MS_IN_SECOND, durationHours, useUnits } from './units'
 
 const INTERVAL_MS = 1000
 

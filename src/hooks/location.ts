@@ -1,8 +1,8 @@
 import { useEffect, useReducer, useState } from 'react'
 import {
   Permission,
-  PermissionsAndroid,
   PermissionStatus,
+  PermissionsAndroid,
   Platform,
 } from 'react-native'
 import Geolocation from 'react-native-geolocation-service'

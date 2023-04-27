@@ -4,8 +4,8 @@ import {
   NativeEventEmitter,
   NativeModules,
   Permission,
-  PermissionsAndroid,
   PermissionStatus,
+  PermissionsAndroid,
   Platform,
 } from 'react-native'
 import BleManager, {
