@@ -16,7 +16,7 @@ export function SpeedCard({ speed, lapSpeed, totalSpeed }: SpeedCardProps) {
 
   return (
     <ProgressInfoCard
-      color="darkkhaki"
+      color={'darkkhaki'}
       title={t(units.speed)}
       unit={speedUnitStr}
       value={speed}

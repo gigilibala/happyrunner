@@ -33,7 +33,7 @@ export function SpeedInputCard({
           onPressIn={() => setPressInterval(setInterval(onSpeedIncrease, 100))}
           onPressOut={() => clearInterval(pressInterval!)}
         >
-          <Icon name="plus" />
+          <Icon name='plus' />
         </TouchableOpacity>
         <View style={[styles.textView, { height: '60%' }]}>
           <Text
@@ -53,7 +53,7 @@ export function SpeedInputCard({
           onPressIn={() => setPressInterval(setInterval(onSpeedDecrease, 100))}
           onPressOut={() => clearInterval(pressInterval!)}
         >
-          <Icon name="minus" />
+          <Icon name='minus' />
         </TouchableOpacity>
       </View>
     </ProgressCard>
