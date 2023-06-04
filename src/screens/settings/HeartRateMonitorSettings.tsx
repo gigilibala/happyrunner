@@ -59,18 +59,15 @@ export function HeartRateMonitorSettings({
     })
   }, [state.enabled])
 
-  useEffect(() => {
-    setBackgroundOpacity(state.status === 'scanning' ? 0.25 : 1.0)
-  }, [state])
-
   function connectButtonTitle(): string {
     switch (state.status) {
       case 'connected':
         return t('disconnect')
+      case 'idle':
+        return t('connect')
       default:
-        if (state.isLoading) return t('connecting')
+        return '...'
     }
-    return t('connect')
   }
 
   const hrmInfo = (
@@ -105,13 +102,29 @@ export function HeartRateMonitorSettings({
     </View>
   )
 
+  const [showModal, setShowModal] = useState<boolean>(false)
+  useEffect(() => {
+    if (state.status === 'scanning') setShowModal(true)
+  }, [state.status])
+  useEffect(() => {
+    if (showModal) {
+      setBackgroundOpacity(0.25)
+      return () =>
+        dispatch({
+          type: 'stopScan',
+        })
+    } else {
+      setBackgroundOpacity(1.0)
+    }
+  }, [showModal])
+
   const scanModal = (
     <Modal
       animationType={'fade'}
-      visible={state.status === 'scanning'}
+      visible={showModal}
       transparent={true}
       statusBarTranslucent={true}
-      onRequestClose={() => dispatch({ type: 'disconnect' })}
+      onRequestClose={() => setShowModal(false)}
     >
       <View style={styles.centeredView}>
         <View style={[styles.modalView, styles.shadow]}>
@@ -124,9 +137,10 @@ export function HeartRateMonitorSettings({
                 key={device.id}
                 onPress={() => {
                   dispatch({
-                    type: 'connect',
+                    type: 'setDevice',
                     payload: { device: device },
                   })
+                  setShowModal(false)
                 }}
               >
                 <View style={styles.iconWithText}>
@@ -143,11 +157,7 @@ export function HeartRateMonitorSettings({
           </ScrollView>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => {
-              dispatch({
-                type: 'stopScan',
-              })
-            }}
+            onPress={() => setShowModal(false)}
           >
             <Text style={styles.buttonText}>{t('cancel')}</Text>
           </TouchableOpacity>
@@ -160,9 +170,11 @@ export function HeartRateMonitorSettings({
     <TouchableOpacity
       style={styles.button}
       onPress={() =>
-        dispatch({ type: 'connect', payload: { device: state.device! } })
+        dispatch({
+          type: state.status === 'connected' ? 'disconnect' : 'connect',
+        })
       }
-      disabled={!state.enabled || state.isLoading}
+      disabled={!state.enabled || state.isLoading || !state.device}
     >
       <Text style={styles.buttonText}>{connectButtonTitle()}</Text>
     </TouchableOpacity>

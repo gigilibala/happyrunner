@@ -23,10 +23,10 @@ export interface Device {
 }
 
 type Action =
-  | { type: 'initialize' | 'scan' | 'stopScan' | 'disconnect' }
+  | { type: 'initialize' | 'scan' | 'stopScan' | 'disconnect' | 'connect' }
   | { type: 'addDevice'; payload: { device: Device } }
-  | { type: 'connect'; payload: { device: Device } }
-  | { type: 'success' }
+  | { type: 'setDevice'; payload: { device: Device } }
+  | { type: 'success'; payload: 'connected' | 'idle' }
   | { type: 'enable'; payload: boolean }
   | { type: 'failure'; error: Error }
   | { type: 'heartRate'; payload: { heartRate: number } }
@@ -88,21 +88,30 @@ export function useHeartRateMonitor(): [State, React.Dispatch<Action>] {
             ...state,
             devices: [...state.devices, action.payload.device],
           }
+        case 'setDevice':
+          return { ...state, device: action.payload.device }
         case 'connect':
-          if (!state.enabled || state.status === 'connected' || state.isLoading)
+          if (
+            !state.enabled ||
+            state.isLoading ||
+            !state.device ||
+            state.status === 'connected'
+          )
             return state
-          connect(action.payload.device)
-            .then(() => dispatch({ type: 'success' }))
+          connect(state.device)
+            .then(() => dispatch({ type: 'success', payload: 'connected' }))
             .catch((error) => dispatch({ type: 'failure', error: error }))
-          return { ...state, isLoading: true, device: action.payload.device }
+          return { ...state, isLoading: true }
         case 'disconnect':
-          if (state.enabled && state.status === 'connected' && state.isLoading)
-            disconnect().finally(() => dispatch({ type: 'success' }))
-          return state
+          if (!state.enabled || state.isLoading || !state.device) return state
+          disconnect(state.device).finally(() =>
+            dispatch({ type: 'success', payload: 'idle' }),
+          )
+          return { ...state, isLoading: true }
         case 'success':
           return {
             ...state,
-            status: state.isLoading ? 'connected' : 'idle',
+            status: action.payload,
             isLoading: false,
           }
         case 'failure':
@@ -266,15 +275,15 @@ export function useHeartRateMonitor(): [State, React.Dispatch<Action>] {
       .then((info) => startReadingData(info))
   }
 
-  function disconnect() {
+  function disconnect(device: Device) {
     return new Promise<void>((resolve, reject) => {
-      if (state.device === undefined) {
+      if (device === undefined) {
         resolve()
         return
       }
-      BleManager.disconnect(state.device.id)
+      BleManager.disconnect(device.id)
         .then(() => {
-          console.log('Disconnected from device: ', state.device)
+          console.log('Disconnected from device: ', device)
         })
         .catch((error) =>
           console.log(

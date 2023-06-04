@@ -10,7 +10,8 @@
     "test": "jest",
     "lint:fix": "prettier --write .",
     "lint:check": "prettier --check .",
-    "syncTime": "adb -e shell su root date `date +\"%m%d%H%M%y\"`"
+    "syncTime": "adb -e shell su root date `date +\"%m%d%H%M%y\"`",
+    "setupAdb": "adb -s 0B111JEC202189 reverse tcp:10000 tcp:8081"
   },
   "dependencies": {
     "@notifee/react-native": "^7.1.0",
