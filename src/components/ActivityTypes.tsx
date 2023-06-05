@@ -5,22 +5,24 @@ import { IcoMoon } from './IcoMoon'
 export const ACTIVITY_TYPES = ['running', 'swimming', 'treadmill'] as const
 export type ActivityType = (typeof ACTIVITY_TYPES)[number]
 
-export function ActivityIcon({
-  type,
-  size,
-}: {
+type ActivityIconProps = {
   type?: ActivityType
-  size: number
-}) {
+  size?: number
+  color?: string
+}
+
+export function ActivityIcon({ type, size, color }: ActivityIconProps) {
+  if (color === undefined) color = 'blue'
+  if (size === undefined) size = 20
   switch (type) {
     case 'running':
-      return <Icon name={'running'} color={'blue'} size={size} />
+      return <Icon name={'running'} color={color} size={size} />
     case 'swimming':
-      return <IcoMoon name={'swimming'} color={'blue'} size={size - 10} />
+      return <IcoMoon name={'swimming'} color={color} size={size - 10} />
     case 'treadmill':
-      return <IcoMoon name={'treadmill'} color={'blue'} size={size} />
+      return <IcoMoon name={'treadmill'} color={color} size={size} />
     default:
-      return <Icon name={'question'} color={'blue'} size={size} />
+      return <Icon name={'question'} color={color} size={size} />
   }
 }
 

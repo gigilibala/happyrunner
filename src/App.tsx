@@ -6,6 +6,7 @@ import {
 import React from 'react'
 import { LogBox, useColorScheme } from 'react-native'
 import BleManager from 'react-native-ble-manager'
+import { PaperProvider } from 'react-native-paper'
 import { MenuProvider } from 'react-native-popup-menu'
 import { enablePromise } from 'react-native-sqlite-storage'
 import { DatabaseProvider } from './components/providers/DatabaseProvider'
@@ -29,13 +30,15 @@ export default function App() {
   return (
     <PreferencesProvider>
       <DatabaseProvider>
-        <NavigationContainer
-          theme={scheme === 'dark' ? DarkTheme : DefaultTheme}
-        >
-          <MenuProvider>
-            <RootNavigator />
-          </MenuProvider>
-        </NavigationContainer>
+        <PaperProvider>
+          <NavigationContainer
+            theme={scheme === 'dark' ? DarkTheme : DefaultTheme}
+          >
+            <MenuProvider>
+              <RootNavigator />
+            </MenuProvider>
+          </NavigationContainer>
+        </PaperProvider>
       </DatabaseProvider>
     </PreferencesProvider>
   )

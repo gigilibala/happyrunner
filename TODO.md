@@ -3,6 +3,7 @@
 - Add support for iOS:
 
   - Font icon material [here](https://github.com/oblador/react-native-vector-icons)
+  - React native paper [here](https://callstack.github.io/react-native-paper/docs/guides/getting-started)
 
 * What we need in active workout screen
 

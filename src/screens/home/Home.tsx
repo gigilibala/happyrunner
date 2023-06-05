@@ -1,10 +1,14 @@
-import { Picker } from '@react-native-picker/picker'
 import { Theme } from '@react-navigation/native'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet } from 'react-native'
+import { Dialog, FAB, List } from 'react-native-paper'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { ACTIVITY_TYPES, ActivityType } from '../../components/ActivityTypes'
+import {
+  ACTIVITY_TYPES,
+  ActivityIcon,
+  ActivityType,
+} from '../../components/ActivityTypes'
 import { useStyles } from '../../hooks/styles'
 import { HomeScreenProps } from '../RootNavigator'
 
@@ -12,50 +16,61 @@ export default function Home({ navigation }: HomeScreenProps<'Home'>) {
   const styles = useStyles(createStyles)
   const { t, i18n } = useTranslation()
   const [activityType, setActivityType] = useState<ActivityType>('running')
+  const [showWorkoutDialog, setShowWorkoutDialog] = useState<boolean>(false)
+  const [showWorkoutFab, setShowWorkoutFab] = useState<boolean>(false)
+  const activityStr = t(`activityType.${activityType}`)
 
   return (
-    <SafeAreaView style={[styles.safeAreaView, styles.verticalContainer]}>
-      <View>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            i18n.language === 'en'
-              ? i18n.changeLanguage('it')
-              : i18n.changeLanguage('en')
-          }}
-        >
-          <Text style={styles.buttonText}>{t('test')}</Text>
-        </TouchableOpacity>
-
-        <View>
-          <Picker
-            selectedValue={activityType}
-            onValueChange={(value) => {
-              setActivityType(value)
-            }}
-          >
-            {ACTIVITY_TYPES.map((type) => (
-              <Picker.Item
-                label={t(`activityType.${type}`)}
-                value={type}
-                key={type}
-              />
-            ))}
-          </Picker>
-        </View>
-      </View>
-      <View>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => {
-            navigation.navigate('ActivityInProgress', {
-              type: activityType,
-            })
-          }}
-        >
-          <Text style={styles.buttonText}>Prepare</Text>
-        </TouchableOpacity>
-      </View>
+    <SafeAreaView style={styles.safeAreaView}>
+      <Dialog
+        visible={showWorkoutDialog}
+        onDismiss={() => setShowWorkoutDialog(false)}
+      >
+        <Dialog.Content>
+          {ACTIVITY_TYPES.map((type) => (
+            <List.Item
+              key={type}
+              title={t(`activityType.${type}`)}
+              left={({ color, style }) => ActivityIcon({ type, color })}
+              onPress={() => {
+                setShowWorkoutDialog(false)
+                setActivityType(type)
+                navigation.navigate('ActivityInProgress', {
+                  type: type,
+                })
+              }}
+            />
+          ))}
+        </Dialog.Content>
+      </Dialog>
+      <FAB.Group
+        icon={showWorkoutFab ? 'close' : 'plus'}
+        open={showWorkoutFab}
+        onStateChange={(state) => {
+          setShowWorkoutFab(state.open)
+        }}
+        visible={!showWorkoutDialog}
+        onPress={() => setShowWorkoutFab((prev) => !prev)}
+        actions={[
+          {
+            label: activityStr,
+            icon: ({ size, color }) =>
+              ActivityIcon({ type: activityType, size, color }),
+            onPress: () => {
+              navigation.navigate('ActivityInProgress', {
+                type: activityType,
+              })
+            },
+          },
+          {
+            label: t('choose'),
+            icon: 'arrow-decision',
+            onPress: () => {
+              setShowWorkoutDialog(true)
+            },
+          },
+        ]}
+      />
     </SafeAreaView>
   )
 }
