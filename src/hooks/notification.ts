@@ -1,65 +1,72 @@
-import Notifee, { AuthorizationStatus } from '@notifee/react-native'
-import { useEffect, useReducer } from 'react'
+import Notifee, {
+  AndroidVisibility,
+  AuthorizationStatus,
+  EventType,
+  Notification,
+} from '@notifee/react-native'
+import { useEffect, useReducer, useState } from 'react'
 
-type Action =
-  | { type: 'display' | 'cancel' }
-  | { type: 'success' }
-  | { type: 'failure'; error: Error }
-type State = { status: 'on' | 'off'; isLoading: boolean; error?: Error }
+type FgnProps = {
+  title?: string
+  subtitle?: string
+  body?: string
+}
+type Action = { type: 'updateFg'; payload: FgnProps }
+type State = {
+  fgn: FgnProps
+}
 
 export function useNotification(): [State, React.Dispatch<Action>] {
+  const [fgn, setFgn] = useState<Notification>()
+
   const [state, dispatch] = useReducer(
     (state: State, action: Action): State => {
       switch (action.type) {
-        case 'display':
-          if (state.isLoading) return state
-          displayNotification()
-            .then(() => dispatch({ type: 'success' }))
-            .catch((error) => {
-              console.log('Failed to start notification: ', error)
-              dispatch({ type: 'failure', error: error })
-            })
-          return { status: 'off', isLoading: true }
-        case 'cancel':
-          if (state.isLoading) return state
-          cancelNotification()
-            .then(() => dispatch({ type: 'success' }))
-            .catch((error) => {
-              console.log('Failed to cancel notification: ', error)
-              dispatch({ type: 'failure', error: error })
-            })
-          return { status: 'on', isLoading: true }
-        case 'success':
-          return { status: 'on', isLoading: false }
-        case 'failure':
-          return { status: 'off', isLoading: false, error: action.error }
+        case 'updateFg':
+          return { ...state, fgn: action.payload }
       }
     },
-    { status: 'off', isLoading: false },
+    { fgn: {} },
   )
 
   useEffect(() => {
     Notifee.onBackgroundEvent(({ type, detail }) => {
       return new Promise<void>((resolve, reject) => {
+        console.log(
+          `Background event type ${type} with detail ${JSON.stringify(
+            detail,
+          )} received.`,
+        )
         resolve()
       })
     })
     const unregisterForegroundEventCallback = Notifee.onForegroundEvent(
       ({ type, detail }) => {
         return new Promise<void>((resolve, reject) => {
+          if (type === EventType.DELIVERED) return
+          console.log(
+            `Foreground event type ${type} with detail ${JSON.stringify(
+              detail,
+            )} received`,
+          )
           resolve()
         })
       },
     )
 
     Notifee.registerForegroundService((notification) => {
-      return new Promise<void>((resolve, reject) => {})
+      setFgn(notification)
+      return new Promise<void>(() => {})
     })
 
-    dispatch({ type: 'display' })
+    displayNotification().catch((error) => {
+      console.error('Failed to start notification: ', error)
+    })
 
     return () => {
-      dispatch({ type: 'cancel' })
+      cancelNotification().catch((error) => {
+        console.warn('Failed to cancel notification: ', error)
+      })
       unregisterForegroundEventCallback()
       Notifee.stopForegroundService().then(() => {
         console.log('Stopped foreground service.')
@@ -67,27 +74,46 @@ export function useNotification(): [State, React.Dispatch<Action>] {
     }
   }, [])
 
+  useEffect(() => {
+    if (fgn === undefined) return
+
+    Notifee.displayNotification({
+      id: fgn.id,
+      title: state.fgn.title,
+      subtitle: state.fgn.subtitle,
+      body: state.fgn.body,
+      android: { ...fgn.android },
+    }).catch((error) => console.error('Failed to set notification: ', error))
+  }, [state.fgn, fgn])
+
   async function displayNotification(): Promise<void> {
     console.log('Displaying notification.')
     const permission = await Notifee.requestPermission()
+    // TODO: Handle denied authorization.
     if (permission.authorizationStatus === AuthorizationStatus.DENIED)
       throw 'Notification display permission not granted!'
     const channelId = await Notifee.createChannel({
       id: 'default',
       name: 'Default Channel',
     })
+
     await Notifee.displayNotification({
-      title: 'title',
-      subtitle: 'subtitle',
-      body: 'body',
       android: {
         channelId: channelId,
         asForegroundService: true,
         ongoing: true,
+        onlyAlertOnce: true,
+        showChronometer: true,
+        timestamp: Date.now(),
+        // TODO: set large icon.
         pressAction: {
           id: 'default',
         },
-        actions: [{ title: 'Stop', pressAction: { id: 'default' } }],
+        visibility: AndroidVisibility.PUBLIC,
+        actions: [
+          { title: 'Stop', pressAction: { id: 'default' } },
+          { title: 'Lap', pressAction: { id: 'default' } },
+        ],
       },
     })
   }

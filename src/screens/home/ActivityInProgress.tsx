@@ -52,6 +52,16 @@ export default function ActivityInProgress({
   }, [])
 
   useEffect(() => {
+    notificationDispatch({
+      type: 'updateFg',
+      payload: {
+        title: t(`activityType.${type}`),
+        body: `HR: ${hrmState.heartRate}`,
+      },
+    })
+  }, [state.duration, hrmState.heartRate, state.speed])
+
+  useEffect(() => {
     // Add this so when the back button is pressed, we don't exit suddenly and
     // force the user to either pause or stop.
     return navigation.addListener('beforeRemove', (event) => {
