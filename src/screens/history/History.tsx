@@ -1,14 +1,8 @@
 import { Theme, useFocusEffect } from '@react-navigation/native'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { List } from 'react-native-paper'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { ActivityIcon } from '../../components/ActivityTypes'
 import {
@@ -45,30 +39,19 @@ export function History({ navigation }: HistoryScreenProps<'History'>) {
     const durationStr = duration
       ? duration[0] + ' ' + (duration[1] ? t('hours') : t('minutes'))
       : null
+    const title = new Date(detail.start_time).toLocaleString('en-us', {
+      weekday: 'short',
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+
     return (
-      <TouchableOpacity
-        style={[styles.card, styles.item]}
-        onPress={() =>
-          navigation.navigate('ActivityDetails', {
-            activityId: detail.activity_id,
-            edit: false,
-          })
-        }
-      >
-        <ActivityIcon type={detail.type} size={30} />
-        <View style={styles.activityDetailsView}>
-          <View>
-            <Text style={styles.text}>
-              {new Date(detail.start_time).toLocaleString('en-us', {
-                weekday: 'short',
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-            </Text>
-          </View>
+      <List.Item
+        title={title}
+        description={() => (
           <View style={styles.detailsText}>
             {detail.distance ? (
               <Text style={[styles.text, { color: 'olive' }]}>
@@ -81,9 +64,21 @@ export function History({ navigation }: HistoryScreenProps<'History'>) {
               </Text>
             ) : null}
           </View>
-        </View>
-        <Icon name={'chevron-right'} color={'grey'} />
-      </TouchableOpacity>
+        )}
+        left={({ color, style }) => (
+          <ActivityIcon type={detail.type} color={color} style={style} />
+        )}
+        right={({ color, style }) => (
+          <Icon name={'chevron-right'} color={color} style={style} />
+        )}
+        style={[styles.card]}
+        onPress={() =>
+          navigation.navigate('ActivityDetails', {
+            activityId: detail.activity_id,
+            edit: false,
+          })
+        }
+      />
     )
   }
 
@@ -100,23 +95,9 @@ export function History({ navigation }: HistoryScreenProps<'History'>) {
 
 const createStyles = (theme: Theme) =>
   StyleSheet.create({
-    item: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      height: 60,
-    },
-    activityDetailsView: {
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      flexGrow: 1,
-      flex: 1,
-    },
     detailsText: {
       flexDirection: 'row',
-      justifyContent: 'space-evenly',
+      justifyContent: 'space-between',
       alignItems: 'center',
-      width: '90%',
     },
   })

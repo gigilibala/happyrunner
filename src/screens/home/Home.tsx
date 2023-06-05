@@ -31,7 +31,7 @@ export default function Home({ navigation }: HomeScreenProps<'Home'>) {
             <List.Item
               key={type}
               title={t(`activityType.${type}`)}
-              left={({ color, style }) => ActivityIcon({ type, color })}
+              left={({ color, style }) => ActivityIcon({ type, color, style })}
               onPress={() => {
                 setShowWorkoutDialog(false)
                 setActivityType(type)
