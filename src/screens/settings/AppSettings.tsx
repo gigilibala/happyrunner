@@ -1,11 +1,8 @@
 import { Theme } from '@react-navigation/native'
 import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Alert, StyleSheet } from 'react-native'
-import Icon from 'react-native-vector-icons/FontAwesome5'
-import MatIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { SettingsList } from '../../components/SettingsList'
-import { DatabaseContext } from '../../components/providers/DatabaseProvider'
+import { SafeAreaView, StyleSheet } from 'react-native'
+import { List } from 'react-native-paper'
 import { PreferencesContext } from '../../components/providers/PreferencesProvider'
 import { useStyles } from '../../hooks/styles'
 import { SettingsScreenProps } from '../RootNavigator'
@@ -16,135 +13,62 @@ export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
 
-  const [_, dbDispatch] = useContext(DatabaseContext)
-
   const { usePrefState } = useContext(PreferencesContext)
   const [audioCuesPref] = usePrefState('audioCues')
-  const [{ distance, speed }, setUnits] = usePrefState('units')
+  const navIcon = () => <List.Icon icon={'chevron-right'} />
 
-  return SettingsList([
-    {
-      title: t('general'),
-      data: [
-        {
-          kind: 'navigation',
-          title: t('heartRateMonitor'),
-          onPress: () => navigation.navigate('HeartRateMonitorSettings'),
-          icon: (
-            <Icon
-              name={'bluetooth-b'}
-              color={'blue'}
-              size={ICON_SIZE}
-              style={styles.icon}
+  return (
+    <SafeAreaView style={styles.safeAreaView}>
+      <List.Section>
+        <List.Subheader>{t('general')}</List.Subheader>
+        <List.Item
+          title={t('heartRateMonitor')}
+          left={({ color, style }) => (
+            <List.Icon icon={'bluetooth'} color={color} style={style} />
+          )}
+          right={navIcon}
+          onPress={() => navigation.navigate('HeartRateMonitorSettings')}
+        />
+        <List.Item
+          title={t('audioCues')}
+          description={audioCuesPref.enabled ? t('on') : t('off')}
+          left={({ color, style }) => (
+            <List.Icon icon={'voicemail'} color={color} style={style} />
+          )}
+          right={navIcon}
+          onPress={() => navigation.navigate('AudioCues')}
+        />
+        <List.Item
+          title={t('units')}
+          left={({ color, style }) => (
+            <List.Icon
+              icon={'map-marker-distance'}
+              color={color}
+              style={style}
             />
-          ),
-        },
-        {
-          kind: 'navigation',
-          title: t('audioCues'),
-          value: audioCuesPref.enabled ? t('on') : t('off'),
-          onPress: () => navigation.navigate('AudioCues'),
-          icon: (
-            <Icon
-              name={'headphones-alt'}
-              color={'grey'}
-              size={ICON_SIZE}
-              style={styles.icon}
-            />
-          ),
-        },
-        {
-          kind: 'navigation',
-          title: t('screens.about'),
-          onPress: () => navigation.navigate('About'),
-          icon: (
-            <Icon
-              name={'info-circle'}
-              color={'grey'}
-              size={ICON_SIZE}
-              style={styles.icon}
-            />
-          ),
-        },
-      ],
-    },
-    {
-      title: t('units'),
-      data: [
-        {
-          kind: 'button',
-          title: t('distance'),
-          onPress: () =>
-            setUnits((prev) => ({
-              ...prev,
-              distance: prev.distance === 'kilometers' ? 'miles' : 'kilometers',
-            })),
-          value: t(distance),
-          icon: (
-            <MatIcon
-              name={'map-marker-distance'}
-              color={'grey'}
-              size={ICON_SIZE}
-              style={styles.icon}
-            />
-          ),
-        },
-        {
-          kind: 'button',
-          title: t('speed'),
-          onPress: () =>
-            setUnits((prev) => ({
-              ...prev,
-              speed: prev.speed === 'pace' ? 'speed' : 'pace',
-            })),
-          value: t(speed),
-          icon: (
-            <MatIcon
-              name={'speedometer'}
-              color={'grey'}
-              size={ICON_SIZE}
-              style={styles.icon}
-            />
-          ),
-        },
-      ],
-    },
-    {
-      title: t('advanced'),
-      data: [
-        {
-          kind: 'button',
-          title: t('clearDatabase'),
-          onPress: () => {
-            Alert.alert(
-              t('clearDatabase'),
-              t('clearDatabaseNotice'),
-              [
-                {
-                  text: t('yes'),
-                  onPress: () => dbDispatch({ type: 'clearDatabase' }),
-                  style: 'destructive',
-                },
-                { text: t('cancel'), style: 'cancel' },
-              ],
-              { cancelable: true },
-            )
-          },
-          icon: (
-            <Icon
-              name={'database'}
-              color={'grey'}
-              size={ICON_SIZE}
-              style={styles.icon}
-            />
-          ),
-        },
-      ],
-    },
-  ])
+          )}
+          right={navIcon}
+          onPress={() => navigation.navigate('Units')}
+        />
+        <List.Item
+          title={t('advanced')}
+          left={({ color, style }) => (
+            <List.Icon icon={'database-settings'} color={color} style={style} />
+          )}
+          right={navIcon}
+          onPress={() => navigation.navigate('Advanced')}
+        />
+        <List.Item
+          title={t('screens.about')}
+          left={({ color, style }) => (
+            <List.Icon icon={'information'} color={color} style={style} />
+          )}
+          right={navIcon}
+          onPress={() => navigation.navigate('About')}
+        />
+      </List.Section>
+    </SafeAreaView>
+  )
 }
 
-const createStyles = (theme: Theme) =>
-  StyleSheet.create({
-    icon: { padding: 5 },
-  })
+const createStyles = (theme: Theme) => StyleSheet.create({})

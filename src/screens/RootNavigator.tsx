@@ -19,9 +19,11 @@ import { History } from './history/History'
 import ActivityInProgress from './home/ActivityInProgress'
 import Home from './home/Home'
 import { About } from './settings/About'
+import { Advanced } from './settings/Advanced'
 import { AppSettings } from './settings/AppSettings'
 import { AudioCues } from './settings/AudioCues'
 import { HeartRateMonitorSettings } from './settings/HeartRateMonitorSettings'
+import { Units } from './settings/Units'
 
 type RootParams = {
   HomeRoot: NavigatorScreenParams<HomeScreenParams>
@@ -136,6 +138,8 @@ type SettingsScreenParams = {
   Settings: undefined
   HeartRateMonitorSettings: undefined
   AudioCues: undefined
+  Units: undefined
+  Advanced: undefined
   About: undefined
 }
 export type SettingsScreenProps<T extends keyof SettingsScreenParams> =
@@ -162,6 +166,16 @@ function SettingsRoot() {
         name={'AudioCues'}
         component={AudioCues}
         options={{ title: t('audioCues') }}
+      />
+      <SettingsStack.Screen
+        name={'Units'}
+        component={Units}
+        options={{ title: t('units') }}
+      />
+      <SettingsStack.Screen
+        name={'Advanced'}
+        component={Advanced}
+        options={{ title: t('advanced') }}
       />
       <SettingsStack.Screen
         name={'About'}
