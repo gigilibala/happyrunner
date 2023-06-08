@@ -19,9 +19,7 @@ import { SettingsScreenProps } from '../RootNavigator'
 
 const ICON_SIZE = 20
 
-export function HeartRateMonitorSettings({
-  navigation,
-}: SettingsScreenProps<'HeartRateMonitorSettings'>) {
+export function Sensors({ navigation }: SettingsScreenProps<'Sensors'>) {
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
   const [backgroundOpacity, setBackgroundOpacity] = useState<number>(1)

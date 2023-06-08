@@ -22,7 +22,7 @@ import { About } from './settings/About'
 import { Advanced } from './settings/Advanced'
 import { AppSettings } from './settings/AppSettings'
 import { AudioCues } from './settings/AudioCues'
-import { HeartRateMonitorSettings } from './settings/HeartRateMonitorSettings'
+import { Sensors } from './settings/Sensors'
 import { Units } from './settings/Units'
 
 type RootParams = {
@@ -136,7 +136,7 @@ function HistoryRoot() {
 
 type SettingsScreenParams = {
   Settings: undefined
-  HeartRateMonitorSettings: undefined
+  Sensors: undefined
   AudioCues: undefined
   Units: undefined
   Advanced: undefined
@@ -158,9 +158,9 @@ function SettingsRoot() {
         options={{ title: t('screens.settings') }}
       />
       <SettingsStack.Screen
-        name={'HeartRateMonitorSettings'}
-        component={HeartRateMonitorSettings}
-        options={{ title: t('heartRateMonitor') }}
+        name={'Sensors'}
+        component={Sensors}
+        options={{ title: t('sensors') }}
       />
       <SettingsStack.Screen
         name={'AudioCues'}

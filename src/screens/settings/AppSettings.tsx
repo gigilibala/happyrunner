@@ -22,12 +22,12 @@ export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
       <List.Section>
         <List.Subheader>{t('general')}</List.Subheader>
         <List.Item
-          title={t('heartRateMonitor')}
+          title={t('sensors')}
           left={({ color, style }) => (
             <List.Icon icon={'bluetooth'} color={color} style={style} />
           )}
           right={navIcon}
-          onPress={() => navigation.navigate('HeartRateMonitorSettings')}
+          onPress={() => navigation.navigate('Sensors')}
         />
         <List.Item
           title={t('audioCues')}

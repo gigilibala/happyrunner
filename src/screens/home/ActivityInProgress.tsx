@@ -133,7 +133,7 @@ export default function ActivityInProgress({
           totalHeartRate={state.heartRate?.total}
           onPressConnectDevice={() =>
             navigation.navigate('SettingsRoot', {
-              screen: 'HeartRateMonitorSettings',
+              screen: 'Sensors',
               initial: false,
             })
           }

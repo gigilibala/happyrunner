@@ -11,6 +11,7 @@
   },
   "heartRate": "Heart Rate",
   "heartRateMonitor": "Heart Rate Monitor",
+  "sensors": "Sensors",
   "audioCues": "Audio Cues",
   "enabled": "Enabled",
   "addSensor": "Add Sensor",
