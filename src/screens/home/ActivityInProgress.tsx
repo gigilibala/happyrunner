@@ -18,6 +18,7 @@ import { useLocation } from '../../hooks/location'
 import { useNotification } from '../../hooks/notification'
 import { useSpeed } from '../../hooks/speed'
 import { BUTTON_SIZE, useStyles } from '../../hooks/styles'
+import { useUnits } from '../../hooks/units'
 import { HomeScreenProps } from '../RootNavigator'
 
 export default function ActivityInProgress({
@@ -30,6 +31,7 @@ export default function ActivityInProgress({
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
 
+  const { units, speedUnitStr } = useUnits()
   const [hrmState, hrmDispatch] = useHeartRateMonitor()
   const [locationState, locationDispatch] = useLocation()
   const [speedState, speedDispatch] = useSpeed()
@@ -52,14 +54,20 @@ export default function ActivityInProgress({
   }, [])
 
   useEffect(() => {
+    const bodyArray = []
+    if (hrmState.heartRate !== undefined)
+      bodyArray.push(`${hrmState.heartRate} BPM`)
+    bodyArray.push(`${state.distance.total} ${units.distance}`)
+    bodyArray.push(`${speedState.displaySpeed} ${speedUnitStr}`)
+
     notificationDispatch({
       type: 'updateFg',
       payload: {
         title: t(`activityType.${type}`),
-        body: `HR: ${hrmState.heartRate}`,
+        body: bodyArray.join(', '),
       },
     })
-  }, [state.duration, hrmState.heartRate, state.speed])
+  }, [type, state.duration, hrmState.heartRate, state.speed])
 
   useEffect(() => {
     // Add this so when the back button is pressed, we don't exit suddenly and
