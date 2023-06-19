@@ -1,8 +1,7 @@
 import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SettingsList } from '../../components/SettingsList'
+import { List, Switch } from 'react-native-paper'
 import { PreferencesContext } from '../../components/providers/PreferencesProvider'
-import { AudioCuesPreferences } from '../../hooks/audioCues'
 import { SettingsScreenProps } from '../RootNavigator'
 
 export function AudioCues({}: SettingsScreenProps<'AudioCues'>) {
@@ -10,21 +9,19 @@ export function AudioCues({}: SettingsScreenProps<'AudioCues'>) {
   const [pref, setPref] = usePrefState('audioCues')
   const { t } = useTranslation()
 
-  return SettingsList([
-    {
-      data: [
-        {
-          kind: 'switch',
-          title: t('enabled'),
-          switchValue: pref?.enabled,
-          onPress: () =>
-            setPref((prevValue: AudioCuesPreferences) => {
-              const newValue = { ...prevValue } as AudioCuesPreferences
-              newValue.enabled = !prevValue.enabled
-              return newValue
-            }),
-        },
-      ],
-    },
-  ])
+  return (
+    <List.Item
+      title={t('enabled')}
+      right={() => (
+        <Switch
+          value={pref.enabled}
+          onValueChange={() =>
+            setPref((prev) => {
+              return { ...prev, enabled: !prev.enabled }
+            })
+          }
+        />
+      )}
+    />
+  )
 }
