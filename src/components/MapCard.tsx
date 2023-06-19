@@ -1,55 +1,39 @@
-import React, { useEffect, useState } from 'react'
-import { Platform, View } from 'react-native'
-import MapView, {
-  Animated,
-  AnimatedRegion,
-  Region,
-  UrlTile,
-} from 'react-native-maps'
+import React, { useEffect, useRef } from 'react'
+import { View } from 'react-native'
+import MapView, { Animated, UrlTile } from 'react-native-maps'
 
 type MapCardProps = {
-  region: Region
+  latitude: number
+  longitude: number
 }
 
-export default function MapCard(props: MapCardProps) {
-  const [region, setRegion] = useState<Region>(
-    new AnimatedRegion({ ...props.region }),
-  )
-
-  let _mapView: MapView | null
+export default function MapCard({ latitude, longitude }: MapCardProps) {
+  const _mapView = useRef<MapView>()
 
   useEffect(() => {
-    // TODO: Fix the animated camera to follow the location. This doesn't work yet.
-    _mapView?.animateCamera(
-      {
-        center: {
-          latitude: props.region.latitude,
-          longitude: props.region.longitude,
-        },
-      },
-      { duration: 500 },
-    )
-  }, [props.region])
+    _mapView.current?.animateToRegion({
+      latitude: latitude,
+      longitude: longitude,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
+    })
+  }, [latitude, longitude])
 
   return (
     <View>
       <Animated
-        ref={(mapView: any) => {
-          _mapView = mapView
-        }}
+        ref={_mapView}
         style={{
           minHeight: '60%',
         }}
-        region={region}
-        onRegionChange={(region, details) => setRegion(region)}
         onMapLoaded={() => console.log('maps loaded')}
         onMapReady={() => console.log('maps ready')}
-        mapType={Platform.OS === 'android' ? 'none' : 'standard'}
+        mapType={'standard'}
         showsCompass
         rotateEnabled
         zoomEnabled
         loadingEnabled
-        showsUserLocation
+        showsUserLocation // Use a marker instead of native user location.
       >
         <UrlTile
           urlTemplate='https://tile.openstreetmap.de/{z}/{x}/{y}.png'
