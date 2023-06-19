@@ -1,9 +1,8 @@
 import { Theme } from '@react-navigation/native'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { StyleSheet } from 'react-native'
+import { SafeAreaView, StyleSheet } from 'react-native'
 import { Dialog, FAB, List } from 'react-native-paper'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import {
   ACTIVITY_TYPES,
   ActivityIcon,

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { View } from 'react-native'
+import { SafeAreaView, View } from 'react-native'
 import { Text } from 'react-native-paper'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import MapCard from '../../components/MapCard'
 import { useLocation } from '../../hooks/location'
 
