@@ -66,6 +66,14 @@ export function AppSettings({ navigation }: SettingsScreenProps<'Settings'>) {
           right={navIcon}
           onPress={() => navigation.navigate('About')}
         />
+        <List.Item
+          title={t('maps')}
+          left={({ color, style }) => (
+            <List.Icon icon={'map'} color={color} style={style} />
+          )}
+          right={navIcon}
+          onPress={() => navigation.navigate('Maps')}
+        />
       </List.Section>
     </SafeAreaView>
   )

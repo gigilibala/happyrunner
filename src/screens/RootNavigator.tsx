@@ -22,6 +22,7 @@ import { About } from './settings/About'
 import { Advanced } from './settings/Advanced'
 import { AppSettings } from './settings/AppSettings'
 import { AudioCues } from './settings/AudioCues'
+import Maps from './settings/Maps'
 import { Sensors } from './settings/Sensors'
 import { Units } from './settings/Units'
 
@@ -141,6 +142,7 @@ type SettingsScreenParams = {
   Units: undefined
   Advanced: undefined
   About: undefined
+  Maps: undefined
 }
 export type SettingsScreenProps<T extends keyof SettingsScreenParams> =
   CompositeScreenProps<
@@ -181,6 +183,11 @@ function SettingsRoot() {
         name={'About'}
         component={About}
         options={{ title: t('screens.about') }}
+      />
+      <SettingsStack.Screen
+        name={'Maps'}
+        component={Maps}
+        options={{ title: t('maps') }}
       />
     </SettingsStack.Navigator>
   )

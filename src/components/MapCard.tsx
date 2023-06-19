@@ -1,28 +1,55 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Platform, View } from 'react-native'
-import MapView, { Region, UrlTile } from 'react-native-maps'
+import MapView, {
+  Animated,
+  AnimatedRegion,
+  Region,
+  UrlTile,
+} from 'react-native-maps'
 
-export default function MapCard() {
-  const [region, setRegion] = useState<Region>({
-    latitude: 35.468404,
-    longitude: 50.984149,
-    latitudeDelta: 0.01,
-    longitudeDelta: 0.01,
-  })
+type MapCardProps = {
+  region: Region
+}
+
+export default function MapCard(props: MapCardProps) {
+  const [region, setRegion] = useState<Region>(
+    new AnimatedRegion({ ...props.region }),
+  )
+
+  let _mapView: MapView | null
+
+  useEffect(() => {
+    // TODO: Fix the animated camera to follow the location. This doesn't work yet.
+    _mapView?.animateCamera(
+      {
+        center: {
+          latitude: props.region.latitude,
+          longitude: props.region.longitude,
+        },
+      },
+      { duration: 500 },
+    )
+  }, [props.region])
 
   return (
     <View>
-      <MapView
+      <Animated
+        ref={(mapView: any) => {
+          _mapView = mapView
+        }}
         style={{
           minHeight: '60%',
         }}
-        initialRegion={region}
-        onRegionChange={(region) => setRegion(region)}
-        onMapLoaded={() => console.log('loaded')}
-        onMapReady={() => console.log('ready')}
+        region={region}
+        onRegionChange={(region, details) => setRegion(region)}
+        onMapLoaded={() => console.log('maps loaded')}
+        onMapReady={() => console.log('maps ready')}
         mapType={Platform.OS === 'android' ? 'none' : 'standard'}
-        rotateEnabled={true}
-        zoomEnabled={true}
+        showsCompass
+        rotateEnabled
+        zoomEnabled
+        loadingEnabled
+        showsUserLocation
       >
         <UrlTile
           urlTemplate='https://tile.openstreetmap.de/{z}/{x}/{y}.png'
@@ -30,7 +57,7 @@ export default function MapCard() {
           maximumZ={20}
           flipY={false}
         />
-      </MapView>
+      </Animated>
     </View>
   )
 }

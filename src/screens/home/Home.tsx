@@ -9,7 +9,6 @@ import {
   ActivityIcon,
   ActivityType,
 } from '../../components/ActivityTypes'
-import MapCard from '../../components/MapCard'
 import { useStyles } from '../../hooks/styles'
 import { HomeScreenProps } from '../RootNavigator'
 
@@ -23,7 +22,6 @@ export default function Home({ navigation }: HomeScreenProps<'Home'>) {
 
   return (
     <SafeAreaView style={styles.safeAreaView}>
-      <MapCard />
       <Dialog
         visible={showWorkoutDialog}
         onDismiss={() => setShowWorkoutDialog(false)}

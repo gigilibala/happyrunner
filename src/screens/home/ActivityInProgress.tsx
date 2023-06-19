@@ -99,7 +99,7 @@ export default function ActivityInProgress({
   useEffect(() => {
     if (!hrmState.enabled || hrmState.device === undefined) return
 
-    hrmDispatch({ type: 'connect', payload: { device: hrmState.device } })
+    hrmDispatch({ type: 'connect' })
   }, [hrmState.enabled])
 
   const startButton = (
