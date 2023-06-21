@@ -12,14 +12,16 @@ import {
   View,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { PreferencesContext } from '../../components/providers/PreferencesProvider'
-import { useHeartRateMonitor } from '../../hooks/useHeartRateMonitor'
-import { useStyles } from '../../hooks/useStyles'
-import { SettingsScreenProps } from '../RootNavigator'
+import { PreferencesContext } from '../../../components/providers/PreferencesProvider'
+import { useHeartRateMonitor } from '../../../hooks/useHeartRateMonitor'
+import { useStyles } from '../../../hooks/useStyles'
+import { SettingsScreenProps } from '../../RootNavigator'
 
 const ICON_SIZE = 20
 
-export function Sensors({ navigation }: SettingsScreenProps<'Sensors'>) {
+export function HeartRateMonitor({
+  navigation,
+}: SettingsScreenProps<'HeartRateMonitor'>) {
   const styles = useStyles(createStyles)
   const { t } = useTranslation()
   const [backgroundOpacity, setBackgroundOpacity] = useState<number>(1)
