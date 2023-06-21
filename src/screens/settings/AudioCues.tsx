@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SafeAreaView } from 'react-native'
 import { List, Switch, TextInput } from 'react-native-paper'
@@ -9,10 +9,6 @@ export function AudioCues({}: SettingsScreenProps<'AudioCues'>) {
   const { usePrefState } = useContext(PreferencesContext)
   const [pref, setPref] = usePrefState('audioCues')
   const { t } = useTranslation()
-
-  useEffect(() => {
-    console.log(JSON.stringify(pref))
-  }, [])
 
   return (
     <SafeAreaView>
