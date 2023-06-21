@@ -1,5 +1,8 @@
 import React, { createContext, PropsWithChildren } from 'react'
-import { AudioCuesPreferences } from '../../hooks/audioCues'
+import {
+  AudioCuesPreferences,
+  DefaultAudioCuesPreferences,
+} from '../../hooks/audioCues'
 import { Device } from '../../hooks/heartRateMonitor'
 import { usePrefs } from '../../hooks/prefs'
 import { Units } from '../../hooks/units'
@@ -11,7 +14,7 @@ type TypeNames = 'audioCues' | 'hrmDevice' | 'units'
 function usePreferences() {
   const audioCuesState = usePrefs<AudioCuesPreferences>(
     '@audio_cues_preferences',
-    { enabled: true },
+    DefaultAudioCuesPreferences,
   )
   const hrmDeviceState = usePrefs<Device>('@hrm_device_preferences', {
     id: '',
