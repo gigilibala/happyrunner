@@ -1,19 +1,13 @@
 import { useAsyncStorage } from '@react-native-async-storage/async-storage'
+import _ from 'lodash'
 import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 
 export function usePrefs<T>(
   key: string,
-): [T | undefined, Dispatch<SetStateAction<T | undefined>>]
-export function usePrefs<T>(
-  key: string,
   defaultPrefs: T,
-): [T, Dispatch<SetStateAction<T>>]
-export function usePrefs<T>(
-  key: string,
-  defaultPrefs?: T,
-): [T | undefined, Dispatch<SetStateAction<T | undefined>>] {
+): [T, Dispatch<SetStateAction<T>>] {
   const { getItem, setItem } = useAsyncStorage(key)
-  const [prefs, setPrefs] = useState<T>()
+  const [prefs, setPrefs] = useState<T>(defaultPrefs)
   const [initialRead, setInitialRead] = useState<boolean>(false)
 
   useEffect(() => {
@@ -21,10 +15,16 @@ export function usePrefs<T>(
       getItem()
         .then((value) => {
           if (value === null) {
-            if (defaultPrefs !== undefined) setPrefs(defaultPrefs)
+            setPrefs({ ...defaultPrefs })
           } else {
+            const newPrefs = _.merge(defaultPrefs, ...JSON.parse(value))
+            // This approach has a small issue as deeper keys don't get removed.
+            // TODO: Fix the problem described above.
+            for (key in newPrefs) {
+              if (!(key in newPrefs)) delete newPrefs[key]
+            }
             setInitialRead(true)
-            setPrefs(JSON.parse(value) as T)
+            setPrefs(newPrefs)
           }
         })
         .catch((error) =>
@@ -36,7 +36,11 @@ export function usePrefs<T>(
         return
       }
       setItem(JSON.stringify(prefs))
-        .then(() => console.log(`Wrote pref ${key} into storage.`))
+        .then(() =>
+          console.log(
+            `Wrote pref ${key}:${JSON.stringify(prefs)} into storage.`,
+          ),
+        )
         .catch((error) =>
           console.error('Failed to write to storage for key ', key),
         )

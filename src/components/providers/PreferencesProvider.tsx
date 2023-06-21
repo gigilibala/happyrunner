@@ -13,7 +13,9 @@ function usePreferences() {
     '@audio_cues_preferences',
     { enabled: true },
   )
-  const hrmDeviceState = usePrefs<Device>('@hrm_device_preferences')
+  const hrmDeviceState = usePrefs<Device>('@hrm_device_preferences', {
+    id: '',
+  })
   const unitsState = usePrefs<Units>('@units_preferences', {
     distance: 'miles',
     speed: 'pace',
