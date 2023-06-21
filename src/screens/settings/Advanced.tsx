@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { SafeAreaView, StyleSheet } from 'react-native'
 import { Button, Dialog, List, Portal, Text } from 'react-native-paper'
 import { DatabaseContext } from '../../components/providers/DatabaseProvider'
-import { useStyles } from '../../hooks/styles'
+import { useStyles } from '../../hooks/useStyles'
 import { SettingsScreenProps } from '../RootNavigator'
 
 export function Advanced({}: SettingsScreenProps<'Advanced'>) {

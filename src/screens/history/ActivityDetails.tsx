@@ -19,7 +19,7 @@ import {
 } from 'react-native-popup-menu'
 import MatIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { DatabaseContext } from '../../components/providers/DatabaseProvider'
-import { useStyles } from '../../hooks/styles'
+import { useStyles } from '../../hooks/useStyles'
 import { HistoryScreenProps } from '../RootNavigator'
 
 type Point = { x: number; y: number }

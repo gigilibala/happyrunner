@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from 'react'
-import { useUnits } from './units'
+import { useUnits } from './useUnits'
 
 export type RawSpeed = number // Meters per milliseconds
 export type DisplaySpeed = string

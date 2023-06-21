@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { useUnits } from '../../hooks/units'
+import { useUnits } from '../../hooks/useUnits'
 import { ProgressInfoCard } from './ProgressInfoCard'
 
 type DurationCardProps = {

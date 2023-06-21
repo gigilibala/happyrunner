@@ -8,7 +8,7 @@ import {
   ActivityIcon,
   ActivityType,
 } from '../../components/ActivityTypes'
-import { useStyles } from '../../hooks/styles'
+import { useStyles } from '../../hooks/useStyles'
 import { HomeScreenProps } from '../RootNavigator'
 
 export default function Home({ navigation }: HomeScreenProps<'Home'>) {

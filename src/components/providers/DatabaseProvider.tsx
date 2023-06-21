@@ -12,7 +12,7 @@ import {
   SQLiteDatabase,
   Transaction,
 } from 'react-native-sqlite-storage'
-import { IdType } from '../../hooks/activity'
+import { IdType } from '../../hooks/useActivity'
 import { ActivityType } from '../ActivityTypes'
 
 const databaseName = 'user-data.db'

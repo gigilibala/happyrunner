@@ -3,9 +3,9 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { DisplaySpeed } from '../../hooks/speed'
-import { useStyles } from '../../hooks/styles'
-import { useUnits } from '../../hooks/units'
+import { DisplaySpeed } from '../../hooks/useSpeed'
+import { useStyles } from '../../hooks/useStyles'
+import { useUnits } from '../../hooks/useUnits'
 import { ProgressCard } from './ProgressCard'
 
 type SpeedInputCardProps = {

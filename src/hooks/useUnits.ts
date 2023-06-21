@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { PreferencesContext } from '../components/providers/PreferencesProvider'
-import { RawSpeed } from './speed'
+import { RawSpeed } from './useSpeed'
 
 export const MS_IN_SECOND = 1000
 

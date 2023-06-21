@@ -2,8 +2,8 @@ import { useContext, useEffect, useReducer, useState } from 'react'
 import { GeoPosition } from 'react-native-geolocation-service'
 import { ActivityType } from '../components/ActivityTypes'
 import { DatabaseContext } from '../components/providers/DatabaseProvider'
-import { useDataSink } from './dataSink'
-import { MS_IN_SECOND, durationHours, useUnits } from './units'
+import { useDataSink } from './useDataSink'
+import { MS_IN_SECOND, durationHours, useUnits } from './useUnits'
 
 const INTERVAL_MS = 1000
 

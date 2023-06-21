@@ -2,10 +2,10 @@ import React, { createContext, PropsWithChildren } from 'react'
 import {
   AudioCuesPreferences,
   DefaultAudioCuesPreferences,
-} from '../../hooks/audioCues'
-import { Device } from '../../hooks/heartRateMonitor'
-import { usePrefs } from '../../hooks/prefs'
-import { Units } from '../../hooks/units'
+} from '../../hooks/useAudioCues'
+import { Device } from '../../hooks/useHeartRateMonitor'
+import { usePrefs } from '../../hooks/usePrefs'
+import { Units } from '../../hooks/useUnits'
 
 type IPreferencesApi = ReturnType<typeof usePreferences>
 

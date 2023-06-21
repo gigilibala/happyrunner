@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { DisplaySpeed } from '../../hooks/speed'
-import { useUnits } from '../../hooks/units'
+import { DisplaySpeed } from '../../hooks/useSpeed'
+import { useUnits } from '../../hooks/useUnits'
 import { ProgressInfoCard } from './ProgressInfoCard'
 
 type SpeedCardProps = {

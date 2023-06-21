@@ -2,7 +2,7 @@ import { Theme } from '@react-navigation/native'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { useStyles } from '../../hooks/styles'
+import { useStyles } from '../../hooks/useStyles'
 import { ProgressCard } from './ProgressCard'
 import { ProgressInfoCard } from './ProgressInfoCard'
 

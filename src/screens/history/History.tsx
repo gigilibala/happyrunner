@@ -9,8 +9,8 @@ import {
   DatabaseContext,
   Details,
 } from '../../components/providers/DatabaseProvider'
-import { useStyles } from '../../hooks/styles'
-import { durationHours, useUnits } from '../../hooks/units'
+import { useStyles } from '../../hooks/useStyles'
+import { durationHours, useUnits } from '../../hooks/useUnits'
 import { HistoryScreenProps } from '../RootNavigator'
 
 export function History({ navigation }: HistoryScreenProps<'History'>) {

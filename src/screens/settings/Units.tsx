@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { SafeAreaView, StyleSheet } from 'react-native'
 import { SegmentedButtons } from 'react-native-paper'
 import { PreferencesContext } from '../../components/providers/PreferencesProvider'
-import { useStyles } from '../../hooks/styles'
+import { useStyles } from '../../hooks/useStyles'
 import { SettingsScreenProps } from '../RootNavigator'
 
 export function Units({}: SettingsScreenProps<'Units'>) {

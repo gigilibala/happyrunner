@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { SafeAreaView, View } from 'react-native'
 import { Text } from 'react-native-paper'
 import MapCard from '../../components/MapCard'
-import { useLocation } from '../../hooks/location'
+import { useLocation } from '../../hooks/useLocation'
 
 export default function Maps() {
   const [location, locationDispatch] = useLocation()
